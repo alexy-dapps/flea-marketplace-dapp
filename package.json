@@ -2,13 +2,10 @@
   "name": "flea-marketplace-dapp",
   "version": "1.0.0",
   "description": "Ethereum DApp for e-book",
-  "main": "truffle-config.js",
   "directories": {
     "doc": "docs",
     "test": "test"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,10 +13,14 @@
     "type": "git",
     "url": "git+https://github.com/alexytiger/flea-marketplace-dapp.git"
   },
-  "author": "",
+  "author": "Alex Yevseyevich",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/alexytiger/flea-marketplace-dapp/issues"
-  },
-  "homepage": "https://github.com/alexytiger/flea-marketplace-dapp#readme"
+  "homepage": "https://github.com/alexytiger/flea-marketplace-dapp#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-bn": "^0.2.0",
+    "openzeppelin-solidity": "^2.4.0"
+  }
 }
