@@ -1,0 +1,25 @@
+{
+  "name": "flea-marketplace-dapp",
+  "version": "1.0.0",
+  "description": "Ethereum DApp for e-book",
+  "main": "truffle-config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexytiger/flea-marketplace-dapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexytiger/flea-marketplace-dapp/issues"
+  },
+  "homepage": "https://github.com/alexytiger/flea-marketplace-dapp#readme"
+}
