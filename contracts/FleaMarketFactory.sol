@@ -8,7 +8,8 @@ pragma solidity ^0.5.11;
  -  For public state variables (!! not external), an automatic getter function (see below) is generated.
 
   - internal:
-Those functions and state variables can only be accessed internally (i.e. from within the current contract or contracts deriving from it), without using this.
+Those functions and state variables can only be accessed internally 
+(i.e. from within the current contract or contracts deriving from it), without using this.
 */
 
 
@@ -41,9 +42,9 @@ contract FleaMarketFactory is Ownable {
 	// deploy a new purchase contract
 	// payable for functions: Allows them to receive Ether together with a call.
 	// commissionRate, for example, 350 ==>  (350/100) = 3.5%
-	function createPurchaseContract(bytes32 key, string calldata description, string calldata ipfsImageHash, uint256 commissionRate) 
-	        external payable returns(bool createResult)
-	{
+    function createPurchaseContract(bytes32 key, string calldata description, string calldata ipfsImageHash,
+        uint256 commissionRate) external payable returns(bool createResult) {
+
 	    widgetSet.insert(key); // Note that this will fail automatically if the key already exists.
         WidgetStruct storage wgt = widgets[key];
 		/*
@@ -75,7 +76,7 @@ contract FleaMarketFactory is Ownable {
 	    
 		emit LogCreatePurchaseContract(msg.sender,  key);
 	    
-		return true;
+	    return true;
 	}
 	
     function getContractCount() public view returns(uint contractCount) {

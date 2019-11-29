@@ -184,8 +184,7 @@ contract SafeRemotePurchase is Ownable {
             } else {
                 
                 return false;
-            }
-            
+            }   
 
         }
 
