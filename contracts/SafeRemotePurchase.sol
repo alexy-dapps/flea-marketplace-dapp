@@ -2,8 +2,8 @@
 
 pragma solidity ^0.5.11;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-// import "http://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol"; // for Remix
+import "@openzeppelin/contracts/math/SafeMath.sol";
+// import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol"; // for Remix
 import "./Ownable.sol";
 
 
