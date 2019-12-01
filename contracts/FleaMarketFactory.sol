@@ -20,7 +20,7 @@ import "./Ownable.sol";
 contract FleaMarketFactory is Ownable {
 
     using HitchensUnorderedKeySetLib for HitchensUnorderedKeySetLib.Set;
-    HitchensUnorderedKeySetLib.Set widgetSet;
+    HitchensUnorderedKeySetLib.Set private widgetSet;
 
    	string public contractName;
    
@@ -74,7 +74,7 @@ contract FleaMarketFactory is Ownable {
         address newContract = address(c);
 	    wgt.purchaseContract = newContract;
 	    
-		emit LogCreatePurchaseContract(msg.sender,  key);
+		emit LogCreatePurchaseContract(msg.sender, key);
 	    
 	    return true;
 	}
@@ -93,7 +93,7 @@ contract FleaMarketFactory is Ownable {
         return(w.purchaseContract);
     } 
 
-    function removeContractByKey(bytes32 key) external onlyOwner returns (bool result){
+    function removeContractByKey(bytes32 key) external onlyOwner returns (bool result) {
         // Note that this will fail automatically if the key doesn't exist
         widgetSet.remove(key); 
         delete widgets[key];

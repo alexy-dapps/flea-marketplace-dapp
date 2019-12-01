@@ -98,9 +98,9 @@ contract SafeRemotePurchase is Ownable {
     function buyerConfirmReceived() external onlyBuyer
         inState(State.Locked) returns (bool result)
     {
-        buyer.transfer(price);
-        
         state = State.BuyerPaid;
+        buyer.transfer(price);
+
         emit LogReceivedByBuyer(msg.sender, price, key);
         return true;
     }
@@ -113,9 +113,9 @@ contract SafeRemotePurchase is Ownable {
     {
         uint256 amount = balanceOf();
         
-        seller.transfer(amount);
-       
         state = State.Canceled;
+        seller.transfer(amount);
+
         emit LogCanceledBySeller(msg.sender, amount, key);
         return true;
     }
@@ -124,28 +124,28 @@ contract SafeRemotePurchase is Ownable {
         condition(state == State.BuyerPaid || state == State.OwnerPaid ) returns (bool result)
         {
         
-            if(state == State.OwnerPaid){
+            if (state == State.OwnerPaid) {
                 
                 uint256 amount = balanceOf();
-                seller.transfer(amount);
                 
                 state = State.Completed;
-                emit LogWithdrawBySeller(msg.sender, amount, key);
-                
+                seller.transfer(amount);
+
+                emit LogWithdrawBySeller(msg.sender, amount, key);     
                 return true;
                 
-            } else if(state == State.BuyerPaid) {
+            } else if (state == State.BuyerPaid) {
                 
                 //calculate commission part
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);
                 
                 // subtracts commission part: 3.5% ==> 350 /100
                 uint256 amount = (price.mul(3)).sub(commission);
-                seller.transfer(amount);
-                
+                 
                 state = State.SellerPaid;
-                emit LogWithdrawBySeller(msg.sender, amount, key);
-                
+                seller.transfer(amount);
+            
+                emit LogWithdrawBySeller(msg.sender, amount, key); 
                 return true;
     
             } else {
@@ -160,25 +160,25 @@ contract SafeRemotePurchase is Ownable {
         condition(state == State.BuyerPaid || state == State.SellerPaid ) returns (bool result)
         {
         
-            if(state == State.SellerPaid){
+            if (state == State.SellerPaid) {
                 
                 uint256 amount = balanceOf();
-                seller.transfer(amount);
-                
+                   
                 state = State.Completed;
-                emit LogWithdrawByOwner(msg.sender, amount, key);
-                
+                seller.transfer(amount);
+
+                emit LogWithdrawByOwner(msg.sender, amount, key);    
                 return true;
                 
-            } else if(state == State.BuyerPaid) {
+            } else if (state == State.BuyerPaid) {
                 
                 //calculate commission part: 3.5% ==> 350 /100
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);
+                  
+                state = State.OwnerPaid;
                 owner().transfer(commission);
                 
-                state = State.OwnerPaid;
                 emit LogWithdrawByOwner(msg.sender, commission, key);
-                
                 return true;
     
             } else {
@@ -190,7 +190,7 @@ contract SafeRemotePurchase is Ownable {
 
 
     //get balance of the contract
-    function balanceOf() public view returns(uint){
+    function balanceOf() public view returns(uint) {
         return address(this).balance;
     }
 

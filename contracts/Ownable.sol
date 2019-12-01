@@ -9,7 +9,7 @@ pragma solidity ^0.5.11;
  * `onlyOwner`, which can be applied to your functions to restrict their use to
  * the owner.
  */
-contract Ownable  {
+contract Ownable {
     
     address payable private _owner;
 

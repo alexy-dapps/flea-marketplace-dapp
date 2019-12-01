@@ -59,7 +59,7 @@ library HitchensUnorderedKeySetLib {
     }
     
     function exists(Set storage self, bytes32 key) internal view returns(bool) {
-        if(self.keyList.length == 0) return false;
+        if (self.keyList.length == 0) return false;
         return self.keyList[self.keyPointers[key]] == key;
     }
     
@@ -75,7 +75,7 @@ library HitchensUnorderedKeySetLib {
 contract HitchensUnorderedKeySet {
     
     using HitchensUnorderedKeySetLib for HitchensUnorderedKeySetLib.Set;
-    HitchensUnorderedKeySetLib.Set set;
+    HitchensUnorderedKeySetLib.Set private set;
     
     event LogUpdate(address sender, string action, bytes32 key);
     

@@ -1,7 +1,12 @@
 {
-  "extends": "solhint:default",
+  "extends": "solhint:recommended",
+  "plugins": [],
   "rules": {
-    "indent": "off"
-
+    "avoid-suicide": "error",
+    "avoid-sha3": "warn",
+    "avoid-tx-origin:": "warn",
+    "avoid-throw": "off",
+    "indent": "off",
+    "no-mix-tabs-and-spaces": "off"
   }
 }
