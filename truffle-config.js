@@ -48,6 +48,14 @@ module.exports = {
     //  port: 8545,            // Standard Ethereum port (default: none)
     //  network_id: "*",       // Any network (default: none)
     // },
+    //Configuration for the Ganache network
+    //the command to deploy to the Ganache will looks like
+    //truffle migrate --reset --network ganache
+    ganache: {
+      host: "127.0.0.1",
+      port: 7545,
+      network_id: "*" // matching any network id
+    },
 
     // Another network with more advanced options...
     // advanced: {
