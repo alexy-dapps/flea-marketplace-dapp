@@ -17,7 +17,9 @@
   "author": "Alex Yevseyevich",
   "license": "ISC",
   "homepage": "https://github.com/alexytiger/flea-marketplace-dapp#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^1.0.26"
+  },
   "devDependencies": {
     "@openzeppelin/contracts": "^2.4.0",
     "@openzeppelin/test-helpers": "^0.5.4",
