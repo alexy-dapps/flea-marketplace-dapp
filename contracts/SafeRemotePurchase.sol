@@ -30,18 +30,18 @@ contract SafeRemotePurchase is Ownable {
     // Division will truncate if it is an odd number.
     // Check via multiplication that it wasn't an odd number.
     constructor(
-        uint256 rate,
+        uint256 _rate,
         address payable _seller, 
         bytes32 _key,
         string memory _description,
         string memory _ipfxImageHash) public payable {
             
-        require(key != 0x0, "Key cannot be 0x0");
+        require(_key != 0x0, "Key cannot be 0x0");
         require(bytes(_description).length > 0, "Description can't be empty");
-        require(rate > 0, "Must specify the commission rate");
+        require(_rate > 0, "Must specify the commission rate");
         require(_seller != address(0), "The seller is the zero address");
         
-        _commissionRate = rate;
+        _commissionRate = _rate;
         seller = _seller;
         key = _key;
         ipfsImageHash = _ipfxImageHash;
