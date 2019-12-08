@@ -166,56 +166,51 @@ the same already-deployed contract each time.
             value: wei
         }).should.be.rejected;
 
-
     })
-    /*  
-    
-   
-         // Product must have a title
-        bytes32Key = web3.utils.utf8ToHex('carHummerModel-HD4');
-        await contractInstance.createPurchaseContract(bytes32Key, '', 'ipfsHash001', 35, {
+
+    it('should not create product with zero commission', async () => {
+
+        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+        const wei = web3.utils.toWei('1.4', 'Ether');
+        const commission = new BN(0);
+
+        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
             from: seller,
             value: wei
         }).should.be.rejected;
- 
- 
-        // Product must have a price
-        await contractInstance.createPurchaseContract(bytes32Key, 'Car Hummer', 'ipfsHash001', 35, {
+
+    })
+
+
+    it('product must have price', async () => {
+
+        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+        const commission = new BN(350);
+
+        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
             from: seller,
             value: 0
         }).should.be.rejected;
- 
-        // Product must have a even price
-        await contractInstance.createPurchaseContract(bytes32Key, 'Car Hummer', 'ipfsHash001', 35, {
+
+    })
+
+
+    it('product must have the even price', async () => {
+
+        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+        const commission = new BN(350);
+
+        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
             from: seller,
-            value: 3131313131
+            value: 31313131317
         }).should.be.rejected;
- 
-        // Product must have a unique key 
-        // we already have one with the same key/
-        bytes32Key = web3.utils.utf8ToHex('sportBikeModel-X01');
-        await contractInstance.createPurchaseContract(bytes32Key, 'Another sport bike', 'ipfsHash001', 35, {
-            from: seller,
-            value: wei
-        }).should.be.rejected;
- 
- 
- 
-        // Create second product
-        bytes32Key = web3.utils.utf8ToHex('sportBikeModel-X02');
-        wei = web3.utils.toWei('0.25', 'Ether');
-        await contractInstance.createPurchaseContract(bytes32Key, 'Another sport bike', 'ipfsHash001', 45, {
-            from: seller,
-            value: wei
-        }).should.be.fulfilled;
- 
-        */
+
+    })
 
 
-
-
-    /*
+    /*  
     
+   
             it('validate product', async () => {
     
                 const bytes32Key = web3.utils.utf8ToHex('sportBikeModel-X01');
