@@ -4,7 +4,7 @@
 /*
  - 'assert' helps to determine the status of the test, it determines failure of the test.
  - 'describe' is a function which holds the collection of tests. It takes two parameters, first one is the meaningful name to functionality under test and second one is the function which contains one or multiple tests. 
- - 'it' is a function again which is actually a test itself and takes two parameters, first parameter is name to the test and second parameter is function which holds the body of the test.
+ - 'it' is a function which is actually is a test itself and takes two parameters, first parameter is name to the test and second parameter is function which holds the body of the test.
   - 'beforeEach' set conditions before each test. is run before each test in a describe
   - 'before' set conditions before group of tests.  is run once before all the tests in a describe
 */
@@ -48,7 +48,7 @@ const SafeRemotePurchase = artifacts.require("../contracts/SafeRemotePurchase.so
 // here txInfo is the transaction results
 //based on https://www.trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts#processing-transaction-results
 // and https://ethereum.stackexchange.com/questions/42950/how-to-get-the-transaction-cost-in-a-truffle-unit-test
-async function getGasCoast(txInfo){
+async function getGasCoast(txInfo) {
     const tx = await web3.eth.getTransaction(txInfo.tx);
     const gasCost = (new BN(tx.gasPrice)).mul(new BN(txInfo.receipt.gasUsed));
 
@@ -57,11 +57,8 @@ async function getGasCoast(txInfo){
 
 contract("FleaMarketFactory", accounts => {
 
-    let [deployer, seller, buyer] = accounts;
-
+    const [deployer, seller, buyer] = accounts;
     const IPFS_HASH = "QmdXUfpqeGQyvJ6xVouPLR65XtNp63TUHM937zPvg9dFrT";
-
-    let factory;
 
     // display three test accounts
     console.log(`deployer account: ${deployer}`);
@@ -83,293 +80,330 @@ In this case, new is the only option as deployed() simply retrieves
 the same already-deployed contract each time.
    */
 
-    // beforeEach() is run before each test in a describe
-    beforeEach(async () => {
+    describe('deployment of FleaMarketFactory', async () => {
 
-        const time = await getCurrentTime();
-        console.log(`current time: ${time}`);
+        let factory;
+        before(async () => {
 
-        factory = await FleaMarketFactory.new();
-    });
+            factory = await FleaMarketFactory.new();
+        });
+
+        beforeEach(async () => {
+
+            const time = await getCurrentTime();
+            console.log(`current time: ${time}`);
+
+        });
+
+        it("deployed successfully", async () => {
+
+            const address = await factory.address;
+            console.log(`contract address: ${address}`);
+
+            //make sure the address is real
+            assert.notEqual(address, 0x0);
+            assert.notEqual(address, "");
+            assert.notEqual(address, null);
+            assert.notEqual(address, undefined);
+        });
 
 
-    it("deployed successfully", async () => {
-
-        const address = await factory.address;
-        console.log(`contract address: ${address}`);
-
-        //make sure the address is real
-        assert.notEqual(address, 0x0);
-        assert.notEqual(address, "");
-        assert.notEqual(address, null);
-        assert.notEqual(address, undefined);
-    });
+        it('it has the owner who is the deployer', async () => {
+            const owner = await factory.owner()
+            assert.equal(owner, deployer)
+        })
 
 
-    it('it has the owner who is the deployer', async () => {
-        const owner = await factory.owner()
-        assert.equal(owner, deployer)
+    })
+
+    describe('creating a new instance of the SafeRemotePurchase', async () => {
+
+        let factory;
+
+        beforeEach(async () => {
+
+            const time = await getCurrentTime();
+            console.log(`current time: ${time}`);
+
+            factory = await FleaMarketFactory.new();
+
+        });
+
+        it('should create a valid product', async () => {
+
+
+            const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+            const wei = web3.utils.toWei('1.4', 'Ether');
+            const commission = new BN(350);
+
+            const receipt = await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            });
+
+            //??? this way is not working -  explore
+            //await factory.getContractCount().should.eventually.equal(new BN(1));
+            expect(await factory.getContractCount()).to.be.a.bignumber.that.equal(new BN(1));
+
+
+            // check for event fired
+            /*
+            has to comment 'key'  - because does not compare properly bytes32:
+            + expected - actual
+            -0x7465736c614379626572747275636b2d58303100000000000000000000000000
+           +0x7465736c614379626572747275636b2d583031
+            */
+            expectEvent(receipt, 'LogCreatePurchaseContract', {
+                sender: seller,
+                // key: bytes32Key 
+            });
+
+            const logData = receipt.logs[2];
+            const eventData = logData.args;
+            assert.equal(web3.utils.hexToUtf8(eventData.key), 'teslaCybertruck-X01', "LogCreatePurchaseContract event logged did not have expected product key");
+
+        })
+
+        it('should not create a product for empty key', async () => {
+
+            const bytes32Key = web3.utils.utf8ToHex('');
+            const wei = web3.utils.toWei('1.4', 'Ether');
+            const commission = web3.utils.toBN(350);
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            }).should.be.rejected;
+
+
+        })
+
+        it('should not create a product with the same key', async () => {
+
+            const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+            const wei = web3.utils.toWei('1.4', 'Ether');
+            const commission = web3.utils.toBN(350);
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            }).should.be.fulfilled;
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck II', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            }).should.be.rejected;
+
+        })
+
+        it('should not create product with zero commission', async () => {
+
+            const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+            const wei = web3.utils.toWei('1.4', 'Ether');
+            const commission = new BN(0);
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            }).should.be.rejected;
+
+        })
+
+
+        it('should not create product with zero purchase price', async () => {
+
+            const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+            const commission = new BN(350);
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: 0
+            }).should.be.rejected;
+
+        })
+
+
+        it('should not create a product with not even price', async () => {
+
+            const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+            const commission = new BN(350);
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: 31313131317
+            }).should.be.rejected;
+
+        })
+
     })
 
 
-    it('should create product', async () => {
+    describe('business logic for purchase and delivery the product', async () => {
 
+        let factory;
+        let product;
 
         const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        const wei = web3.utils.toWei('1.4', 'Ether');
-        const commission = new BN(350);
-
-        const receipt = await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
-        });
-
-        //??? this way is not working -  explore
-        //await factory.getContractCount().should.eventually.equal(new BN(1));
-        expect(await factory.getContractCount()).to.be.a.bignumber.that.equal(new BN(1));
-
-
-        // check for event fired
-        /*
-        has to comment 'key'  - because does not compare properly bytes32:
-        + expected - actual
-        -0x7465736c614379626572747275636b2d58303100000000000000000000000000
-       +0x7465736c614379626572747275636b2d583031
-        */
-        expectEvent(receipt, 'LogCreatePurchaseContract', {
-            sender: seller,
-            // key: bytes32Key 
-        });
-
-        const logData = receipt.logs[2];
-        const eventData = logData.args;
-        assert.equal(web3.utils.hexToUtf8(eventData.key), 'teslaCybertruck-X01', "LogCreatePurchaseContract event logged did not have expected product key");
-
-    })
-
-    it('should not create product for empty key', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('');
         const wei = web3.utils.toWei('1.4', 'Ether');
         const commission = web3.utils.toBN(350);
 
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
-        }).should.be.rejected;
+        before(async () => {
+
+            factory = await FleaMarketFactory.new();
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            }).should.be.fulfilled;
+
+            const address = await factory.getContractByKey(bytes32Key);
+            //assert.notEqual(address, 0x0);
+            address.should.not.equal(0x0);
 
 
-    })
-
-    it('product must have a unique key', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        const wei = web3.utils.toWei('1.4', 'Ether');
-        const commission = web3.utils.toBN(350);
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
-        }).should.be.fulfilled;
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck II', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
-        }).should.be.rejected;
-
-    })
-
-    it('should not create product with zero commission', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        const wei = web3.utils.toWei('1.4', 'Ether');
-        const commission = new BN(0);
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
-        }).should.be.rejected;
-
-    })
+            // get instance of the SafeRemotePurchase contract by address
+            product = await SafeRemotePurchase.at(address);
 
 
-    it('should not create product with zero purchase price', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        const commission = new BN(350);
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: 0
-        }).should.be.rejected;
-
-    })
-
-
-    it('product must have an even price', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        const commission = new BN(350);
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: 31313131317
-        }).should.be.rejected;
-
-    })
-
-
-    it('create a valid product', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        const wei = web3.utils.toWei('1.4', 'Ether');
-        const commission = web3.utils.toBN(350);
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
-        }).should.be.fulfilled;
-
-        const address = await factory.getContractByKey(bytes32Key);
-        //assert.notEqual(address, 0x0);
-        address.should.not.equal(0x0);
-
-
-        // get instance of the SafeRemotePurchase contract by address
-        const ins = await SafeRemotePurchase.at(address);
-
-        // validate key
-        const key = await ins.key();
-        const keyAscii = web3.utils.hexToUtf8(key);
-        keyAscii.should.equal('teslaCybertruck-X01');
-
-        // validate seller
-        expect(await ins.seller()).to.equal(seller);
-
-        // validate owner
-        expect(await ins.owner()).to.equal(deployer);
-
-        // validate price
-        const price = (new BN(wei)).div(new BN(2));
-        expect(await ins.price()).to.be.a.bignumber.that.equal(price);
-
-        // validate ballance  -  balance has to be 2x price
-        expect(await ins.balanceOf()).to.be.a.bignumber.that.equal(price.mul(new BN(2)));
-
-        // validate state - should be Created
-        //note that Solidity enum are converted explicitly to uint ==> will be 
-        //retrieved from web3 as BN. the enum values start from 0.
-        expect(await ins.state()).to.be.a.bignumber.that.equal(new BN(0));
-
-    })
-
-
-    it('should purchase and delivery product', async () => {
-
-        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
-        //the seller has to put (2x of price)
-        const wei = web3.utils.toWei('1.4', 'Ether');
-        const commission = web3.utils.toBN(350);
-
-        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
-            from: seller,
-            value: wei
         });
 
-        const address = await factory.getContractByKey(bytes32Key);
-
-        // get instance of the SafeRemotePurchase contract by address
-        const product = await SafeRemotePurchase.at(address);
-
-        // Buyer makes purchase (put 2x of price)
-        let txInfo  = await product.buyerPurchase({
-            from: buyer,
-            value: wei
-        }).should.be.fulfilled;
-
-        expectEvent(txInfo, 'LogPurchaseConfirmed', {
-            sender: buyer,
-            amount: wei
+        beforeEach(async () => {
+            const time = await getCurrentTime();
+            console.log(`current time: ${time}`);
         });
 
-        // validate buyer
-        expect(await product.buyer()).to.equal(buyer);
 
-        // validate state - should be Locked
-        expect(await product.state()).to.be.a.bignumber.that.equal(new BN(1));
+        it('is a valid product', async () => {
 
-        // validate smart contract ballance
-        // balance has to be 4x price  = (2x from the seller and 2x from the buyer)
-        expect(await product.balanceOf()).to.be.a.bignumber.that.equal((new BN(wei)).mul(new BN(2)));
+            // validate key
+            const key = await product.key();
+            const keyAscii = web3.utils.hexToUtf8(key);
+            keyAscii.should.equal('teslaCybertruck-X01');
 
-        // Buyer confirm delivery
-        const buyerBalanceBefore = new BN(
-            await web3.eth.getBalance(buyer)
-          );
-        
-        const price = (new BN(wei)).div(new BN(2));
-        txInfo  = await product.buyerConfirmReceived({
-            from: buyer
-        }).should.be.fulfilled;
-       
-        expectEvent(txInfo, 'LogReceivedByBuyer', {
-            sender: buyer,
-            amount: price
-        });
+            // validate seller
+            expect(await product.seller()).to.equal(seller);
 
-        const buyerBalanceAfter = new BN(
-            await web3.eth.getBalance(buyer)
-          );
+            // validate owner
+            expect(await product.owner()).to.equal(deployer);
 
-        // calculate amount money the buyer spend on the transaction
-        const gasCost = await getGasCoast(txInfo);
+            // validate price
+            const price = (new BN(wei)).div(new BN(2));
+            expect(await product.price()).to.be.a.bignumber.that.equal(price);
 
-        expect(buyerBalanceAfter).to.be.a.bignumber.that.equal(buyerBalanceBefore.add(price).sub(gasCost) );
- 
-        // validate state - should be BuyerPaid
-        expect(await product.state()).to.be.a.bignumber.that.equal(new BN(3));
+            // validate ballance  -  balance has to be 2x price
+            expect(await product.balanceOf()).to.be.a.bignumber.that.equal(price.mul(new BN(2)));
 
-        // validate smart contract ballance
-        // balance has to be 3x price  = (1x went back to the buyer)
-        expect(await product.balanceOf()).to.be.a.bignumber.that.equal(price.mul(new BN(3)));
+            // validate state - should be Created
+            //note that Solidity enum are converted explicitly to uint ==> will be 
+            //retrieved from web3 as BN. the enum values start from 0.
+            expect(await product.state()).to.be.a.bignumber.that.equal(new BN(0));
 
+        })
+
+        it('a buyer should able to purchase and confirm delivery product', async () => {
+
+            // Buyer makes purchase (put 2x of price)
+            let txInfo = await product.buyerPurchase({
+                from: buyer,
+                value: wei
+            }).should.be.fulfilled;
+
+            expectEvent(txInfo, 'LogPurchaseConfirmed', {
+                sender: buyer,
+                amount: wei
+            });
+
+            // validate buyer
+            expect(await product.buyer()).to.equal(buyer);
+
+            // validate state - should be Locked
+            expect(await product.state()).to.be.a.bignumber.that.equal(new BN(1));
+
+            // validate smart contract ballance
+            // balance has to be 4x price  = (2x from the seller and 2x from the buyer)
+            expect(await product.balanceOf()).to.be.a.bignumber.that.equal((new BN(wei)).mul(new BN(2)));
+
+            // Buyer confirm delivery
+            const buyerBalanceBefore = new BN(
+                await web3.eth.getBalance(buyer)
+            );
+
+            const price = (new BN(wei)).div(new BN(2));
+            txInfo = await product.buyerConfirmReceived({
+                from: buyer
+            }).should.be.fulfilled;
+
+            expectEvent(txInfo, 'LogReceivedByBuyer', {
+                sender: buyer,
+                amount: price
+            });
+
+            const buyerBalanceAfter = new BN(
+                await web3.eth.getBalance(buyer)
+            );
+
+            // calculate amount money the buyer spend on the transaction
+            const gasCost = await getGasCoast(txInfo);
+
+            expect(buyerBalanceAfter).to.be.a.bignumber.that.equal(buyerBalanceBefore.add(price).sub(gasCost));
+
+            // validate state - should be BuyerPaid
+            expect(await product.state()).to.be.a.bignumber.that.equal(new BN(3));
+
+            // validate smart contract ballance
+            // balance has to be 3x price  = (1x went back to the buyer)
+            expect(await product.balanceOf()).to.be.a.bignumber.that.equal(price.mul(new BN(3)));
+
+            
+            
+            
+            //....continue wth the eller and owner getting their moneys
+
+            /*     
+            const initialSellerBalance = new BN(
+                await web3.eth.getBalance(seller)
+              );
     
-       
-        /*     
-        const initialSellerBalance = new BN(
-            await web3.eth.getBalance(seller)
-          );
+              //validate the seller balance
+            const price = (new BN(wei)).div(new BN(2));
+            
+            //!!! continue here to aadd the gas price !!!
+            expect(await web3.eth.getBalance(seller)).to.be.a.bignumber.that.equal( initialSellerBalance.sub( price.mul( new BN(2) ) ) );
+    
+    
+    
+            // validate ballance
+            balanceBN = await product.balanceOf();
+            // balance has to be 0)
+            assert.equal(balanceBN.eq(new BN(0)), true, 'balance is correct');
+    
+           
+           
+            //validate the seller balance
+            const newSellerBalanceWei = await web3.eth.getBalance(seller);
+            const newSellerBalanceBN = new BN(newSellerBalanceWei);
+    
+            // seller has to get back 3x price
+            const expectedBalanceBN = origSellerBalanceBN.add(priceBN.mul(new BN(3)));
+            assert.equal(newSellerBalanceBN.eq(expectedBalanceBN), true, 'seller balance is correct');
+    
+            // validate state
+            state = (await product.state()).toString();
+            assert.equal(state, '2', 'state Inactive is correct');
+    
+    */
 
-          //validate the seller balance
-        const price = (new BN(wei)).div(new BN(2));
-        
-        //!!! continue here to aadd the gas price !!!
-        expect(await web3.eth.getBalance(seller)).to.be.a.bignumber.that.equal( initialSellerBalance.sub( price.mul( new BN(2) ) ) );
+        })
 
 
 
-        // validate ballance
-        balanceBN = await product.balanceOf();
-        // balance has to be 0)
-        assert.equal(balanceBN.eq(new BN(0)), true, 'balance is correct');
-
-       
-       
-        //validate the seller balance
-        const newSellerBalanceWei = await web3.eth.getBalance(seller);
-        const newSellerBalanceBN = new BN(newSellerBalanceWei);
-
-        // seller has to get back 3x price
-        const expectedBalanceBN = origSellerBalanceBN.add(priceBN.mul(new BN(3)));
-        assert.equal(newSellerBalanceBN.eq(expectedBalanceBN), true, 'seller balance is correct');
-
-        // validate state
-        state = (await product.state()).toString();
-        assert.equal(state, '2', 'state Inactive is correct');
-
-*/
 
     })
+
+
+
+
+
 
     /*
        it('product purchase cancellation', async () => {
