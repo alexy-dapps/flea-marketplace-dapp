@@ -94,7 +94,7 @@ contract SafeRemotePurchase is Ownable {
     }
 
     // Confirm that the buyer received the item from the seller.
-    // This will release the locked ether.
+    // The buyer will receive the locked ether in the amount of the price.
     function buyerConfirmReceived() external onlyBuyer
         inState(State.Locked) returns (bool result)
     {

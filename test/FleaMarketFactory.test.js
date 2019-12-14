@@ -182,7 +182,7 @@ the same already-deployed contract each time.
     })
 
 
-    it('product must have price', async () => {
+    it('should not create product with zero purchase price', async () => {
 
         const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
         const commission = new BN(350);
@@ -195,7 +195,7 @@ the same already-deployed contract each time.
     })
 
 
-    it('product must have the even price', async () => {
+    it('product must have an even price', async () => {
 
         const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
         const commission = new BN(350);
@@ -208,7 +208,7 @@ the same already-deployed contract each time.
     })
 
 
-    it('validate product', async () => {
+    it('create a valid product', async () => {
 
         const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
         const wei = web3.utils.toWei('1.4', 'Ether');
@@ -253,90 +253,115 @@ the same already-deployed contract each time.
     })
 
 
+    it('should purchase and delivery product', async () => {
+
+        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+        //the seller has to put (2x of price)
+        const wei = web3.utils.toWei('1.4', 'Ether');
+        const commission = web3.utils.toBN(350);
+
+        await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+            from: seller,
+            value: wei
+        });
+
+        const address = await factory.getContractByKey(bytes32Key);
+
+        // get instance of the SafeRemotePurchase contract by address
+        const product = await SafeRemotePurchase.at(address);
+  
+        // Buyer makes purchase (put 2x of price)
+        let receipt = await product.buyerPurchase({
+            from: buyer,
+            value: wei
+        }).should.be.fulfilled;
+
+        expectEvent(receipt, 'LogPurchaseConfirmed', {
+            sender: buyer,
+            amount: wei
+        });
+
+        // validate buyer
+        expect(await product.buyer()).to.equal(buyer);
+         
+        // validate state - should be Locked
+        expect(await product.state()).to.be.a.bignumber.that.equal(new BN(1));
+
+        // validate product smart contract ballance
+        // balance has to be 4x price  = (2x from the seller and 2x from the buyer)
+        expect(await product.balanceOf()).to.be.a.bignumber.that.equal((new BN(wei)).mul(new BN(2)));
+    
+    
+    
+    
+        /*     
+        const initialSellerBalance = new BN(
+            await web3.eth.getBalance(seller)
+          );
+
+          //validate the seller balance
+        const price = (new BN(wei)).div(new BN(2));
+        
+        //!!! continue here to aadd the gas price !!!
+        expect(await web3.eth.getBalance(seller)).to.be.a.bignumber.that.equal( initialSellerBalance.sub( price.mul( new BN(2) ) ) );
+
+
+        // Buyer confirm delivery
+       
+        let receipt = await product.buyerPurchase({
+            from: buyer,
+            value: web3.utils.toWei('1.4', 'Ether')
+        })
+
+        expectEvent(receipt, 'LogPurchaseConfirmed', {
+            sender: buyer,
+            amount: web3.utils.toWei('1.4', 'Ether')
+        });
+
+        // validate ballance
+        balanceBN = await product.balanceOf();
+        // balance has to be 0)
+        assert.equal(balanceBN.eq(new BN(0)), true, 'balance is correct');
+
+       
+       
+        //validate the seller balance
+        const newSellerBalanceWei = await web3.eth.getBalance(seller);
+        const newSellerBalanceBN = new BN(newSellerBalanceWei);
+
+        // seller has to get back 3x price
+        const expectedBalanceBN = origSellerBalanceBN.add(priceBN.mul(new BN(3)));
+        assert.equal(newSellerBalanceBN.eq(expectedBalanceBN), true, 'seller balance is correct');
+
+        // validate state
+        state = (await product.state()).toString();
+        assert.equal(state, '2', 'state Inactive is correct');
+
+*/
+
+    })
+
     /*
-            it('product purchase and delivery', async () => {
+       it('product purchase cancellation', async () => {
+           
+       }
     
-                const bytes32Key = web3.utils.fromAscii('sportBikeModelX01');
-                const address = await contractInstance.getContractByKey(bytes32Key);
-                // get instance of the SafeRemotePurchase contract by address
-                const product = await SafeRemotePurchase.at(address);
-    
-                let tx, event, balanceBN, state;
-    
-    
-                // Buyer makes purchase (2x of price)
-                tx = await product.buyerConfirmPurchase({
-                    from: buyer,
-                    value: web3.utils.toWei('1.4', 'Ether')
-                })
-    
-                // Check logs
-                event = tx.logs[0];
-                assert.equal(event.event, 'PurchaseConfirmed', 'event is correct')
-    
-                // validate ballance
-                balanceBN = await product.balanceOf();
-                const priceBN = await product.price();
-                // balance has to be 4x price  = (2x from the seller and 2x from the buyer)
-                assert.equal(balanceBN.eq(priceBN.mul(new BN(4))), true, 'balance is correct');
-    
-                // validate buyer
-                const purchaser = await product.buyer();
-                assert.equal(purchaser, buyer, 'purchaser is correct');
-    
-                // validate state
-                state = (await product.state()).toString();
-                assert.equal(state, '1', 'state Locked is correct');
-    
-    
-                // Buyer confirm delivery
-                const origSellerBalanceWei = await web3.eth.getBalance(seller);
-                const origSellerBalanceBN = new BN(origSellerBalanceWei);
-    
-                tx = await product.buyerConfirmReceived({
-                    from: buyer,
-                })
-    
-                // Check logs
-                event = tx.logs[0];
-                assert.equal(event.event, 'ItemReceived', 'event is correct')
-    
-                // validate ballance
-                balanceBN = await product.balanceOf();
-                // balance has to be 0)
-                assert.equal(balanceBN.eq(new BN(0)), true, 'balance is correct');
-    
-                //validate the seller balance
-                const newSellerBalanceWei = await web3.eth.getBalance(seller);
-                const newSellerBalanceBN = new BN(newSellerBalanceWei);
-    
-                // seller has to get back 3x price
-                const expectedBalanceBN = origSellerBalanceBN.add(priceBN.mul(new BN(3)));
-                assert.equal(newSellerBalanceBN.eq(expectedBalanceBN), true, 'seller balance is correct');
-    
-                // validate state
-                state = (await product.state()).toString();
-                assert.equal(state, '2', 'state Inactive is correct');
-    
-            })
-    
-    
-            it('product purchase failure', async () => {
-    
-                const bytes32Key = web3.utils.fromAscii('sportBikeModelX01');
-                const address = await contractInstance.getContractByKey(bytes32Key);
-                // get instance of the SafeRemotePurchase contract by address
-                const product = await SafeRemotePurchase.at(address);
-    
-    
-                // Buyer tries to buy without enough ether (must be 2x of price)
-                await product.buyerConfirmPurchase({
-                    from: buyer,
-                    value: web3.utils.toWei('1', 'Ether')
-                }).should.be.rejected;
-    
-                //  ... add more later such as the seller can't  buy and so on
-                */
+    it('product purchase failure', async () => {
+   
+               const bytes32Key = web3.utils.fromAscii('sportBikeModelX01');
+               const address = await contractInstance.getContractByKey(bytes32Key);
+               // get instance of the SafeRemotePurchase contract by address
+               const product = await SafeRemotePurchase.at(address);
+   
+   
+               // Buyer tries to buy without enough ether (must be 2x of price)
+               await product.buyerConfirmPurchase({
+                   from: buyer,
+                   value: web3.utils.toWei('1', 'Ether')
+               }).should.be.rejected;
+   
+               //  ... add more later such as the seller can't  buy and so on
+               */
 })
 
 
