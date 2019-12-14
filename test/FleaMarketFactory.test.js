@@ -44,6 +44,17 @@ const { getCurrentTime } = require('./helpers/time');
 const FleaMarketFactory = artifacts.require("../contracts/FleaMarketFactory.sol");
 const SafeRemotePurchase = artifacts.require("../contracts/SafeRemotePurchase.sol");
 
+// custom function to calculate amount of ether spent on the transaction
+// here txInfo is the transaction results
+//based on https://www.trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts#processing-transaction-results
+// and https://ethereum.stackexchange.com/questions/42950/how-to-get-the-transaction-cost-in-a-truffle-unit-test
+async function getGasCoast(txInfo){
+    const tx = await web3.eth.getTransaction(txInfo.tx);
+    const gasCost = (new BN(tx.gasPrice)).mul(new BN(txInfo.receipt.gasUsed));
+
+    return gasCost;
+}
+
 contract("FleaMarketFactory", accounts => {
 
     let [deployer, seller, buyer] = accounts;
@@ -269,31 +280,61 @@ the same already-deployed contract each time.
 
         // get instance of the SafeRemotePurchase contract by address
         const product = await SafeRemotePurchase.at(address);
-  
+
         // Buyer makes purchase (put 2x of price)
-        let receipt = await product.buyerPurchase({
+        let txInfo  = await product.buyerPurchase({
             from: buyer,
             value: wei
         }).should.be.fulfilled;
 
-        expectEvent(receipt, 'LogPurchaseConfirmed', {
+        expectEvent(txInfo, 'LogPurchaseConfirmed', {
             sender: buyer,
             amount: wei
         });
 
         // validate buyer
         expect(await product.buyer()).to.equal(buyer);
-         
+
         // validate state - should be Locked
         expect(await product.state()).to.be.a.bignumber.that.equal(new BN(1));
 
-        // validate product smart contract ballance
+        // validate smart contract ballance
         // balance has to be 4x price  = (2x from the seller and 2x from the buyer)
         expect(await product.balanceOf()).to.be.a.bignumber.that.equal((new BN(wei)).mul(new BN(2)));
+
+        // Buyer confirm delivery
+        const buyerBalanceBefore = new BN(
+            await web3.eth.getBalance(buyer)
+          );
+        
+        const price = (new BN(wei)).div(new BN(2));
+        txInfo  = await product.buyerConfirmReceived({
+            from: buyer
+        }).should.be.fulfilled;
+       
+        expectEvent(txInfo, 'LogReceivedByBuyer', {
+            sender: buyer,
+            amount: price
+        });
+
+        const buyerBalanceAfter = new BN(
+            await web3.eth.getBalance(buyer)
+          );
+
+        // calculate amount money the buyer spend on the transaction
+        const gasCost = await getGasCoast(txInfo);
+
+        expect(buyerBalanceAfter).to.be.a.bignumber.that.equal(buyerBalanceBefore.add(price).sub(gasCost) );
+ 
+        // validate state - should be BuyerPaid
+        expect(await product.state()).to.be.a.bignumber.that.equal(new BN(3));
+
+        // validate smart contract ballance
+        // balance has to be 3x price  = (1x went back to the buyer)
+        expect(await product.balanceOf()).to.be.a.bignumber.that.equal(price.mul(new BN(3)));
+
     
-    
-    
-    
+       
         /*     
         const initialSellerBalance = new BN(
             await web3.eth.getBalance(seller)
@@ -306,17 +347,6 @@ the same already-deployed contract each time.
         expect(await web3.eth.getBalance(seller)).to.be.a.bignumber.that.equal( initialSellerBalance.sub( price.mul( new BN(2) ) ) );
 
 
-        // Buyer confirm delivery
-       
-        let receipt = await product.buyerPurchase({
-            from: buyer,
-            value: web3.utils.toWei('1.4', 'Ether')
-        })
-
-        expectEvent(receipt, 'LogPurchaseConfirmed', {
-            sender: buyer,
-            amount: web3.utils.toWei('1.4', 'Ether')
-        });
 
         // validate ballance
         balanceBN = await product.balanceOf();
