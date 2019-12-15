@@ -165,7 +165,7 @@ contract SafeRemotePurchase is Ownable {
                 uint256 amount = balanceOf();
                    
                 state = State.Completed;
-                seller.transfer(amount);
+                owner().transfer(amount);
 
                 emit LogWithdrawByOwner(msg.sender, amount, key);    
                 return true;
