@@ -1,6 +1,6 @@
 
 
-pragma solidity ^0.5.11;
+pragma solidity >=0.4.22 <0.7.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol"; // for Remix
