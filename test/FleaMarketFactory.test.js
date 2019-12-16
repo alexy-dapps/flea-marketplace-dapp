@@ -505,8 +505,6 @@ the same already-deployed contract each time.
             // balance has to be zero
             expect(await product.balanceOf()).to.be.a.bignumber.that.equal(new BN(0));
 
-
-
         })
 
 
