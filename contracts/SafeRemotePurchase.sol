@@ -194,5 +194,10 @@ contract SafeRemotePurchase is Ownable {
         return address(this).balance;
     }
 
+    // Prevents accidental sending of ether to the contract
+    function () external {
+        revert("No Ether excepted");
+    }
+
    
 }

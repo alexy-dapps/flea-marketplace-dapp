@@ -57,7 +57,7 @@ async function getGasCoast(txInfo) {
 
 contract("FleaMarketFactory", accounts => {
 
-    const [deployer, seller, buyer] = accounts;
+    const [deployer, seller, buyer, buddy] = accounts;
     const IPFS_HASH = "QmdXUfpqeGQyvJ6xVouPLR65XtNp63TUHM937zPvg9dFrT";
 
     // display three test accounts
@@ -305,7 +305,7 @@ the same already-deployed contract each time.
 
             expectEvent(txInfo, 'LogPurchaseConfirmed', {
                 sender: buyer,
-                amount: wei
+                amount: wei   //could be an instance of BN or string
             });
 
             // validate buyer
@@ -330,7 +330,7 @@ the same already-deployed contract each time.
 
             expectEvent(txInfo, 'LogReceivedByBuyer', {
                 sender: buyer,
-                amount: price
+                amount: price   // could be an instance of BN or string
             });
 
             const buyerBalanceAfter = new BN(
@@ -507,10 +507,130 @@ the same already-deployed contract each time.
 
         })
 
+        it('the seller should be able to cancel a purchase contract and reclaim the escrow', async () => {
+
+            const sellerBalanceBefore = new BN(
+                await web3.eth.getBalance(seller)
+            );
+
+            txInfo = await product.abortBySeller({
+                from: seller
+            }).should.be.fulfilled;
+
+            expectEvent(txInfo, 'LogCanceledBySeller', {
+                sender: seller,
+                amount: wei
+            });
+
+            const sellerBalanceAfter = new BN(
+                await web3.eth.getBalance(seller)
+            );
+
+            // calculate amount money the seller spend on the transaction
+            const gasCost = await getGasCoast(txInfo);
+
+            // validate that the seller gets his escrow money back
+            expect(sellerBalanceAfter).to.be.a.bignumber.that.equal(sellerBalanceBefore.add(new BN(wei)).sub(gasCost));
+
+            // validate state - should be Canceled
+            expect(await product.state()).to.be.a.bignumber.that.equal(new BN(2));
+
+            // validate smart contract ballance - has to be 0
+            expect(await product.balanceOf()).to.be.a.bignumber.that.equal(new BN(0));
+
+        })
 
 
+    })
 
 
+    describe('some failure scenarios in purchase the product', async () => {
+
+        let product;
+
+        const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
+        const wei = web3.utils.toWei('1.4', 'Ether');
+        const commission = web3.utils.toBN(350);
+
+        beforeEach(async () => {
+            const time = await getCurrentTime();
+            console.log(`current time: ${time}`);
+
+            const factory = await FleaMarketFactory.new();
+
+            await factory.createPurchaseContract(bytes32Key, 'Tesla Cybertruck', IPFS_HASH, commission, {
+                from: seller,
+                value: wei
+            }).should.be.fulfilled;
+
+            const address = await factory.getContractByKey(bytes32Key);
+            //assert.notEqual(address, 0x0);
+            address.should.not.equal(0x0);
+
+
+            // get instance of the SafeRemotePurchase contract by address
+            product = await SafeRemotePurchase.at(address);
+
+        });
+
+        it('the seller should not be able to cancel a purchase contract in the state other then Created', async () => {
+
+            // Buyer makes purchase (put 2x of price)
+            await product.buyerPurchase({
+                from: buyer,
+                value: wei
+            })
+
+            // the seller is trying to Abort contract - should be rejected
+            await product.abortBySeller({
+                from: seller
+            }).should.be.rejected;
+
+        })
+
+        it('the buyer is trying to purchase the product with not enough ether', async () => {
+
+            // Buyer makes purchase (must deposit 2x of price)
+            await product.buyerPurchase({
+                from: buyer,
+                value: web3.utils.toWei('1', 'Ether')
+            }).should.be.rejected;
+
+        })
+
+        it('someone else is trying to withdraw money after the buyer confirms the delivery', async () => {
+
+            // Buyer makes purchase (put 2x of price)
+            await product.buyerPurchase({
+                from: buyer,
+                value: wei
+            })
+            // buyer confirm delivery
+            await product.buyerConfirmReceived({
+                from: buyer
+            });
+
+            // request to withdraw came from the wrong account
+            await product.withdrawBySeller({
+                from: buddy
+            }).should.be.rejected;
+
+        })
+
+        it('should reject if someone accidentally deposit money to the purchase contract', async () => {
+
+            await web3.eth.sendTransaction({ from: buddy, to: product.address, value: web3.utils.toWei('0.005', "ether") }).should.be.rejected;
+
+        })
+
+        it('should reject if someone accidentally deposit money to the purchase contract', async () => {
+
+            // notice, we can not provide a contract type address in the 'from' parameter
+            //otherwise someone would able to withdraw money from the contract
+            //If we try we get the error =>  'Error: Returned error: sender account not recognized'
+            await web3.eth.sendTransaction({ from: product.address, to: buddy, value: web3.utils.toWei('0.00005', "ether") }).should.be.rejected;
+
+        })
 
 
     })
@@ -518,29 +638,6 @@ the same already-deployed contract each time.
 
 
 
-
-
-    /*
-       it('product purchase cancellation', async () => {
-           
-       }
-    
-    it('product purchase failure', async () => {
-   
-               const bytes32Key = web3.utils.fromAscii('sportBikeModelX01');
-               const address = await contractInstance.getContractByKey(bytes32Key);
-               // get instance of the SafeRemotePurchase contract by address
-               const product = await SafeRemotePurchase.at(address);
-   
-   
-               // Buyer tries to buy without enough ether (must be 2x of price)
-               await product.buyerConfirmPurchase({
-                   from: buyer,
-                   value: web3.utils.toWei('1', 'Ether')
-               }).should.be.rejected;
-   
-               //  ... add more later such as the seller can't  buy and so on
-               */
 })
 
 
