@@ -1,5 +1,5 @@
 
-pragma solidity >=0.4.22 <0.7.0;
+pragma solidity >= 0.4.22 < 0.7.0;
 
 /*
  - Functions can be specified as being external, public, internal or private, where the default is public. 
@@ -20,15 +20,15 @@ import "./Ownable.sol";
 contract FleaMarketFactory is Ownable {
 
     using HitchensUnorderedKeySetLib for HitchensUnorderedKeySetLib.Set;
-    HitchensUnorderedKeySetLib.Set private widgetSet;
+        HitchensUnorderedKeySetLib.Set private widgetSet;
 
-   	string public contractName;
-   
+    string public contractName;
+
     struct WidgetStruct {
         // pointer on the child contract
         address purchaseContract;
     }
-    
+
     mapping(bytes32 => WidgetStruct) private widgets;
 
     constructor() public {
@@ -37,15 +37,15 @@ contract FleaMarketFactory is Ownable {
 
     event LogCreatePurchaseContract(address sender, bytes32 key);
     event LogRemovePurchaseContract(address sender, bytes32 key);
-    
 
-	// deploy a new purchase contract
-	// payable for functions: Allows them to receive Ether together with a call.
-	// commissionRate, for example, 350 ==>  (350/100) = 3.5%
+
+    // deploy a new purchase contract
+    // payable for functions: Allows them to receive Ether together with a call.
+    // commissionRate, for example, 350 ==>  (350/100) = 3.5%
     function createPurchaseContract(bytes32 key, string calldata description, string calldata ipfsImageHash,
         uint256 commissionRate) external payable returns(bool createResult) {
 
-	    widgetSet.insert(key); // Note that this will fail automatically if the key already exists.
+        widgetSet.insert(key); // Note that this will fail automatically if the key already exists.
         WidgetStruct storage wgt = widgets[key];
 		/*
 		  When a new contract is created with the 'new' keyword, for example 
@@ -56,54 +56,55 @@ contract FleaMarketFactory is Ownable {
           In Solidity contracts are directly convertible to addresses. 
           The newer compiler wants to see that explicitly, like return address(token);
 		*/
-		
-	    // msg.sender would be the seller
-		SafeRemotePurchase c =  
+
+        // msg.sender would be the seller
+        SafeRemotePurchase c =
             (new SafeRemotePurchase).value(msg.value)(commissionRate, msg.sender, key, description, ipfsImageHash);
-		
-		     
+
+
         /*
         !!! Important notice. 
-        When a new children contract is created the msg.sender value is the address of the parent contract.
+        When a new children contract is created the msg.sender value passed to the Ownable 
+        is the address of the parent contract.
         So we need to tell the child contract who is the contract manager
         */
-        c.transferOwnership(owner());  
-		
-		
-		// cast contract pointer to address
+        c.transferOwnership(owner());
+
+
+        // cast contract pointer to address
         address newContract = address(c);
-	    wgt.purchaseContract = newContract;
-	    
-		emit LogCreatePurchaseContract(msg.sender, key);
-	    
-	    return true;
-	}
-	
+        wgt.purchaseContract = newContract;
+
+        emit LogCreatePurchaseContract(msg.sender, key);
+
+        return true;
+    }
+
     function getContractCount() public view returns(uint contractCount) {
         return widgetSet.count();
     }
-	
-	function getContractKeyAtIndex(uint index) external view returns(bytes32 key) {
+
+    function getContractKeyAtIndex(uint index) external view returns(bytes32 key) {
         return widgetSet.keyAtIndex(index);
     }
 
     function getContractByKey(bytes32 key) external view returns(address contractAddress) {
         require(widgetSet.exists(key), "Can't get a widget that doesn't exist.");
         WidgetStruct storage w = widgets[key];
-        return(w.purchaseContract);
-    } 
+        return (w.purchaseContract);
+    }
 
-    function removeContractByKey(bytes32 key) external onlyOwner returns (bool result) {
+    function removeContractByKey(bytes32 key) external onlyOwner returns(bool result) {
         // Note that this will fail automatically if the key doesn't exist
-        widgetSet.remove(key); 
+        widgetSet.remove(key);
         delete widgets[key];
         emit LogRemovePurchaseContract(msg.sender, key);
         return true;
     }
-    
+
     // Prevents accidental sending of ether to the contract
     function () external {
         revert("No Ether excepted");
     }
-    
+
 }
