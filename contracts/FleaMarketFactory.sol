@@ -102,9 +102,4 @@ contract FleaMarketFactory is Ownable {
         return true;
     }
 
-    // Prevents accidental sending of ether to the contract
-    function () external {
-        revert("No Ether excepted");
-    }
-
 }

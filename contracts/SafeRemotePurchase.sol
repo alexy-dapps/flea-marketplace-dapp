@@ -1,4 +1,8 @@
 
+/** 
+based on 
+1. https://solidity.readthedocs.io/en/v0.5.14/solidity-by-example.html
+*/
 
 pragma solidity >=0.4.22 <0.7.0;
 
@@ -6,8 +10,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol"; // for Remix
 import "./Ownable.sol";
 
-
-// based on https://solidity.readthedocs.io/en/latest/solidity-by-example.html
 contract SafeRemotePurchase is Ownable {
     
     using SafeMath for uint256;
@@ -53,7 +55,7 @@ contract SafeRemotePurchase is Ownable {
     }
 
     modifier condition(bool _condition) {
-        require(_condition, "Condition is false");
+        require(_condition, "Condition is not valid.");
         _;
     }
 
@@ -80,16 +82,15 @@ contract SafeRemotePurchase is Ownable {
 
     // Confirm the purchase as buyer.
     // Transaction has to include `2 * value` ether.
-    // The ether will be locked until confirmReceived
-    // is called.
+    // The ether will be locked until buyerConfirmReceived is called
     function buyerPurchase() external inState(State.Created)
         condition(msg.value == price.mul(2))
         payable returns (bool result)
     {
+        emit LogPurchaseConfirmed(msg.sender, msg.value, key);
         buyer = msg.sender;
         state = State.Locked;
-        
-        emit LogPurchaseConfirmed(msg.sender, msg.value, key);
+
         return true;
     }
 
@@ -97,26 +98,31 @@ contract SafeRemotePurchase is Ownable {
     // The buyer will receive the locked ether in the amount of the price.
     function buyerConfirmReceived() external onlyBuyer
         inState(State.Locked) returns (bool result)
-    {
+    { 
+        emit LogReceivedByBuyer(msg.sender, price, key);
         state = State.BuyerPaid;
         buyer.transfer(price);
 
-        emit LogReceivedByBuyer(msg.sender, price, key);
         return true;
     }
     
-    // The seller has changed his mind and does not want to sell the item
-    // Cancel the purchase contract and reclaim the ether.
-    // Can only be called by the seller if the contract is Created
+    /// Abort the purchase and reclaim the ether.
+    /// Can only be called by the seller before
+    /// the contract is locked.
     function abortBySeller() external onlySeller
         inState(State.Created) returns (bool result)
     {
+       
         uint256 amount = balanceOf();
-        
-        state = State.Canceled;
-        seller.transfer(amount);
-
+        state = State.Canceled; 
         emit LogCanceledBySeller(msg.sender, amount, key);
+
+        // We use transfer here directly. It is
+        // reentrancy-safe, because it is the
+        // last call in this function and we
+        // already changed the state.
+        seller.transfer(amount);
+        
         return true;
     }
     
@@ -128,10 +134,10 @@ contract SafeRemotePurchase is Ownable {
                 
                 uint256 amount = balanceOf();
                 
+                emit LogWithdrawBySeller(msg.sender, amount, key);     
                 state = State.Completed;
                 seller.transfer(amount);
 
-                emit LogWithdrawBySeller(msg.sender, amount, key);     
                 return true;
                 
             } else if (state == State.BuyerPaid) {
@@ -142,10 +148,10 @@ contract SafeRemotePurchase is Ownable {
                 // subtracts commission part: 3.5% ==> 350 /100
                 uint256 amount = (price.mul(3)).sub(commission);
                  
+                emit LogWithdrawBySeller(msg.sender, amount, key); 
                 state = State.SellerPaid;
                 seller.transfer(amount);
-            
-                emit LogWithdrawBySeller(msg.sender, amount, key); 
+
                 return true;
     
             } else {
@@ -164,10 +170,10 @@ contract SafeRemotePurchase is Ownable {
                 
                 uint256 amount = balanceOf();
                    
+                 emit LogWithdrawByOwner(msg.sender, amount, key);  
                 state = State.Completed;
                 owner().transfer(amount);
 
-                emit LogWithdrawByOwner(msg.sender, amount, key);    
                 return true;
                 
             } else if (state == State.BuyerPaid) {
@@ -175,10 +181,10 @@ contract SafeRemotePurchase is Ownable {
                 //calculate commission part: 3.5% ==> 350 /100
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);
                   
+                emit LogWithdrawByOwner(msg.sender, commission, key);
                 state = State.OwnerPaid;
                 owner().transfer(commission);
-                
-                emit LogWithdrawByOwner(msg.sender, commission, key);
+               
                 return true;
     
             } else {
