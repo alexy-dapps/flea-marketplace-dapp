@@ -14,12 +14,12 @@ contract SafeRemotePurchase is Ownable {
     
     using SafeMath for uint256;
     
-    uint256 private _commissionRate;  //for example, 350 ==>  (350/100) = 3.5%
+    uint256 private _commissionRate;  // for example, 350 ==>  (350/100) = 3.5%
     
     address payable public seller;
     address payable public buyer;
     uint256 public price;
-    bytes32 public key;  //unique string identifier
+    bytes32 public key;  // unique string identifier
     string public description;
     string public ipfsImageHash;
     
@@ -106,9 +106,9 @@ contract SafeRemotePurchase is Ownable {
         return true;
     }
     
-    /// Abort the purchase and reclaim the ether.
-    /// Can only be called by the seller before
-    /// the contract is locked.
+    // Abort the purchase and reclaim the ether.
+    // Can only be called by the seller before
+    // the contract is locked.
     function abortBySeller() external onlySeller
         inState(State.Created) returns (bool result)
     {
@@ -142,7 +142,7 @@ contract SafeRemotePurchase is Ownable {
                 
             } else if (state == State.BuyerPaid) {
                 
-                //calculate commission part
+                // calculate commission part
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);
                 
                 // subtracts commission part: 3.5% ==> 350 /100
@@ -178,7 +178,7 @@ contract SafeRemotePurchase is Ownable {
                 
             } else if (state == State.BuyerPaid) {
                 
-                //calculate commission part: 3.5% ==> 350 /100
+                // calculate commission part: 3.5% ==> 350 /100
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);
                   
                 emit LogWithdrawByOwner(msg.sender, commission, key);
@@ -195,7 +195,7 @@ contract SafeRemotePurchase is Ownable {
         }
 
 
-    //get balance of the contract
+    // Get balance of the contract
     function balanceOf() public view returns(uint) {
         return address(this).balance;
     }
