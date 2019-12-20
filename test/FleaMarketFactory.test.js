@@ -80,7 +80,7 @@ In this case, new is the only option as deployed() simply retrieves
 the same already-deployed contract each time.
    */
 
-    describe('deployment of FleaMarketFactory', async () => {
+    describe('deployment of FleaMarketFactory contract', async () => {
 
         let factory;
         before(async () => {
@@ -116,7 +116,7 @@ the same already-deployed contract each time.
 
     })
 
-    describe('creating a new instance of the SafeRemotePurchase', async () => {
+    describe('creating a new instance of SafeRemotePurchase contract', async () => {
 
         let factory;
 
@@ -210,7 +210,7 @@ the same already-deployed contract each time.
         })
 
 
-        it('should not create product with zero purchase price', async () => {
+        it('should not able to create a product with zero purchase price', async () => {
 
             const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
             const commission = new BN(350);
@@ -223,7 +223,7 @@ the same already-deployed contract each time.
         })
 
 
-        it('should not create a product with not even price', async () => {
+        it('should not able to create a product having not even price', async () => {
 
             const bytes32Key = web3.utils.utf8ToHex('teslaCybertruck-X01');
             const commission = new BN(350);
@@ -544,7 +544,7 @@ the same already-deployed contract each time.
     })
 
 
-    describe('some failure scenarios in purchase the product', async () => {
+    describe('some failure scenarios', async () => {
 
         let product;
 
@@ -588,7 +588,7 @@ the same already-deployed contract each time.
 
         })
 
-        it('the buyer is trying to purchase the product with not enough ether', async () => {
+        it('the buyer is trying to purchase a product with not enough ether', async () => {
 
             // Buyer makes purchase (must deposit 2x of price)
             await product.buyerPurchase({
@@ -617,17 +617,17 @@ the same already-deployed contract each time.
 
         })
 
-        it('should reject if someone accidentally deposit money to the purchase contract', async () => {
+        it('should reject if someone send ether to a purchase contract', async () => {
 
             await web3.eth.sendTransaction({ from: buddy, to: product.address, value: web3.utils.toWei('0.005', "ether") }).should.be.rejected;
 
         })
 
-        it('should reject if someone accidentally deposit money to the purchase contract', async () => {
+        it('should reject if someone try to withdraw ether from a purchase contract', async () => {
 
             // notice, we can not provide a contract type address in the 'from' parameter
             //otherwise someone would able to withdraw money from the contract
-            //If we try we get the error =>  'Error: Returned error: sender account not recognized'
+            //If we do, we get the error =>  'Error: Returned error: sender account not recognized'
             await web3.eth.sendTransaction({ from: product.address, to: buddy, value: web3.utils.toWei('0.00005', "ether") }).should.be.rejected;
 
         })
