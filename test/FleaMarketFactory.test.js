@@ -544,7 +544,7 @@ the same already-deployed contract each time.
     })
 
 
-    describe('some failure scenarios', async () => {
+    describe('some failure cases', async () => {
 
         let product;
 
