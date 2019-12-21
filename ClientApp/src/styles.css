@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.text-center {
+    text-align: center !important;
+  }
+
+.context-container {
+  margin: 16px;
+}
+
+.primary-color {
+  color: #7b1fa2!important;
+}
+
+.accent-color {
+  color: #69f0ae!important
+}
+
+.white-text{
+  color: #ffffff!important
+}
+
+.yellow-color {
+  color: #ff5722 !important
+}
+
+.red-color {
+  color: #f44336 !important
+}
+
+.blue-color {
+  /*color: #3f51b5 !important*/
+  color: #1976d2 !important
+}
+
+.gray-color {
+  color: #999999 !important
+}
