@@ -1,0 +1,14 @@
+
+<mat-card>
+    <mat-card-subtitle>SnackBar Message</mat-card-subtitle>
+    <mat-card-content>
+        <p [ngClass]="{
+            'accent-color': data.color == 'accent',
+            'primary-color': data.color == 'primary',
+            'red-color': data.color == 'warn'
+            }">
+            {{data.message}}
+        </p>
+    </mat-card-content>
+
+</mat-card>

@@ -1,0 +1,44 @@
+<div class="app-container">
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+      <mat-toolbar>Menu</mat-toolbar>
+      <mat-nav-list>
+
+        <h3 matSubheader class='margin-top-bottom--12'>
+          <a [routerLink]="nav['home'].link" routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: nav['home'].exact }">
+            <img src="{{nav['home'].img_src}}">{{nav['home'].name}}
+          </a>
+        </h3>
+        <mat-divider></mat-divider>
+
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+
+      <mat-toolbar color="primary">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+
+        <span fxLayout="row" fxLayoutAlign="start center">
+          <img src="./assets/img/ether-32.png">
+          FleaMarket Escrow DApp
+        </span>
+
+        <span class="toolbar-fill-remaining-space">
+        </span>
+
+
+      </mat-toolbar>
+
+
+      <router-outlet></router-outlet>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+</div>

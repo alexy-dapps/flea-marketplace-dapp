@@ -1,0 +1,6 @@
+﻿
+/* trying to kill .mat-snack-bar-container padding(14px 24px) */ 
+.mat-card {
+    margin: -14px -24px;
+    border: 2px solid white
+}

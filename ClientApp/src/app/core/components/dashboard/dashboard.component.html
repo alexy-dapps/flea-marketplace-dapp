@@ -1,0 +1,40 @@
+<div class="context-container">
+
+  <mat-grid-list cols="1" rowHeight="350px">
+    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
+      <mat-card class="dashboard-card">
+    
+        <mat-card-title class="text-center">
+          {{card.title}}
+        </mat-card-title>
+   
+
+        <mat-card-content class="text-center">
+          <div>Front-end user interface to FleaMarket Escrow Smart Contract</div>
+        </mat-card-content>
+        <mat-card-content fxLayout="row" fxLayoutAlign="space-around start">
+          
+            <img src="./assets/img/seller-256.png" @dropPoke>
+
+            <img src="./assets/img/premium-128.png" class='margin-top-58' @shakeHands>
+        
+            <img src="./assets/img/buyer-256.png" @dropPoke>
+        
+        </mat-card-content>
+
+        <mat-card-footer fxLayout="row" fxLayoutAlign="space-around start">
+
+            <div class="mat-body-1">Seller</div>
+            
+            <div></div>
+      
+            <div class="mat-body-1">Buyer</div>   
+
+        </mat-card-footer>
+
+      </mat-card>
+
+    </mat-grid-tile>
+  </mat-grid-list>
+
+</div>

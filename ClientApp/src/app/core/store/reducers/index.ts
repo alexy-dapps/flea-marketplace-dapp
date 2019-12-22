@@ -1,0 +1,58 @@
+
+import { ActionReducerMap, ActionReducer, MetaReducer } from '@ngrx/store';
+import { InjectionToken } from '@angular/core';
+import * as fromRouter from '@ngrx/router-store';
+import { createFeatureSelector, createSelector, Action } from '@ngrx/store';
+
+import { environment } from '../../../../environments/environment';
+
+
+// nice moment here
+// here is our root state, which also includes the route state
+export interface AppState {
+  router: fromRouter.RouterReducerState<any>;
+
+}
+
+
+/**
+ * Our state is composed of a map of action reducer functions.
+ * These reducer functions are called with each dispatched action
+ * and the current or initial state and return a new immutable state.
+ */
+export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<AppState, Action>>('Root reducers token', {
+  factory: () => ({
+    router: fromRouter.routerReducer,
+
+  }),
+});
+
+// console.log all actions
+export function logger(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
+  return (state, action) => {
+    const result = reducer(state, action);
+    console.groupCollapsed(action.type);
+    console.log('prev state', state);
+    console.log('action', action);
+    console.log('next state', result);
+    console.groupEnd();
+
+    return result;
+  };
+}
+
+export const metaReducers: MetaReducer<AppState>[] = !environment.production
+  ? [logger]
+  : [];
+
+export const selectRouterState = createFeatureSelector<AppState,
+  fromRouter.RouterReducerState<any>>('router');
+
+export const {
+  selectQueryParams,    // select the current route query params
+  selectRouteParams,    // select the current route params
+  selectRouteData,      // select the current route data
+  selectUrl,            // select the current url
+} = fromRouter.getSelectors(selectRouterState);
+
+

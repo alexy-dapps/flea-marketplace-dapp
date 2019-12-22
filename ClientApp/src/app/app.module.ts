@@ -3,38 +3,74 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavComponent } from './nav/nav.component';
-import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatCardModule } from '@angular/material/card';
-import { MatMenuModule } from '@angular/material/menu';
+import { HttpClientModule } from '@angular/common/http';
+
+import { CoreModule } from './core/core.module';
+
+// NgRx
+import { ROOT_REDUCERS, metaReducers } from './core/store/reducers';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
+
+import { environment } from '../environments/environment'; // Angular CLI environment
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent,
-    DashboardComponent
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule
+    HttpClientModule,
+
+    /**
+     * StoreModule.forRoot is imported once in the root module, accepting a reducer
+     * function or object map of reducer functions. If passed an object of
+     * reducers, combineReducers will be run creating your application
+     * meta-reducer. This returns all providers for an @ngrx/store
+     * based application.
+     */
+    StoreModule.forRoot(ROOT_REDUCERS, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+        strictStateSerializability: false,
+        strictActionSerializability: false,
+      },
+    }),
+
+    // @ngrx/router-store keeps router state up-to-date in the store.
+    StoreRouterConnectingModule.forRoot({
+      stateKey: 'router',
+      routerState: RouterState.Minimal, }),
+
+    /**
+     * Store devtools instrument the store retaining past versions of state
+     * and recalculating new states. This enables powerful time-travel
+     * debugging.
+     *
+     * To use the debugger, install the Redux Devtools extension for either
+     * Chrome or Firefox
+     *
+     * See: https://github.com/zalmoxisus/redux-devtools-extension
+     */
+    // Instrumentation must be imported after importing StoreModule (config is optional)
+    StoreDevtoolsModule.instrument({
+        name: 'FleaMarket DApp Store State',
+        // In a production build you would want to disable the Store Devtools
+        // logOnly: environment.production,
+      }),
+
+
+    CoreModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
