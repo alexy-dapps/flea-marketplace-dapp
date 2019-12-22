@@ -1,8 +1,14 @@
 
-import { ActionReducerMap, ActionReducer, MetaReducer } from '@ngrx/store';
+import {
+  createSelector,
+  createFeatureSelector,
+  ActionReducer,
+  MetaReducer,
+  Action,
+  ActionReducerMap,
+} from '@ngrx/store';
 import { InjectionToken } from '@angular/core';
 import * as fromRouter from '@ngrx/router-store';
-import { createFeatureSelector, createSelector, Action } from '@ngrx/store';
 
 import { environment } from '../../../../environments/environment';
 
@@ -20,7 +26,8 @@ export interface AppState {
  * These reducer functions are called with each dispatched action
  * and the current or initial state and return a new immutable state.
  */
-export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<AppState, Action>>('Root reducers token', {
+export const ROOT_REDUCERS =
+  new InjectionToken<ActionReducerMap<AppState, Action>>('Root reducers token', {
   factory: () => ({
     router: fromRouter.routerReducer,
 
@@ -41,6 +48,11 @@ export function logger(reducer: ActionReducer<AppState>): ActionReducer<AppState
   };
 }
 
+/**
+ * By default, @ngrx/store uses combineReducers with the reducer map to compose
+ * the root meta-reducer. To add more meta-reducers, provide an array of meta-reducers
+ * that will be composed to form the root meta-reducer.
+ */
 export const metaReducers: MetaReducer<AppState>[] = !environment.production
   ? [logger]
   : [];

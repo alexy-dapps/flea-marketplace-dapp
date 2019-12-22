@@ -7,8 +7,8 @@ import { MaterialModule, FlexLayoutModule, AngularCdkModule } from '../shared';
 import { NavComponent } from './components/nav/nav.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SnackBarComponent } from './components/snackbar/snack-bar.component';
-import { NotFoundPageComponent} from './containers/not-found-page.component';
-import { ConfirmDialogComponent} from './components/confirm-dialog/confirm-dialog.component';
+import { NotFoundPageComponent } from './containers/not-found-page.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 export const COMPONENTS = [
   NavComponent,
@@ -26,12 +26,19 @@ export const COMPONENTS = [
     MaterialModule,
     FlexLayoutModule,
     AngularCdkModule,
-],
+  ],
   declarations: COMPONENTS,
   exports: COMPONENTS,
+
+  /**
+   * An entry component is any component that Angular loads imperatively,
+   *  (which means you’re not referencing it in the template)
+   * In out case these components will be use in the effects, so they are have to be declared
+   * as entry components
+   */
   entryComponents: [
     SnackBarComponent,
     ConfirmDialogComponent
-],
+  ],
 })
-export class CoreModule {}
+export class CoreModule { }
