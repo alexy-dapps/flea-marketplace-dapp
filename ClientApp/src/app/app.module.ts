@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 
 // NgRx
+import * as fromRootStore from './core/store';
 import { ROOT_REDUCERS, metaReducers } from './core/store/reducers';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -69,7 +70,7 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
         // logOnly: environment.production,
       }),
 
-
+    EffectsModule.forRoot(fromRootStore.effects),
     CoreModule,
   ],
   providers: [],

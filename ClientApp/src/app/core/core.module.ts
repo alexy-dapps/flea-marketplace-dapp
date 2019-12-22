@@ -6,6 +6,7 @@ import { MaterialModule, FlexLayoutModule, AngularCdkModule } from '../shared';
 
 import { NavComponent } from './components/nav/nav.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LoaderComponent} from './components/loader/loader.component';
 import { SnackBarComponent } from './components/snackbar/snack-bar.component';
 import { NotFoundPageComponent } from './containers/not-found-page.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
@@ -14,6 +15,7 @@ export const COMPONENTS = [
   NavComponent,
   NotFoundPageComponent,
   DashboardComponent,
+  LoaderComponent,
   SnackBarComponent,
   ConfirmDialogComponent
 

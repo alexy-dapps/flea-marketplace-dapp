@@ -11,12 +11,16 @@ import { InjectionToken } from '@angular/core';
 import * as fromRouter from '@ngrx/router-store';
 
 import { environment } from '../../../../environments/environment';
+import * as fromSpinner from './spinner.reducer';
+import * as fromError from './error.reducer';
 
 
 // nice moment here
 // here is our root state, which also includes the route state
 export interface AppState {
   router: fromRouter.RouterReducerState<any>;
+  spinner: fromSpinner.SpinnerState;
+  error: fromError.ErrorState;
 
 }
 
@@ -30,6 +34,8 @@ export const ROOT_REDUCERS =
   new InjectionToken<ActionReducerMap<AppState, Action>>('Root reducers token', {
   factory: () => ({
     router: fromRouter.routerReducer,
+    spinner: fromSpinner.reducer,
+    error: fromError.reducer,
 
   }),
 });
@@ -68,3 +74,20 @@ export const {
 } = fromRouter.getSelectors(selectRouterState);
 
 
+export const selectSpinnerState = createFeatureSelector<AppState, fromSpinner.SpinnerState>(
+  'spinner'
+);
+export const getSpinnerShow = createSelector(
+  selectSpinnerState,
+  fromSpinner.getSpinnerShow
+);
+
+
+export const selectErrorState = createFeatureSelector<AppState, fromError.ErrorState>(
+  'error'
+);
+
+export const getError = createSelector(
+  selectErrorState,
+  fromError.getError
+);
