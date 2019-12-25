@@ -29,7 +29,7 @@ export class ErrorEffects {
 
             return SnackBarActions.open({payload: msg});
           } )
-        ),
+        )
 
     );
 

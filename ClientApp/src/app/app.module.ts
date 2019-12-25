@@ -34,9 +34,7 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
     /**
      * StoreModule.forRoot is imported once in the root module, accepting a reducer
      * function or object map of reducer functions. If passed an object of
-     * reducers, combineReducers will be run creating your application
-     * meta-reducer. This returns all providers for an @ngrx/store
-     * based application.
+     * reducers
      */
     StoreModule.forRoot(ROOT_REDUCERS, {
       metaReducers,
@@ -70,6 +68,13 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
         // logOnly: environment.production,
       }),
 
+    /**
+     * EffectsModule.forRoot() is imported once in the root module and
+     * sets up the effects class to be initialized immediately when the
+     * application starts.
+     *
+     * See: https://ngrx.io/guide/effects#registering-root-effects
+     */
     EffectsModule.forRoot(fromRootStore.effects),
     CoreModule,
   ],
