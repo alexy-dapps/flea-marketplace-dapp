@@ -1,45 +1,99 @@
 <div class="app-container">
-
+  
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <mat-sidenav
+      #drawer
+      class="sidenav"
+      fixedInViewport="true"
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false"
+    >
       <mat-toolbar>Menu</mat-toolbar>
       <mat-nav-list>
-
+        
         <h3 matSubheader class='margin-top-bottom--12'>
           <a [routerLink]="nav['home'].link" routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: nav['home'].exact }">
+            [routerLinkActiveOptions]="{ exact: nav['home'].exact }"> 
             <img src="{{nav['home'].img_src}}">{{nav['home'].name}}
           </a>
         </h3>
         <mat-divider></mat-divider>
 
+        <h3 matSubheader class='margin-top-bottom--12'>
+           <img src="{{nav['marketplace'].img_src}}">{{nav['marketplace'].name}}
+        </h3>
+        <mat-list-item>
+          <a [routerLink]="nav['marketplace_all_products'].link" routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: nav['marketplace_all_products'].exact }"> 
+              <img src="{{nav['marketplace_all_products'].img_src}}">{{nav['marketplace_all_products'].name}}
+        </a>
+        </mat-list-item>
+        <mat-list-item>
+            <a [routerLink]="nav['marketplace_new_product'].link" routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: nav['marketplace_new_product'].exact }"> 
+                <img src="{{nav['marketplace_new_product'].img_src}}">{{nav['marketplace_new_product'].name}}
+          </a>
+        </mat-list-item>
+          
+        <mat-divider></mat-divider>
+       
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
 
       <mat-toolbar color="primary">
-        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
-          *ngIf="isHandset$ | async">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button
+          (click)="drawer.toggle()"
+          *ngIf="(isHandset$ | async)">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
 
         <span fxLayout="row" fxLayoutAlign="start center">
-          <img src="./assets/img/ether-32.png">
-          FleaMarket Escrow DApp
+            <img src="./assets/img/ether-32.png">
+            FleaMarket Escrow DApp
         </span>
 
         <span class="toolbar-fill-remaining-space">
         </span>
+    
+        <div fxLayout="row" fxLayoutAlign="start center" 
+                           fxLayoutGap="10px" *ngIf="{account: account$ | async, balance: balance$ | async, ipfsConnect: ipfsConnect$ | async} as values;">
 
+          <ng-container *ngIf="values.account; then authorized; else unauthorized">
+          </ng-container>
+
+          <ng-template #authorized>
+            <div fxFlex="15">Address:</div> 
+            <mat-chip-list>
+                <mat-chip color="primary" selected >{{values.account}}</mat-chip>
+            </mat-chip-list>
+            
+
+            <div fxFlex="15">Balance:</div>
+            <mat-chip-list>
+               <mat-chip color="accent" selected>{{values.balance}}</mat-chip>
+            </mat-chip-list>
+           
+            <div fxFlex="15">IPFS Connect:</div>
+            <div fxFlex="20" *ngIf="values.ipfsConnect">🔵</div>
+            <div fxFlex="20" *ngIf="!values.ipfsConnect">🔴</div>
+
+          </ng-template>
+
+          <ng-template #unauthorized>
+          </ng-template>
+
+        </div>
+        
 
       </mat-toolbar>
 
-      <app-loader>
-      </app-loader>
+      <!-- Add Content Here -->
+      <app-loader></app-loader>
 
       <router-outlet></router-outlet>
-
+   
     </mat-sidenav-content>
   </mat-sidenav-container>
 

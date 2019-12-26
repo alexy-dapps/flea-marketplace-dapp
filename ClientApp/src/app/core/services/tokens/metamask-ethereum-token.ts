@@ -1,14 +1,14 @@
-import { Injectable, InjectionToken, Inject } from '@angular/core';
-import { providers } from 'ethers';
+import { InjectionToken} from '@angular/core';
 
 
-export const MetamaskWeb3Token = new InjectionToken(
+export const MetamaskEthereumToken = new InjectionToken(
     'Metamask Web3 provider',
     {
         providedIn: 'root',
         factory: () => {
             const ethereum = (window as any).ethereum;
 
+            // Returns true or false, representing whether the user has MetaMask installed.
             if (!ethereum || !ethereum.isMetaMask) {
                 throw new Error('Please install MetaMask.');
             }

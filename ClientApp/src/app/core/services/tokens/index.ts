@@ -1,1 +1,2 @@
-export * from './metamask-web3-token';
+export * from './metamask-ethereum-token';
+export * from './window-token';

@@ -13,6 +13,7 @@ import * as fromRouter from '@ngrx/router-store';
 import { environment } from '../../../../environments/environment';
 import * as fromSpinner from './spinner.reducer';
 import * as fromError from './error.reducer';
+import * as fromWeb3Provider from './web3-provider.reducer';
 
 
 // nice moment here
@@ -21,9 +22,9 @@ export interface AppState {
   router: fromRouter.RouterReducerState<any>;
   spinner: fromSpinner.SpinnerState;
   error: fromError.ErrorState;
+  web3Provider: fromWeb3Provider.Web3ProviderState;
 
 }
-
 
 /**
  * Our state is composed of a map of action reducer functions.
@@ -36,6 +37,7 @@ export const ROOT_REDUCERS =
     router: fromRouter.routerReducer,
     spinner: fromSpinner.reducer,
     error: fromError.reducer,
+    web3Provider: fromWeb3Provider.reducer
 
   }),
 });
@@ -90,4 +92,20 @@ export const selectErrorState = createFeatureSelector<AppState, fromError.ErrorS
 export const getError = createSelector(
   selectErrorState,
   fromError.getError
+);
+
+export const selectWeb3ProviderState = createFeatureSelector<AppState, fromWeb3Provider.Web3ProviderState>(
+  'web3Provider'
+);
+export const getMetaMaskEnable = createSelector(
+  selectWeb3ProviderState,
+  fromWeb3Provider.getMetaMaskEnable
+);
+export const getAccount = createSelector(
+  selectWeb3ProviderState,
+  fromWeb3Provider.getAccount
+);
+export const getBalance = createSelector(
+  selectWeb3ProviderState,
+  fromWeb3Provider.getBalance
 );
