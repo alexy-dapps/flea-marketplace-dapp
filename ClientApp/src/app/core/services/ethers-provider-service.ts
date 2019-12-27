@@ -14,12 +14,20 @@ export class EthersProviderService {
       this.signer = provider.getSigner();
      }
 
-    public getAccount(): Observable<string> {
+    public getSelectedAddress(): Observable<string> {
 
         return from(this.signer.getAddress()).pipe(
           tap(address => console.log('address', address))
         );
     }
+
+    public getNetwork(): Observable<string> {
+
+      return from(this.provider.getNetwork()).pipe(
+        map( network => network.name),
+        tap(network => console.log('network', network))
+      );
+  }
 
     public getBalance(): Observable<string> {
 

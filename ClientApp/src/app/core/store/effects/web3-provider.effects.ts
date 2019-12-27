@@ -71,18 +71,18 @@ export class Web3ProviderEffects {
     this.actions$.pipe(
       ofType(Web3ProviderActions.initSuccess),
       switchMap(() => {
-        return [Web3ProviderActions.getAccount(), Web3ProviderActions.getBalance()];
+        return [Web3ProviderActions.getNetwork(), Web3ProviderActions.getAddress(), Web3ProviderActions.getBalance()];
 
       })
     )
   );
 
-  getAccount$ = createEffect(() =>
+  getAddress$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.getAccount),
+      ofType(Web3ProviderActions.getAddress),
       switchMap(() =>
-        this.providerSrv.getAccount().pipe(
-          map((address: string) => Web3ProviderActions.accountSuccess({ address })),
+        this.providerSrv.getSelectedAddress().pipe(
+          map((address: string) => Web3ProviderActions.addressSuccess({ address })),
           catchError((err: Error) =>
             of(ErrorActions.errorMessage({ errorMsg: err.message }))
           )
@@ -107,7 +107,22 @@ export class Web3ProviderEffects {
     )
   );
 
+  getNetwork$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(Web3ProviderActions.getNetwork),
+      switchMap(() =>
+        this.providerSrv.getNetwork().pipe(
+          map((network: string) =>
+            Web3ProviderActions.networkSuccess({ network })
+          ),
+          catchError((err: Error) =>
+            of(ErrorActions.errorMessage({ errorMsg: err.message }))
+          )
+        )
+      )
+    )
+  );
 
-  // ... get network name
+
 
 }

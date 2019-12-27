@@ -25,7 +25,7 @@ export const reducer = createReducer(
     ...state,
     ethNetwork: network
   })),
-  on(Web3ProviderActions.accountSuccess, (state, { address }) => ({
+  on(Web3ProviderActions.addressSuccess, (state, { address }) => ({
     ...state,
     account: address
   })),
