@@ -24,25 +24,12 @@ export class NavComponent implements OnInit {
     },
     marketplace:
     {
-      link: '/p2p-bazaar',
+      link: '/market-place',
       name: 'Marketplace',
       img_src: './assets/img/negotiation-64.png',
       exact: true
-    },
-    marketplace_all_products:
-    {
-      link: '/p2p-bazaar',
-      name: 'All Products',
-      img_src: './assets/img/contract-list-24.png',
-      exact: true
-    },
-    marketplace_new_product:
-    {
-      link: '/p2p-bazaar/products/make/new',
-      name: 'New Product',
-      img_src: './assets/img/new-contract-24.png',
-      exact: true
-    },
+    }
+
   };
 
   account$: Observable<string>;
