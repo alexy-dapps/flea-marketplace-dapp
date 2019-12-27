@@ -48,20 +48,20 @@
           </ng-container>
 
           <ng-template #authorized>
-            <div fxFlex="15">Address:</div>
+            <div fxFlex="10">Account:</div>
             <mat-chip-list>
               <mat-chip color="primary" selected>{{values.account}}</mat-chip>
             </mat-chip-list>
 
 
-            <div fxFlex="15">Balance:</div>
+            <div fxFlex="10">Balance:</div>
             <mat-chip-list>
               <mat-chip color="accent" selected>{{values.balance}}</mat-chip>
             </mat-chip-list>
 
             <div fxFlex="15">IPFS Connect:</div>
-            <div fxFlex="20" *ngIf="values.ipfsConnect">🔵</div>
-            <div fxFlex="20" *ngIf="!values.ipfsConnect">🔴</div>
+            <div fxFlex="10" *ngIf="values.ipfsConnect">🔵</div>
+            <div fxFlex="10" *ngIf="!values.ipfsConnect">🔴</div>
 
           </ng-template>
 
