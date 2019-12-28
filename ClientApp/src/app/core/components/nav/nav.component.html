@@ -87,6 +87,16 @@
 
   <mat-toolbar fxLayout="row" fxLayoutAlign="end center">
 
+    <div fxFlex="15">
+      <span fxLayout="row" fxLayoutAlign="end center" >
+        Network:
+        <mat-chip-list fxFlexOffset="10px">
+          <mat-chip color="primary" selected>{{values.network}}</mat-chip>
+        </mat-chip-list>
+      </span>
+    </div>
+    
+    
     <div fxFlex="30">
       <span fxLayout="row" fxLayoutAlign="end center" >
         Account:
