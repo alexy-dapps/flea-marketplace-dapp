@@ -101,10 +101,17 @@ export const getMetaMaskEnable = createSelector(
   selectWeb3ProviderState,
   fromWeb3Provider.getMetaMaskEnable
 );
+
 export const getAccount = createSelector(
   selectWeb3ProviderState,
   fromWeb3Provider.getAccount
 );
+
+export const getNetwork = createSelector(
+  selectWeb3ProviderState,
+  fromWeb3Provider.getNetwork
+);
+
 export const getBalance = createSelector(
   selectWeb3ProviderState,
   fromWeb3Provider.getBalance

@@ -1,4 +1,5 @@
-<div class="app-container">
+<div class="app-container" *ngIf="{account: account$ | async, network: network$ | async, 
+  balance: balance$ | async, ipfsConnect: ipfsConnect$ | async} as values;">
 
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
@@ -27,48 +28,51 @@
     </mat-sidenav>
     <mat-sidenav-content>
 
-      <mat-toolbar color="primary">
+      <mat-toolbar color="primary" fxLayout="row">
+
         <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
           *ngIf="(isHandset$ | async)">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
 
-        <span fxLayout="row" fxLayoutAlign="start center">
-          <img src="./assets/img/ether-32.png">
-          FleaMarket Escrow DApp
+        <span fxFlex>
+          <span fxLayout="row" fxLayoutAlign="start center">
+            <img src="./assets/img/ether-32.png">
+            FleaMarket Escrow DApp
+          </span>
+
         </span>
 
-        <span class="toolbar-fill-remaining-space">
-        </span>
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
-          *ngIf="{account: account$ | async, balance: balance$ | async, ipfsConnect: ipfsConnect$ | async} as values;">
+        <ng-container *ngIf="values.account; then authorized; else unauthorized">
+        </ng-container>
 
-          <ng-container *ngIf="values.account; then authorized; else unauthorized">
-          </ng-container>
+        <ng-template #authorized>
 
-          <ng-template #authorized>
-            <div fxFlex="10">Account:</div>
-            <mat-chip-list>
-              <mat-chip color="primary" selected>{{values.account}}</mat-chip>
-            </mat-chip-list>
+          <div fxFlex="15">
+            <span fxLayout="row" fxLayoutAlign="end center" >
+              Balance:
+              <mat-chip-list fxFlexOffset="10px">
+                <mat-chip color="accent" selected>{{values.balance}}</mat-chip>
+              </mat-chip-list>
+            </span>
+          </div>
+
+          <div fxFlex="15">
+            <span fxLayout="row" fxLayoutAlign="end center">
+              IPFS Connect:
+              <div fxFlexOffset="10px" *ngIf="values.ipfsConnect">🔵</div>
+              <div fxFlexOffset="10px" *ngIf="!values.ipfsConnect">🔴</div>
+            </span>
+          </div>
 
 
-            <div fxFlex="10">Balance:</div>
-            <mat-chip-list>
-              <mat-chip color="accent" selected>{{values.balance}}</mat-chip>
-            </mat-chip-list>
+        </ng-template>
 
-            <div fxFlex="15">IPFS Connect:</div>
-            <div fxFlex="10" *ngIf="values.ipfsConnect">🔵</div>
-            <div fxFlex="10" *ngIf="!values.ipfsConnect">🔴</div>
+        <ng-template #unauthorized>
+        </ng-template>
 
-          </ng-template>
 
-          <ng-template #unauthorized>
-          </ng-template>
-
-        </div>
 
 
       </mat-toolbar>
@@ -80,5 +84,19 @@
 
     </mat-sidenav-content>
   </mat-sidenav-container>
+
+  <mat-toolbar>
+
+
+    <span class="toolbar-fill-remaining-space"></span>
+
+    <!--
+    <div fxFlex="10">Account:</div>
+            <mat-chip-list>
+              <mat-chip color="primary" selected>{{values.account}}</mat-chip>
+            </mat-chip-list>
+
+ <div class="mat-subheading-1 margin-top--18">Ebipps Env: {{env$ | async}}</div> -->
+  </mat-toolbar>
 
 </div>
