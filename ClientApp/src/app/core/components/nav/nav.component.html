@@ -85,18 +85,18 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 
-  <mat-toolbar>
+  <mat-toolbar fxLayout="row" fxLayoutAlign="end center">
 
+    <div fxFlex="30">
+      <span fxLayout="row" fxLayoutAlign="end center" >
+        Account:
+        <mat-chip-list fxFlexOffset="10px">
+          <mat-chip color="primary" selected>{{values.account}}</mat-chip>
+        </mat-chip-list>
+      </span>
+    </div>
+    
 
-    <span class="toolbar-fill-remaining-space"></span>
-
-    <!--
-    <div fxFlex="10">Account:</div>
-            <mat-chip-list>
-              <mat-chip color="primary" selected>{{values.account}}</mat-chip>
-            </mat-chip-list>
-
- <div class="mat-subheading-1 margin-top--18">Ebipps Env: {{env$ | async}}</div> -->
   </mat-toolbar>
 
 </div>
