@@ -204,7 +204,7 @@ contract SafeRemotePurchase is Ownable {
     // It will cause an exception,
     // because the fallback function does not have the 'payable'
     // modifier.
-    function () external {
+    function() external {
         revert("No Ether excepted");
     }
 

@@ -144,8 +144,9 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      // version: "0.5.1",    // Fetch exact version from solc-bin (default: truffle's version)
-      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
+      version: "0.5.15",    // Fetch exact version from solc-bin (default: truffle's version)
+      // can't specify v. 0.6.0 yet, because one of dependencies contract SafeMath.sol from GitHub
+      // still using older version
       settings: {          // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
