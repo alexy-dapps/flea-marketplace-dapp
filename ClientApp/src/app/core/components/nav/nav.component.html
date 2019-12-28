@@ -50,7 +50,7 @@
         <ng-template #authorized>
 
           <div fxFlex="15">
-            <span fxLayout="row" fxLayoutAlign="end center" >
+            <span fxLayout="row" fxLayoutAlign="end center">
               Balance:
               <mat-chip-list fxFlexOffset="10px">
                 <mat-chip color="accent" selected>{{values.balance}}</mat-chip>
@@ -65,7 +65,6 @@
               <div fxFlexOffset="10px" *ngIf="!values.ipfsConnect">🔴</div>
             </span>
           </div>
-
 
         </ng-template>
 
@@ -87,25 +86,35 @@
 
   <mat-toolbar fxLayout="row" fxLayoutAlign="end center">
 
-    <div fxFlex="15">
-      <span fxLayout="row" fxLayoutAlign="end center" >
-        Network:
-        <mat-chip-list fxFlexOffset="10px">
-          <mat-chip color="primary" selected>{{values.network}}</mat-chip>
-        </mat-chip-list>
-      </span>
-    </div>
-    
-    
-    <div fxFlex="30">
-      <span fxLayout="row" fxLayoutAlign="end center" >
-        Account:
-        <mat-chip-list fxFlexOffset="10px">
-          <mat-chip color="primary" selected>{{values.account}}</mat-chip>
-        </mat-chip-list>
-      </span>
-    </div>
-    
+    <ng-container *ngIf="values.account; then authorized2; else unauthorized2">
+    </ng-container>
+
+    <ng-template #authorized2>
+      <div fxFlex="15">
+        <span fxLayout="row" fxLayoutAlign="end center">
+          Network:
+          <mat-chip-list fxFlexOffset="10px">
+            <mat-chip color="primary" selected>{{values.network}}</mat-chip>
+          </mat-chip-list>
+        </span>
+      </div>
+
+
+      <div fxFlex="30">
+        <span fxLayout="row" fxLayoutAlign="end center">
+          Account:
+          <mat-chip-list fxFlexOffset="10px">
+            <mat-chip color="primary" selected>{{values.account}}</mat-chip>
+          </mat-chip-list>
+        </span>
+      </div>
+
+    </ng-template>
+
+
+    <ng-template #unauthorized2>
+    </ng-template>
+
 
   </mat-toolbar>
 
