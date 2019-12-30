@@ -11,6 +11,8 @@ export class EthersProviderService {
    private signer: Signer;
 
    constructor(private provider: EthersWeb3Provider) {
+
+      // There is only ever up to one account in MetaMask exposed
       this.signer = provider.getSigner();
      }
 
