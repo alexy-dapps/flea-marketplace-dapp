@@ -1,5 +1,5 @@
-export interface AppState {
-    router: fromRouter.RouterReducerState<any>;
-    spinner: fromSpinner.SpinnerState;
-    error: fromError.ErrorState;
-  }
+ngOnInit() {
+  this.account$ = this.store.pipe(select(fromRoot.getAccount));
+  this.network$ = this.store.pipe(select(fromRoot.getNetwork));
+  this.balance$ = this.store.pipe(select(fromRoot.getBalance));
+}

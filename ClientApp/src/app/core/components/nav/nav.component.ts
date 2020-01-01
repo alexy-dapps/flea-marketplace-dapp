@@ -56,11 +56,11 @@ export class NavComponent implements OnInit {
     );
 
 
-  /*  this.ipfsConnect$ = this.store.pipe(
+    this.ipfsConnect$ = this.store.pipe(
       select(fromRoot.getIpfsConnectStatus),
       tap(ipfs => console.log(`Debug: IPFS connection status: ${ipfs}`))
     );
-    */
+    
 
   }
 }

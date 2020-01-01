@@ -14,6 +14,7 @@ import { environment } from '../../../../environments/environment';
 import * as fromSpinner from './spinner.reducer';
 import * as fromError from './error.reducer';
 import * as fromWeb3Provider from './web3-provider.reducer';
+import * as fromIpfsDaemon from './ipfs-daemon.reducer';
 
 
 // nice moment here
@@ -23,6 +24,7 @@ export interface AppState {
   spinner: fromSpinner.SpinnerState;
   error: fromError.ErrorState;
   web3Provider: fromWeb3Provider.Web3ProviderState;
+  ipfsDaemon: fromIpfsDaemon.IpfsDaemonState;
 
 }
 
@@ -37,7 +39,8 @@ export const ROOT_REDUCERS =
     router: fromRouter.routerReducer,
     spinner: fromSpinner.reducer,
     error: fromError.reducer,
-    web3Provider: fromWeb3Provider.reducer
+    web3Provider: fromWeb3Provider.reducer,
+    ipfsDaemon: fromIpfsDaemon.reducer
 
   }),
 });
@@ -115,4 +118,12 @@ export const getNetwork = createSelector(
 export const getBalance = createSelector(
   selectWeb3ProviderState,
   fromWeb3Provider.getBalance
+);
+
+export const selectIpfsDaemonState = createFeatureSelector<AppState, fromIpfsDaemon.IpfsDaemonState>(
+  'ipfsDaemon'
+);
+export const getIpfsConnectStatus = createSelector(
+  selectIpfsDaemonState,
+  fromIpfsDaemon.getIpfsConnectStatus
 );
