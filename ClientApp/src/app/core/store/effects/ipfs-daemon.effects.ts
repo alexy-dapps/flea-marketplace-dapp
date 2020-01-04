@@ -19,11 +19,11 @@ export class IpfsDaemonEffects {
     () =>
       this.actions$.pipe(
         ofType(ROOT_EFFECTS_INIT),
-        switchMap(() => 
+        switchMap(() =>
           this.ipfsSrv.getVersion().pipe(
             tap(version => console.log(`IPFS node version: ${version}`)),
             map(_ => IpfsDaemonActions.connectSuccess()),
-            
+
             catchError((err: Error) =>
               of(ErrorActions.errorMessage({ errorMsg: err.message }))
             )
@@ -32,5 +32,5 @@ export class IpfsDaemonEffects {
       )
   );
 
- 
+
 }

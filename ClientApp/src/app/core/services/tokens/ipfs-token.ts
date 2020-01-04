@@ -5,6 +5,7 @@ import IpfsHttpClient from 'ipfs-http-client';
 export const ipfsToken = new InjectionToken('The IPFS Token', {
   providedIn: 'root',
   factory: () => {
+
     try {
       return new IpfsHttpClient('ipfs.infura.io', '5001', {
         protocol: 'https'
@@ -13,6 +14,7 @@ export const ipfsToken = new InjectionToken('The IPFS Token', {
       console.log('Error', err);
       throw new Error('Unable to access IPFS node daemon on Infura network');
     }
+
   }
 });
 

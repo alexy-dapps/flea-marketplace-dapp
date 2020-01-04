@@ -60,7 +60,7 @@ export class NavComponent implements OnInit {
       select(fromRoot.getIpfsConnectStatus),
       tap(ipfs => console.log(`Debug: IPFS connection status: ${ipfs}`))
     );
-    
+
 
   }
 }

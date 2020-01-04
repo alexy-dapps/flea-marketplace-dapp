@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, from, empty } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { ipfsToken } from './tokens';
+import { Buffer } from 'buffer';
 
 @Injectable({
   providedIn: 'root'
