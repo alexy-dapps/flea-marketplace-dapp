@@ -4,11 +4,11 @@ const path = require('path');
 // we don't need to explicitly specify those node modules bellow
 module.exports = {
   node: {
-    //crypto: true,
-    //path: true,
-    //os: true,
-    //stream: true,
-    //buffer: true,
+    crypto: true,
+    path: true,
+    os: true,
+    stream: true,
+    buffer: true,
   },
 
   // fix for issue: https://github.com/multiformats/js-cid/issues/96
