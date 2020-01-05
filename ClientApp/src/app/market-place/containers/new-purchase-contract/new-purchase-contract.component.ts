@@ -1,6 +1,6 @@
-import {Component, ViewChild, ElementRef, OnInit, OnDestroy} from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl  } from '@angular/forms';
-import { MatDialog, MatDialogConfig} from '@angular/material';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { utils } from 'ethers';
@@ -8,7 +8,7 @@ import { utils } from 'ethers';
 import { Store, select } from '@ngrx/store';
 import * as fromPurchaseContract from '../../store/reducers';
 import { IpfsImageActions, PurchaseContractActions } from '../../store/actions';
-import { FileUploadStatus} from '../../store/reducers/ipfs-product-image.reducer';
+import { FileUploadStatus } from '../../store/reducers/ipfs-product-image.reducer';
 
 import { ShowIpfsImageComponent } from '../../components/show-ipfs-image/show-ipfs-image.component';
 
@@ -17,15 +17,15 @@ import { ShowIpfsImageComponent } from '../../components/show-ipfs-image/show-ip
 
       check if string is less then 32 bytes. Needed to pass into the smart contract
   */
-function bites32StringValidator(control: AbstractControl): {[key: string]: any} | null  {
+function bites32StringValidator(control: AbstractControl): { [key: string]: any } | null {
 
   let pathTest = false;
 
   try {
-    utils.formatBytes32String (control.value);
+    utils.formatBytes32String(control.value);
     pathTest = true;
 
-  } catch ( error) {
+  } catch (error) {
     // console.log('bites32StringValidator', error)
   }
   /*
@@ -35,8 +35,9 @@ function bites32StringValidator(control: AbstractControl): {[key: string]: any} 
 
   return !pathTest ? {
     forbiddenKey: {
-      value: control.value}
-    } : null;
+      value: control.value
+    }
+  } : null;
 }
 
 @Component({
@@ -46,7 +47,7 @@ function bites32StringValidator(control: AbstractControl): {[key: string]: any} 
 })
 export class NewPurchaseContractComponent implements OnInit, OnDestroy {
 
-  @ViewChild('file', {static: false}) fileControl: ElementRef;
+  @ViewChild('file', { static: false }) fileControl: ElementRef;
   fileBlob: File;
   fileContent: ArrayBuffer;
 
@@ -59,7 +60,7 @@ export class NewPurchaseContractComponent implements OnInit, OnDestroy {
     private store$: Store<fromPurchaseContract.AppState>,
     private formBuilder: FormBuilder,
     public dialog: MatDialog
-  ) {}
+  ) { }
 
   frmGroup: FormGroup = this.formBuilder.group({
     productKey: ['', [Validators.required, bites32StringValidator]],
@@ -77,8 +78,8 @@ export class NewPurchaseContractComponent implements OnInit, OnDestroy {
     this.uploadStatus$ = this.store$.pipe(select(fromPurchaseContract.getIpfsUploadStatus));
     this.ipfsHash$ = this.store$.pipe(
       select(fromPurchaseContract.getIpfsHash),
-      tap(value => this.frmGroup.get('ipfsHash').patchValue(value) )
-      );
+      tap(value => this.frmGroup.get('ipfsHash').patchValue(value))
+    );
   }
 
   formControl = (name: string) => this.frmGroup.get(`${name}`);
@@ -120,14 +121,14 @@ export class NewPurchaseContractComponent implements OnInit, OnDestroy {
       const reader = new FileReader();
       reader.readAsDataURL(this.fileBlob);
       reader.onload = _ => {
-          this.fileContent = reader.result as ArrayBuffer;
-          this.store$.dispatch(IpfsImageActions.reset());
-       };
+        this.fileContent = reader.result as ArrayBuffer;
+        this.store$.dispatch(IpfsImageActions.reset());
+      };
     }
   }
 
   uploadFile() {
-    this.store$.dispatch(IpfsImageActions.uploadImage({file: this.fileBlob}));
+    this.store$.dispatch(IpfsImageActions.uploadImage({ file: this.fileBlob }));
   }
 
 
@@ -148,11 +149,11 @@ export class NewPurchaseContractComponent implements OnInit, OnDestroy {
   }
 
   onCreate(): void {
-    const { valid} = this.frmGroup;
+    const { valid } = this.frmGroup;
 
     if (valid) {
-        const { fileArg, ...model } = this.frmGroup.value;
-        this.store$.dispatch(PurchaseContractActions.createPurchaseContract({payload: model}));
+      const { fileArg, ...model } = this.frmGroup.value;
+      this.store$.dispatch(PurchaseContractActions.createPurchaseContract({ payload: model }));
     }
 
   }

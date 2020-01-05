@@ -93,7 +93,7 @@ export class FleaMarketContractService {
 
   public getName(): Observable<string> {
 
-    return from(this.contractToken.name()).pipe(
+    return from(this.contractToken.contractName()).pipe(
       map(name => name as string)
     );
 
