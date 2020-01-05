@@ -1,0 +1,20 @@
+
+
+
+<mat-list>
+
+    <mat-list-item *ngFor="let product of products" (click)="selectMe.emit(product)">
+        <img matListAvatar src="../../../../assets/img/purchase-contract.png">
+        <h3 class="mat-h3" mat-line>{{product.productKey}}</h3>
+        <small class="mat-caption gray-color" mat-line> {{product.contractAddress}} </small>
+        <mat-divider></mat-divider>
+    </mat-list-item>
+
+</mat-list>
+   
+
+
+   
+
+
+

@@ -17,11 +17,21 @@
         <mat-divider></mat-divider>
 
         <h3 matSubheader class='margin-top-bottom--12'>
-          <a [routerLink]="nav['marketplace'].link" routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: nav['marketplace'].exact }">
-            <img src="{{nav['marketplace'].img_src}}">{{nav['marketplace'].name}}
-          </a>
+          <img src="{{nav['marketplace'].img_src}}">{{nav['marketplace'].name}}
         </h3>
+        <mat-list-item>
+          <a [routerLink]="nav['marketplace_all_products'].link" routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: nav['marketplace_all_products'].exact }">
+            <img src="{{nav['marketplace_all_products'].img_src}}">{{nav['marketplace_all_products'].name}}
+          </a>
+        </mat-list-item>
+        <mat-list-item>
+          <a [routerLink]="nav['marketplace_new_product'].link" routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: nav['marketplace_new_product'].exact }">
+            <img src="{{nav['marketplace_new_product'].img_src}}">{{nav['marketplace_new_product'].name}}
+          </a>
+        </mat-list-item>
+
         <mat-divider></mat-divider>
 
       </mat-nav-list>

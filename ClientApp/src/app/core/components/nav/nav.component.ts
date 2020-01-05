@@ -28,7 +28,21 @@ export class NavComponent implements OnInit {
       name: 'Marketplace',
       img_src: './assets/img/negotiation-64.png',
       exact: true
-    }
+    },
+    marketplace_all_products:
+    {
+      link: '/market-place',
+      name: 'All Products',
+      img_src: './assets/img/contract-list-24.png',
+      exact: true
+    },
+    marketplace_new_product:
+    {
+      link: '/market-place/products/make/new',
+      name: 'New Product',
+      img_src: './assets/img/new-contract-24.png',
+      exact: true
+    },
 
   };
 

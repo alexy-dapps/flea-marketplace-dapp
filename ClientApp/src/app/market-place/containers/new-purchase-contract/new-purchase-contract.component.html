@@ -1,0 +1,149 @@
+
+<mat-chip-list> </mat-chip-list>
+<div fxLayout="row" fxLayoutAlign="center start">
+
+  <mat-card fxFlex="60">
+    <mat-card-subtitle >
+      New Purchase Contract
+    </mat-card-subtitle>
+
+    <form [formGroup]="frmGroup" novalidate>
+
+      <mat-card-content>
+        <div fxLayout="row" fxLayoutGap="6px">
+          <span class="red-color">*</span>
+          <div class="mat-caption text-muted">required fields</div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field [color]="'accent'" fxFlex>
+            <input matInput placeholder="Unique Product Key *" formControlName="productKey" />
+            <mat-error *ngIf="required('productKey')">Value is required</mat-error>
+            <mat-error *ngIf="invalid32BytesKey('productKey')">
+              Invalid product key string. Must be less than 32 bytes</mat-error>
+          </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field [color]="'accent'" fxFlex>
+            <input matInput placeholder="Title *" formControlName="title" />
+            <mat-error *ngIf="required('title')">Value is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field [color]="'accent'" fxFlex>
+            <input matInput placeholder="Value in ether. Has to include 2 x price *" formControlName="etherValue" />
+            <span matSuffix>$ETH</span>
+            <mat-error *ngIf="required('etherValue')">Value is required</mat-error>
+            <mat-error *ngIf="invalidPattern('etherValue')">Invalid ether value format. Has to be (#.###)</mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+
+      <input type="file" #file style="display: none" (change)="onFileChange($event)" />
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="selectFile()">
+          Select Product Photo
+          <mat-icon>category</mat-icon>
+        </button>
+
+        <button mat-raised-button color="accent" *ngIf="fileBlob" (click)="uploadFile()"
+          [disabled]="formControl('fileArg').invalid">
+          Upload To IPFS
+          <mat-icon>offline_bolt</mat-icon>
+        </button>
+
+      </mat-card-actions>
+
+      <mat-card-content *ngIf="fileBlob">
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxFlex="25" class="text-center">Image</div>
+          <div fxFlex class="text-center">IPFS Hash</div>
+          <div fxFlex="15" class="text-center">Upload Status</div>
+        </div>
+        <p></p>
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+          <ng-container *ngIf="formControl('fileArg').invalid; then showError; else showImage">
+          </ng-container>
+
+          <ng-template #showError>
+            <div fxFlex="25" class="text-center">
+
+              <mat-error mat-line *ngIf="requiredFile('fileArg')">You must choose a file</mat-error>
+              <mat-error mat-line *ngIf="invalidPatternFile('fileArg')">Invalid file image extension</mat-error>
+
+            </div>
+          </ng-template>
+
+          <ng-template #showImage>
+            <div fxFlex="25" class="text-center">
+              <img [src]="fileContent" height="200" width="200" />
+              <p> {{fileBlob.name }} </p>
+            </div>
+          </ng-template>
+
+
+          <div fxFlex>
+            <div *ngIf="(ipfsHash$ | async) as ipfsHash;" class="text-center">
+
+              <button mat-stroked-button color="warn" matTooltip="Click to show image from IPFS" (click)="loadImage()">
+                {{ipfsHash}}
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+
+          </div>
+
+          <div fxFlex="15" class="text-center">
+
+            <div *ngIf="(uploadStatus$ | async) as status;">
+
+              <div *ngIf="inProgress(status); else idle">
+                <mat-progress-spinner color="warn" mode="indeterminate" value="50" diameter="50" strokeWidth="5">
+                </mat-progress-spinner>
+              </div>
+
+              <ng-template #idle>
+                <mat-chip *ngIf="isPending(status)">{{ status }}</mat-chip>
+                <mat-chip *ngIf="isSuccess(status)" selected="true" color="accent">
+                  {{ status }}
+                </mat-chip>
+                <mat-chip *ngIf="isError(status)" selected="true" color="warn">
+                  {{status}}
+                </mat-chip>
+              </ng-template>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </mat-card-content>
+
+      <mat-card-actions fxLayout="row" fxLayoutAlign="end center">
+        <button mat-flat-button color="warn" [disabled]="frmGroup.pristine || frmGroup.invalid" (click)="onCreate()"
+          class='margin-right--10'>Create Contract</button>
+      </mat-card-actions>
+
+      <!-- 
+  
+          <mat-card-content>
+
+              Control invalid: {{ formControl('fileArg').invalid | json}}
+              <br>
+              Control pristine: {{ formControl('fileArg').pristine | json}}
+
+          </mat-card-content>
+      
+            -->
+
+    </form>
+  </mat-card>
+</div>

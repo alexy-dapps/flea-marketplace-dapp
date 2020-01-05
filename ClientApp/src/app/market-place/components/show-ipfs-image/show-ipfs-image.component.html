@@ -1,0 +1,27 @@
+
+<h2 mat-dialog-title>IPFS Product Image</h2>
+
+<div *ngIf="(image$ | async) as image else loading">
+</div>
+
+ <mat-dialog-content class="text-center">
+    
+    <img #ipfsImage height="300px" width="300px">
+    
+    <ng-template #loading>
+        <mat-progress-spinner 
+            color="warn"
+            mode="indeterminate"
+            value="50"
+            diameter="100"
+            strokeWidth="10">
+        </mat-progress-spinner>
+    </ng-template>
+    
+ </mat-dialog-content>
+
+ <mat-dialog-actions>
+    <button mat-stroked-button color="warn" [mat-dialog-close]="true"  cdkFocusInitial>OK</button>
+ </mat-dialog-actions>
+
+
