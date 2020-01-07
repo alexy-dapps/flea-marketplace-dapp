@@ -33,7 +33,6 @@ export class ShowIpfsImageComponent implements OnInit {
           this.imageRef.nativeElement.src = this.windowRef.URL.createObjectURL(blob)
        )
     );
-
   }
 
   checkStore(): Observable<Blob> {

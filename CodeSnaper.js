@@ -1,5 +1,12 @@
-ngOnInit() {
-  this.account$ = this.store.pipe(select(fromRoot.getAccount));
-  this.network$ = this.store.pipe(select(fromRoot.getNetwork));
-  this.balance$ = this.store.pipe(select(fromRoot.getBalance));
+export enum FileUploadStatus {
+  Pending = 'Pending',
+  Success = 'Success',
+  Error = 'Error',
+  Progress = 'Progress',
+}
+
+export interface State {
+    status: FileUploadStatus;
+    ipfsHash: string | null;
+    imageBlob?: Blob;
 }

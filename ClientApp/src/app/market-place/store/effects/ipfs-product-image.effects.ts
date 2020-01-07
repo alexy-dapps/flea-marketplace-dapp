@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { exhaustMap, map, tap, switchMap, catchError } from 'rxjs/operators';
-import { of, empty} from 'rxjs';
+import { of, empty } from 'rxjs';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 
@@ -21,7 +21,7 @@ export class IpfsUploadEffects {
     private ipfsSrv: IpfsDaemonService,
     private readonly actions$: Actions,
     private httpClient: HttpClient,
-  ) {}
+  ) { }
 
 
   uploadImage$ = createEffect(
@@ -34,7 +34,7 @@ export class IpfsUploadEffects {
 
           return this.ipfsSrv.addFile(file).pipe(
             tap(ipfsHash => console.log(`IPFS file hash: ${ipfsHash}`)),
-            map(ipfsHash => IpfsImageActions.uploadImageSuccess({ipfsHash})),
+            map(ipfsHash => IpfsImageActions.uploadImageSuccess({ ipfsHash })),
 
             catchError((err: Error) =>
               of(ErrorActions.errorMessage({ errorMsg: err.message }), IpfsImageActions.uploadImageFail())
@@ -44,41 +44,41 @@ export class IpfsUploadEffects {
 
       ));
 
-      downloadImage$ = createEffect(
-        () =>
-          this.actions$.pipe(
-            ofType(IpfsImageActions.downloadImage),
-            map((action) => action.ipfsHash),
-            switchMap((ipfsHash: string) =>
-              this.ipfsSrv.getFile(ipfsHash).pipe(
-                map((image: Blob) => IpfsImageActions.downloadImageSuccess({ image })),
-                catchError((err: Error) =>
-                  of(ErrorActions.errorMessage({ errorMsg: err.message }), IpfsImageActions.downloadImageError())
-              )
-             )
+  downloadImage$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(IpfsImageActions.downloadImage),
+        map((action) => action.ipfsHash),
+        switchMap((ipfsHash: string) =>
+          this.ipfsSrv.getFile(ipfsHash).pipe(
+            map((image: Blob) => IpfsImageActions.downloadImageSuccess({ image })),
+            catchError((err: Error) =>
+              of(ErrorActions.errorMessage({ errorMsg: err.message }), IpfsImageActions.downloadImageError())
             )
-
           )
-        );
+        )
 
-        // display default error image
-        downloadImageError$ = createEffect(
-          () =>
-            this.actions$.pipe(
-              ofType(IpfsImageActions.downloadImageError),
+      )
+  );
 
-              switchMap(() => this.httpClient.get(`./assets/img/error-human.png`, {
-                responseType: 'blob'
-              }).pipe(
-                  map((image: Blob) => IpfsImageActions.downloadImageSuccess({ image })),
-                  catchError((err: Error) =>
-                    of(ErrorActions.errorMessage({ errorMsg: err.message }))
-                )
-               )
-              )
+  // display default error image
+  downloadImageError$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(IpfsImageActions.downloadImageError),
 
-            )
-          );
+        switchMap(() => this.httpClient.get(`./assets/img/error-human.png`, {
+          responseType: 'blob'
+        }).pipe(
+          map((image: Blob) => IpfsImageActions.downloadImageSuccess({ image })),
+          catchError((err: Error) =>
+            of(ErrorActions.errorMessage({ errorMsg: err.message }))
+          )
+        )
+        )
+
+      )
+  );
 
 
 }
