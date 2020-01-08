@@ -19,7 +19,7 @@ export class FleaMarketContractService {
 
     // based on https://docs.ethers.io/ethers.js/html/cookbook-contracts.html
     // Call the contract method, getting back the transaction tx
-    const token = this.contractToken.createPurchaseContract(bytes32Key, product.title, product.ipfsHash, {
+    const token = this.contractToken.createPurchaseContract(bytes32Key, product.description, product.ipfsHash, {
       value: wei
     });
     return from(token)
