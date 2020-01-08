@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 const FLEA_MARKET_CONTRACT_ADDRESS = environment.fleaMarketContractAddress;
 const abi = [
   'event LogCreatePurchaseContract(address sender, bytes32 key)',
-  'event logRemovePurchaseContract(address sender, bytes32 key)',
+  'event LogRemovePurchaseContract(address sender, bytes32 key)',
   'function createPurchaseContract(bytes32 key, string calldata description, string calldata ipfsImageHash, uint256 commissionRate) payable returns(bool createResult)',
   'function getContractCount() view returns(uint contractCount)',
   'function getContractKeyAtIndex(uint index) view returns(bytes32 key)',
