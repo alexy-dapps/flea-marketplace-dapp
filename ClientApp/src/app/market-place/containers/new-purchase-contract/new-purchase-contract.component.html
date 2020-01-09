@@ -1,9 +1,8 @@
-
 <mat-chip-list> </mat-chip-list>
 <div fxLayout="row" fxLayoutAlign="center start">
 
   <mat-card fxFlex="60">
-    <mat-card-subtitle >
+    <mat-card-subtitle>
       New Purchase Contract
     </mat-card-subtitle>
 
@@ -33,13 +32,27 @@
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center">
-          <mat-form-field [color]="'accent'" fxFlex>
-            <input matInput placeholder="Value in ether. Has to include 2 x price *" formControlName="etherValue" />
+          <mat-form-field [color]="'accent'" fxFlex="45">
+            <input matInput placeholder="Value in ether. Has to include 2x price *" formControlName="etherValue" />
             <span matSuffix>$ETH</span>
             <mat-error *ngIf="required('etherValue')">Value is required</mat-error>
             <mat-error *ngIf="invalidPattern('etherValue')">Invalid ether value format. Has to be (#.###)</mat-error>
           </mat-form-field>
+
+
+          <mat-form-field [color]="'accent'" fxFlex="45" fxFlexOffset="40px">
+            <mat-select placeholder="Commission *" formControlName="commission">
+              <mat-option *ngFor="let item of commissions" [value]="item">
+                {{item}}
+              </mat-option>
+            </mat-select>
+            <span matSuffix>%</span>
+            <mat-error *ngIf="required('description')">Value is required</mat-error>
+          </mat-form-field>
+
         </div>
+
+
       </mat-card-content>
 
       <input type="file" #file style="display: none" (change)="onFileChange($event)" />

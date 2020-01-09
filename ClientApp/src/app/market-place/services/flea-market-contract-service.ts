@@ -14,14 +14,16 @@ export class FleaMarketContractService {
 
   public createPurchaseContract(product: any): Observable<string> {
 
+    const commission = Math.floor(parseFloat(product.commission) * 100);
     const bytes32Key = utils.formatBytes32String(product.productKey);
     const wei = utils.parseEther(product.etherValue);
 
     // based on https://docs.ethers.io/ethers.js/html/cookbook-contracts.html
     // Call the contract method, getting back the transaction tx
-    const token = this.contractToken.createPurchaseContract(bytes32Key, product.description, product.ipfsHash, {
-      value: wei
-    });
+    const token =
+      this.contractToken.createPurchaseContract(bytes32Key, product.description, product.ipfsHash, commission, {
+        value: wei
+      });
     return from(token)
       .pipe(
         switchMap((tx: any) => {
