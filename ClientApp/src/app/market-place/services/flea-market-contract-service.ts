@@ -35,12 +35,8 @@ export class FleaMarketContractService {
             tap((txReceipt: any) => console.log('TransactionReceipt: ', txReceipt)),
 
             // The receipt will have an "events" Array, which will have
-            // the emitted event from the Contract. The "logNewPurchaseContract(address contractAddress)
-            // call is the last event.
+            // the emitted 'event LogCreatePurchaseContract(address sender, address contractAddress)'.
             map(txReceipt => txReceipt.events.pop()),
-            tap(txEvent => console.log('txEvent: ', txEvent)),
-            // The 'contractAddress' is the first (and in this case only) parameter
-            // in the "logNewPurchaseContract(address contractAddress)" event
             map(txEvent => txEvent.args.contractAddress),
             tap(address => console.log('address: ', address)));
         }));

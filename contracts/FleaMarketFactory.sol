@@ -35,7 +35,7 @@ contract FleaMarketFactory is Ownable {
         contractName = "FleaMarket Smart Contract";
     }
 
-    event LogCreatePurchaseContract(address sender, bytes32 key);
+    event LogCreatePurchaseContract(address sender, address contractAddress);
     event LogRemovePurchaseContract(address sender, bytes32 key);
 
 
@@ -75,7 +75,7 @@ contract FleaMarketFactory is Ownable {
         address newContract = address(c);
         wgt.purchaseContract = newContract;
 
-        emit LogCreatePurchaseContract(msg.sender, key);
+        emit LogCreatePurchaseContract(msg.sender, newContract);
 
         return true;
     }
