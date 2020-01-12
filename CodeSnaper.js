@@ -1,12 +1,8 @@
-export enum FileUploadStatus {
-  Pending = 'Pending',
-  Success = 'Success',
-  Error = 'Error',
-  Progress = 'Progress',
-}
+import { ErrorEffects } from './error.effects';
+import { SnackBarEffects } from './snack-bar.effect';
 
-export interface State {
-    status: FileUploadStatus;
-    ipfsHash: string | null;
-    imageBlob?: Blob;
-}
+
+export const effects: any[] = [ErrorEffects, SnackBarEffects];
+
+export * from './error.effects';
+export * from './snack-bar.effect';

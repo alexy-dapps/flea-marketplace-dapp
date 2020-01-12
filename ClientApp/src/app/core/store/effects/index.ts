@@ -8,4 +8,4 @@ export const effects: any[] = [ErrorEffects, SnackBarEffects, Web3ProviderEffect
 export * from './error.effects';
 export * from './snack-bar.effect';
 export * from './web3-provider.effects';
-export * from './snack-bar.effect';
+export * from './ipfs-daemon.effects';
