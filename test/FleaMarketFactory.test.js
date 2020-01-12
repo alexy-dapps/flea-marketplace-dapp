@@ -154,8 +154,8 @@ the same already-deployed contract each time.
            +0x7465736c614379626572747275636b2d583031
             */
 
-           const address = await factory.getContractByKey(bytes32Key);
-            
+            const address = await factory.getContractByKey(bytes32Key);
+
             expectEvent(receipt, 'LogCreatePurchaseContract', {
                 sender: seller,
                 contractAddress: address
@@ -295,7 +295,13 @@ the same already-deployed contract each time.
             // validate state - should be Created
             //note that Solidity enum are converted explicitly to uint ==> will be 
             //retrieved from web3 as BN. the enum values start from 0.
-            //expect(await product.state()).to.be.a.bignumber.that.equal(new BN(0));
+            expect(await product.state()).to.be.a.bignumber.that.equal(new BN(0));
+
+            // check for commission value
+            expect(await product.commissionRate({
+                from: deployer
+            })).to.be.a.bignumber.that.equal(commission);
+
 
         })
 
@@ -621,6 +627,15 @@ the same already-deployed contract each time.
 
         })
 
+        it('should reject if someone trying to view commission rate', async () => {
+
+           // only deployer and seller allow
+            await product.commissionRate({
+                from: buddy
+            }).should.be.rejected;
+
+        })
+
         it('should reject if someone send ether to a purchase contract', async () => {
 
             await web3.eth.sendTransaction({ from: buddy, to: product.address, value: web3.utils.toWei('0.005', "ether") }).should.be.rejected;
@@ -636,11 +651,7 @@ the same already-deployed contract each time.
 
         })
 
-
     })
-
-
-
 
 })
 
