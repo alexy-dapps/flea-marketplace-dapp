@@ -12,19 +12,29 @@ export class PurchaseContractService {
 
   private readonly abi = [
     'function key() view returns(bytes32 key)',
-    'function title() view returns(string title)',
+    'function description() view returns(string description)',
     'function seller() view returns(address sellerAddress)',
     'function buyer() view returns(address buyerAddress)',
     'function price()  view returns(uint weiPrice)',
     'function balanceOf() view returns(uint weiBalance)',
-    'function ipfsHash() view returns(string ipfsHash)',
+    'function ipfsImageHash() view returns(string ipfsHash)',
     'function state() view returns(uint8 state)',
-    'event Aborted()',
-    'function abortBySeller()',
-    'event PurchaseConfirmed()',
-    'function buyerConfirmPurchase() payable',
-    'event ItemReceived()',
-    'function buyerConfirmReceived()',
+    'function commissionRate() view returns (uint commission)',
+
+    'event LogCanceledBySeller(address indexed sender, uint256 amount, bytes32 key)',
+    'function abortBySeller() returns (bool result)',
+
+    'event LogPurchaseConfirmed(address indexed sender, uint256 amount, bytes32 key)',
+    'function buyerPurchase() payable returns (bool result)',
+
+    'event LogReceivedByBuyer(address indexed sender, uint256 amount, bytes32 key)',
+    'function buyerConfirmReceived() returns (bool result)',
+
+    'event LogWithdrawBySeller(address indexed sender, uint256 amount, bytes32 key)',
+    'function withdrawBySeller() returns (bool result)',
+
+    'event LogWithdrawByOwner(address indexed sender, uint256 amount, bytes32 key)',
+    'function withdrawByOwner() returns (bool result)',
 
   ];
 

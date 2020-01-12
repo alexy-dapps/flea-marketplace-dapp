@@ -194,7 +194,13 @@ contract SafeRemotePurchase is Ownable {
 
         }
 
-
+    // only owner (==deployer) and seller can see it
+    function commissionRate() external view
+        condition(isOwner() || msg.sender == seller ) returns (uint commission)
+    {
+        return _commissionRate;
+    }
+    
     // Get balance of the contract
     function balanceOf() public view returns(uint) {
         return address(this).balance;

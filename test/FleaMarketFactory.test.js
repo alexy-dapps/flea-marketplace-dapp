@@ -153,8 +153,12 @@ the same already-deployed contract each time.
             -0x7465736c614379626572747275636b2d58303100000000000000000000000000
            +0x7465736c614379626572747275636b2d583031
             */
+
+           const address = await factory.getContractByKey(bytes32Key);
+            
             expectEvent(receipt, 'LogCreatePurchaseContract', {
                 sender: seller,
+                contractAddress: address
                 // key: bytes32Key 
             });
 
@@ -291,7 +295,7 @@ the same already-deployed contract each time.
             // validate state - should be Created
             //note that Solidity enum are converted explicitly to uint ==> will be 
             //retrieved from web3 as BN. the enum values start from 0.
-            expect(await product.state()).to.be.a.bignumber.that.equal(new BN(0));
+            //expect(await product.state()).to.be.a.bignumber.that.equal(new BN(0));
 
         })
 
