@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  //  fleaMarketContractAddress: '0xc2d028b33020c84edccf7adaac38a610526c38ee' // - for playing (blog)
-   fleaMarketContractAddress: '0xf9cF8563bcEFC200554c6cf1DFDfd54dB85D530d' // - for e-book
+   fleaMarketContractAddress: '0x8AbAB4a163c25E82e97823faC6E87652D58Ec834' // - for e-book
 };
 
 /*

@@ -629,7 +629,7 @@ the same already-deployed contract each time.
 
         it('should reject if someone trying to view commission rate', async () => {
 
-           // only deployer and seller allow
+            // only deployer and seller allow
             await product.commissionRate({
                 from: buddy
             }).should.be.rejected;
