@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { MarketPlaceAnchorModule } from '../market-place-anchor.module';
 import { EthersWeb3Provider } from '../../core/services/ethers-web3-provider';
 import { Observable, from, of, zip } from 'rxjs';
-import { map, mapTo, tap, switchMap } from 'rxjs/operators';
+import { map, mapTo, tap, switchMap, catchError } from 'rxjs/operators';
 import { ethers, Contract, utils } from 'ethers';
 import { PurchaseContractModel, ContractState } from '../models';
 
@@ -47,6 +47,14 @@ export class PurchaseContractService {
     // have read-only access to the Contract
     const contract: Contract = new ethers.Contract(contractAddress, this.abi, this.provider.getSigner());
 
+    const crObservable =  from(contract.commissionRate()).pipe(
+      map((commission: ethers.utils.BigNumber) => commission.toNumber()),
+
+      // only account with deployer or seller can retrieve this value,
+      // otherwise the contract will throw error.
+      catchError((err: Error) => of(0))
+    );
+
     // based on https://scotch.io/tutorials/rxjs-operators-for-dummies-forkjoin-zip-combinelatest-withlatestfrom
     return zip(
       from(contract.key()),
@@ -57,13 +65,14 @@ export class PurchaseContractService {
       from(contract.description()),
       from(contract.ipfsImageHash()),
       from(contract.state()),
+      from(crObservable),
 
     )
       .pipe(
 
-        map(([key, sellerAddress, buyerAddress, weiPrice, weiBalance, description, ipfsHash, state]) => {
+        map(([key, sellerAddress, buyerAddress, weiPrice, weiBalance, description, ipfsHash, state, commission]) => {
 
-          // console.log(`key: ${key}, weiPrice: ${weiPrice}, state: ${state}`);
+          console.log(`key: ${key}, weiPrice: ${weiPrice}, state: ${state}, commission: ${commission}`);
           // key: 0x706967794d6f64656c3030303500000000000000000000000000000000000000, weiPrice: 500000000000000, state: 0
           const product: PurchaseContractModel = {
 
