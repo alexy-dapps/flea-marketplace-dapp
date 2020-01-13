@@ -47,12 +47,12 @@ export class PurchaseContractService {
     // have read-only access to the Contract
     const contract: Contract = new ethers.Contract(contractAddress, this.abi, this.provider.getSigner());
 
-    const crObservable =  from(contract.commissionRate()).pipe(
+    const crObservable: Observable<number | null > =  from(contract.commissionRate()).pipe(
       map((commission: ethers.utils.BigNumber) => commission.toNumber()),
 
       // only account with deployer or seller can retrieve this value,
       // otherwise the contract will throw error.
-      catchError((err: Error) => of(0))
+      catchError((err: Error) => of(null))
     );
 
     // based on https://scotch.io/tutorials/rxjs-operators-for-dummies-forkjoin-zip-combinelatest-withlatestfrom
@@ -84,7 +84,8 @@ export class PurchaseContractService {
             balance: utils.formatEther(weiBalance as ethers.utils.BigNumberish),  // $ETH
             description: description as string,
             ipfsHash: ipfsHash as string,
-            state: state as ContractState
+            state: state as ContractState,
+            commission: commission ? commission as number : null
           };
 
           return product;

@@ -17,4 +17,5 @@ export interface PurchaseContractModel {
     description: string;
     ipfsHash: string;
     state: ContractState;
+    commission?: number;
 }
