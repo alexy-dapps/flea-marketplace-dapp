@@ -5,99 +5,106 @@
 
   <mat-card-content>
     <section fxLayout="row" fxLayoutAlign="start center">
-        <h3 class="mat-h3" fxFlex="36" fxFlexOffset="2">Contract Status:</h3>
-        <mat-chip fxFlex [selected]="true" [color]="status(contract.state).color">{{
+      <h3 class="mat-h3" fxFlex="36" fxFlexOffset="2">Contract Status:</h3>
+      <mat-chip fxFlex [selected]="true" [color]="status(contract.state).color">{{
                     status(contract.state).state
                   }}</mat-chip>
-    
-        <span fxFlex="20" fxFlexOffset="30">
-          <button mat-icon-button color="warn" matTooltip="Abort contract by seller" matTooltipPosition="above"
-            (click)="abortMe.emit()" [disabled]="!canAbort">
-            <mat-icon>flash_on</mat-icon>
-          </button>
-    
-          <button mat-icon-button color="warn" matTooltip="Remove contract by seller" matTooltipPosition="above"
-            (click)="remove.emit(contract.productKey)" [disabled]="!canRemove">
-            <mat-icon>delete_forever</mat-icon>
-          </button>
-        </span>
+
+      <span fxFlex="20" fxFlexOffset="30">
+        <button mat-icon-button color="warn" matTooltip="Abort contract by seller" matTooltipPosition="above"
+          (click)="abortMe.emit()" [disabled]="!canAbort">
+          <mat-icon>flash_on</mat-icon>
+        </button>
+
+        <button mat-icon-button color="warn" matTooltip="Remove contract by seller" matTooltipPosition="above"
+          (click)="remove.emit(contract.productKey)" [disabled]="!canRemove">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </span>
 
     </section>
 
-   
-  <section>
-    <mat-list dense>
-      <mat-list-item>
-        <h3 class="mat-h3">Product Key:</h3>
-        <span>{{ contract.productKey }}</span>
-      </mat-list-item>
 
-      <mat-list-item>
-        <h3 class="mat-h3">Product Description</h3>
-        <span>{{ contract.description }}</span>
-      </mat-list-item>
+    <section>
+      <mat-list dense>
+        <mat-list-item>
+          <h3 class="mat-h3">Product Key:</h3>
+          <span>{{ contract.productKey }}</span>
+        </mat-list-item>
 
-      <mat-list-item>
-        <h3 class="mat-h3">Contract Address</h3>
-        <span>{{ contract.contractAddress }}</span>
-      </mat-list-item>
+        <mat-list-item>
+          <h3 class="mat-h3">Product Description</h3>
+          <span>{{ contract.description }}</span>
+        </mat-list-item>
 
-      <mat-list-item>
-        <h3 class="mat-h3">Price</h3>
-        <span>{{ contract.price }} ETH</span>
-      </mat-list-item>
+        <!-- 
+        <mat-list-item>
+          <h3 class="mat-h3">Contract Address</h3>
+          <span>{{ contract.contractAddress }}</span>
+        </mat-list-item>
+        -->
 
-      <mat-list-item>
-        <h3 class="mat-h3">Balance</h3>
-        <span>{{ contract.balance }} ETH</span>
-      </mat-list-item>
+        <mat-list-item>
+          <h3 class="mat-h3">Price</h3>
+          <span>{{ contract.price }} ETH</span>
+        </mat-list-item>
 
-      <mat-list-item>
-        <h3 class="mat-h3">Seller Address</h3>
-        <span>{{ contract.sellerAddress }}</span>
-      </mat-list-item>
+        <mat-list-item>
+          <h3 class="mat-h3">Balance</h3>
+          <span>{{ contract.balance }} ETH</span>
+        </mat-list-item>
 
-      <mat-list-item *ngIf="contract.buyerAddress">
-        <h3 class="mat-h3">Buyer Address</h3>
-        <span>{{ contract.buyerAddress }}</span>
-      </mat-list-item>
+        <mat-list-item>
+          <h3 class="mat-h3">Seller Address</h3>
+          <span>{{ contract.sellerAddress }}</span>
+        </mat-list-item>
 
-      <mat-list-item>
-        <h3 class="mat-h3">IPFS Hash</h3>
-        <span>{{ contract.ipfsHash }}</span>
-      </mat-list-item>
+        <mat-list-item *ngIf="contract.buyerAddress">
+          <h3 class="mat-h3">Buyer Address</h3>
+          <span>{{ contract.buyerAddress }}</span>
+        </mat-list-item>
 
-    </mat-list>
-  </section>
+        <!-- 
+         <mat-list-item>
+          <h3 class="mat-h3">IPFS Hash</h3>
+          <span>{{ contract.ipfsHash }}</span>
+         </mat-list-item>
+        -->
+        
 
-  <mat-divider></mat-divider>
+      </mat-list>
+    </section>
 
-  <section fxLayout="row" fxLayoutAlign="start center" style="padding: 15px 0px">
+    <mat-divider></mat-divider>
 
-    <h3 class="mat-h3" fxFlex="36" fxFlexOffset="2">Product Image</h3>
-    <img #ipfsImage height="120px" width="120px">
+    <section fxLayout="row" fxLayoutAlign="start center" style="padding: 15px 0px">
 
-  </section>
+      <h3 class="mat-h3" fxFlex="36" fxFlexOffset="2">Product Image</h3>
+      <img #ipfsImage height="120px" width="120px">
 
-  <mat-divider></mat-divider>
+    </section>
 
-  <section fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: 10px">
+    <mat-divider></mat-divider>
+
+    <section fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: 10px">
 
       <mat-form-field appearance="outline">
-          <mat-label>Value in ETH. (2X price)</mat-label>
-          <input matInput [formControl]="buyerConfirmPrice" required>
-          <mat-error *ngIf="buyerConfirmPrice.invalid && buyerConfirmPrice.touched">{{validatorError}}</mat-error>
-          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-          <mat-hint>Buyer Confirm Purchase</mat-hint>
+        <mat-label>Value in ETH. (2X price)</mat-label>
+        <input matInput [formControl]="buyerConfirmPrice" required>
+        <mat-error *ngIf="buyerConfirmPrice.invalid && buyerConfirmPrice.touched">{{validatorError}}</mat-error>
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        <mat-hint>Buyer Confirm Purchase</mat-hint>
       </mat-form-field>
 
-      <button mat-raised-button color="warn" [disabled]="!canBuy"  (click)="buy.emit(buyerConfirmPrice.value)">Buyer Execute Purchase</button>
-      <button mat-raised-button color="primary" [disabled]="!canDelivery"  (click)="delivery.emit()">Buyer Confirm Delivery</button>
-   
-  </section>
-  <mat-card-footer>
+      <button mat-raised-button color="warn" [disabled]="!canBuy" (click)="buy.emit(buyerConfirmPrice.value)">Buyer
+        Execute Purchase</button>
+      <button mat-raised-button color="primary" [disabled]="!canDelivery" (click)="delivery.emit()">Buyer Confirm
+        Delivery</button>
 
-  </mat-card-footer>
+    </section>
+    <mat-card-footer>
+
+    </mat-card-footer>
 
   </mat-card-content>
 
@@ -107,7 +114,7 @@
 
 
 <ng-template #noSelectedTmpl>
-    ...Please wait for the contact to load.
+  ...Please wait for the contact to load.
 </ng-template>
 
 
