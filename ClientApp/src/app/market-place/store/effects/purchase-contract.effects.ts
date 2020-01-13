@@ -138,11 +138,11 @@ export class PurchaseContractEffects {
         let msg = '';
 
         if (action.type === '[PurchaseContract/Command] Abort Purchase Contract Success') {
-          msg = `The request made by the seller to abort the contract '${contract.title}' has been confirmed!`;
+          msg = `The request made by the seller to abort the contract '${contract.description}' has been confirmed!`;
         } else if (action.type === '[PurchaseContract/Command] Confirm Buy Success') {
-          msg = `Deposit fund made by the buyer for item '${contract.title}' has been confirmed!`;
+          msg = `Deposit fund made by the buyer for item '${contract.description}' has been confirmed!`;
         } else if (action.type === '[PurchaseContract/Command] Confirm Product Delivery Success') {
-          msg = `Receiving item '${contract.title}' by the buyer has been confirmed!`;
+          msg = `Receiving item '${contract.description}' by the buyer has been confirmed!`;
         }
 
 
@@ -369,7 +369,7 @@ export class PurchaseContractEffects {
           dialogConfig.autoFocus = true;
           dialogConfig.data = {
             title: 'Confirm Delivery',
-            content: `Are you sure you want to confirm that you received the purchase item ${contract.title}`,
+            content: `Are you sure you want to confirm that you received the purchase item ${contract.description}`,
             output: contract.contractAddress
           };
 

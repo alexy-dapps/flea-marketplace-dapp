@@ -13,8 +13,8 @@ export interface PurchaseContractModel {
     sellerAddress: string;
     buyerAddress?: string;   // optional as item may not under contract yet by the buyer
     price: string;  // $ETH
-    balanceOf: string;  // $ETH
-    title: string;
+    balance: string;  // $ETH
+    description: string;
     ipfsHash: string;
     state: ContractState;
 }

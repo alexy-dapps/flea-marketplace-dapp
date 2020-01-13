@@ -54,14 +54,14 @@ export class PurchaseContractService {
       from(contract.buyer()),
       from(contract.price()),
       from(contract.balanceOf()),
-      from(contract.title()),
-      from(contract.ipfsHash()),
+      from(contract.description()),
+      from(contract.ipfsImageHash()),
       from(contract.state()),
 
     )
       .pipe(
 
-        map(([key, sellerAddress, buyerAddress, weiPrice, weiBalance, title, ipfsHash, state]) => {
+        map(([key, sellerAddress, buyerAddress, weiPrice, weiBalance, description, ipfsHash, state]) => {
 
           // console.log(`key: ${key}, weiPrice: ${weiPrice}, state: ${state}`);
           // key: 0x706967794d6f64656c3030303500000000000000000000000000000000000000, weiPrice: 500000000000000, state: 0
@@ -72,8 +72,8 @@ export class PurchaseContractService {
             sellerAddress: sellerAddress as string,
             buyerAddress: (buyerAddress === ethers.constants.AddressZero) ? null : buyerAddress as string,
             price: utils.formatEther(weiPrice as ethers.utils.BigNumberish),  // $ETH
-            balanceOf: utils.formatEther(weiBalance as ethers.utils.BigNumberish),  // $ETH
-            title: title as string,
+            balance: utils.formatEther(weiBalance as ethers.utils.BigNumberish),  // $ETH
+            description: description as string,
             ipfsHash: ipfsHash as string,
             state: state as ContractState
           };
