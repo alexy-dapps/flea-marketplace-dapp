@@ -232,7 +232,7 @@ export class PurchaseContractEffects {
       this.actions$.pipe(
         ofType(PurchaseContractActions.removePurchaseContractSuccess),
         tap(_ => {
-          this.router.navigate(['/p2p-bazaar']);
+          this.router.navigate(['/market-place']);
         })
       ),
     { dispatch: false }
@@ -298,8 +298,8 @@ export class PurchaseContractEffects {
           // on the same route
           // generate a random product key
           const randomKey = Math.random().toString(36).replace('0.', '');
-          await this.router.navigate(['/p2p-bazaar/products', randomKey]);
-          await this.router.navigate(['/p2p-bazaar/products', contract.productKey]);
+          await this.router.navigate(['/market-place/products', randomKey]);
+          await this.router.navigate(['/market-place/products', contract.productKey]);
 
         })
       ),

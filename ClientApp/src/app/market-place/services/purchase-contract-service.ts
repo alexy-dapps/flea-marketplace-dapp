@@ -15,6 +15,7 @@ export class PurchaseContractService {
     'function description() view returns(string description)',
     'function seller() view returns(address sellerAddress)',
     'function buyer() view returns(address buyerAddress)',
+    'function owner() view returns(address ownerAddress)',
     'function price()  view returns(uint weiPrice)',
     'function balanceOf() view returns(uint weiBalance)',
     'function ipfsImageHash() view returns(string ipfsHash)',
@@ -60,6 +61,7 @@ export class PurchaseContractService {
       from(contract.key()),
       from(contract.seller()),
       from(contract.buyer()),
+      from(contract.owner()),
       from(contract.price()),
       from(contract.balanceOf()),
       from(contract.description()),
@@ -70,7 +72,7 @@ export class PurchaseContractService {
     )
       .pipe(
 
-        map(([key, sellerAddress, buyerAddress, weiPrice, weiBalance, description, ipfsHash, state, commission]) => {
+        map(([key, sellerAddress, buyerAddress, ownerAddress, weiPrice, weiBalance, description, ipfsHash, state, commission]) => {
 
           console.log(`key: ${key}, weiPrice: ${weiPrice}, state: ${state}, commission: ${commission}`);
           // key: 0x706967794d6f64656c3030303500000000000000000000000000000000000000, weiPrice: 500000000000000, state: 0
@@ -80,6 +82,7 @@ export class PurchaseContractService {
             contractAddress,
             sellerAddress: sellerAddress as string,
             buyerAddress: (buyerAddress === ethers.constants.AddressZero) ? null : buyerAddress as string,
+            ownerAddress: ownerAddress as string,
             price: utils.formatEther(weiPrice as ethers.utils.BigNumberish),  // $ETH
             balance: utils.formatEther(weiBalance as ethers.utils.BigNumberish),  // $ETH
             description: description as string,
@@ -137,7 +140,7 @@ export class PurchaseContractService {
     const wei = utils.parseEther(etherValue);
     // based on https://docs.ethers.io/ethers.js/html/cookbook-contracts.html
     // Call the contract method, getting back the transaction tx
-    const token = contract.buyerConfirmPurchase({
+    const token = contract.buyerPurchase({
       value: wei
     });
 

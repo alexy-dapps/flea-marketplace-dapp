@@ -64,12 +64,10 @@
           <span>{{ contract.buyerAddress }}</span>
         </mat-list-item>
 
-        <!-- 
-         <mat-list-item>
-          <h3 class="mat-h3">IPFS Hash</h3>
-          <span>{{ contract.ipfsHash }}</span>
-         </mat-list-item>
-        -->
+        <mat-list-item>
+          <h3 class="mat-h3" *ngIf="showCommission">Commission</h3>
+          <span>{{ contract.commission }}</span>
+        </mat-list-item>
         
 
       </mat-list>

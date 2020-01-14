@@ -12,6 +12,7 @@ export interface PurchaseContractModel {
     contractAddress: string;
     sellerAddress: string;
     buyerAddress?: string;   // optional as item may not under contract yet by the buyer
+    ownerAddress: string;
     price: string;  // $ETH
     balance: string;  // $ETH
     description: string;

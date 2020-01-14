@@ -114,6 +114,12 @@ export class PurchaseContractDetailComponent implements OnChanges {
     (this.contract.buyerAddress === this.account);
   }
 
+  // only the seller and the deployer can see commission field
+  get showCommission() {
+    return (this.contract.ownerAddress === this.account) ||
+    (this.contract.sellerAddress === this.account);
+  }
+
 
 }
 
