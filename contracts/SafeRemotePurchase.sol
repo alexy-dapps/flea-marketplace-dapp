@@ -23,7 +23,7 @@ contract SafeRemotePurchase is Ownable {
     string public description;
     string public ipfsImageHash;
     
-    enum State { Created, Locked, Canceled, BuyerPaid, SellerPaid, OwnerPaid, Completed}
+    enum State { Created, Locked, Canceled, ItemReceived, SellerPaid, OwnerPaid, Completed}
     State public state;
 
 
@@ -100,7 +100,7 @@ contract SafeRemotePurchase is Ownable {
         inState(State.Locked) returns (bool result)
     { 
         emit LogReceivedByBuyer(msg.sender, price, key);
-        state = State.BuyerPaid;
+        state = State.ItemReceived;
         buyer.transfer(price);
 
         return true;
@@ -127,7 +127,7 @@ contract SafeRemotePurchase is Ownable {
     }
     
     function withdrawBySeller() external onlySeller
-        condition(state == State.BuyerPaid || state == State.OwnerPaid ) returns (bool result)
+        condition(state == State.ItemReceived || state == State.OwnerPaid ) returns (bool result)
         {
         
             if (state == State.OwnerPaid) {
@@ -140,7 +140,7 @@ contract SafeRemotePurchase is Ownable {
 
                 return true;
                 
-            } else if (state == State.BuyerPaid) {
+            } else if (state == State.ItemReceived) {
                 
                 // calculate commission part
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);
@@ -163,7 +163,7 @@ contract SafeRemotePurchase is Ownable {
         }
 
     function withdrawByOwner() external onlyOwner
-        condition(state == State.BuyerPaid || state == State.SellerPaid ) returns (bool result)
+        condition(state == State.ItemReceived || state == State.SellerPaid ) returns (bool result)
         {
         
             if (state == State.SellerPaid) {
@@ -176,7 +176,7 @@ contract SafeRemotePurchase is Ownable {
 
                 return true;
                 
-            } else if (state == State.BuyerPaid) {
+            } else if (state == State.ItemReceived) {
                 
                 // calculate commission part: 3.5% ==> 350 /100
                 uint256 commission  = (price.mul(_commissionRate)).div(10000);

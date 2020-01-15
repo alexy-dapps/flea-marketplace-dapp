@@ -4,7 +4,7 @@ export enum ContractState {
   Created = 0,
   Locked,
   Canceled,
-  BuyerPaid,
+  ItemReceived,
   SellerPaid,
   OwnerPaid,
   Completed

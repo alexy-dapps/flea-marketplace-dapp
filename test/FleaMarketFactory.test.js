@@ -353,7 +353,7 @@ the same already-deployed contract each time.
             // validate that the buyer gets his escrow money back
             expect(buyerBalanceAfter).to.be.a.bignumber.that.equal(buyerBalanceBefore.add(price).sub(gasCost));
 
-            // validate state - should be BuyerPaid
+            // validate state - should be ItemReceived
             expect(await product.state()).to.be.a.bignumber.that.equal(new BN(3));
 
             // validate smart contract ballance

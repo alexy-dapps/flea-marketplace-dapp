@@ -38,7 +38,7 @@ export class PurchaseContractDetailComponent implements OnChanges {
     {state: ContractState.Created, color: 'accent'},
     {state: ContractState.Locked, color: 'primary'},
     {state: ContractState.Canceled, color: undefined},
-    {state: ContractState.BuyerPaid, color: 'primary'},
+    {state: ContractState.ItemReceived, color: 'primary'},
     {state: ContractState.SellerPaid, color: 'primary'},
     {state: ContractState.OwnerPaid, color: 'primary'},
     {state: ContractState.Completed, color: 'warn'},
@@ -49,7 +49,6 @@ export class PurchaseContractDetailComponent implements OnChanges {
   constructor(
     @Inject(windowRefToken) private windowRef: Window
   ) { }
-
 
   ngOnChanges(changes: SimpleChanges) {
 
@@ -68,7 +67,6 @@ export class PurchaseContractDetailComponent implements OnChanges {
       this.buyerConfirmPrice.hasError('pattern') ? 'Not a valid format' :
         '';
   }
-
 
 
   // only the seller can remove contract and the state is Created
