@@ -69,7 +69,7 @@ export class PurchaseContractDetailComponent implements OnChanges {
   }
 
 
-  // only the seller can remove contract and the state is Created
+  // only the seller can remove contract and the state is Canceled
   get canRemove() {
     return (this.contract.state === ContractState.Canceled) &&
     (this.contract.sellerAddress === this.account);
@@ -82,7 +82,7 @@ export class PurchaseContractDetailComponent implements OnChanges {
     (this.contract.sellerAddress === this.account);
 
   }
-  /* criteria to buy
+  /* criteria to buy action
    - contract in state Created
    - Buyer address is null
    - And it is should be not the Seller
@@ -95,7 +95,7 @@ export class PurchaseContractDetailComponent implements OnChanges {
     && (this.contract.sellerAddress !== this.account);
 
   }
-  // only the buyer can abort contract and the state is Locked
+  // only the buyer can perform this action and the state is Locked
   get canDelivery() {
     return (this.contract.state === ContractState.Locked) &&
     (this.contract.buyerAddress === this.account);
