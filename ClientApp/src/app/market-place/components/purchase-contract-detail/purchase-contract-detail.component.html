@@ -5,12 +5,13 @@
 
   <mat-card-content>
     <section fxLayout="row" fxLayoutAlign="start center">
-      <h3 class="mat-h3" fxFlex="36" fxFlexOffset="2">Contract Status:</h3>
+     
+      <h3 class="mat-h3" fxFlex="36" fxFlexOffset="4">Contract Status:</h3>
       <mat-chip fxFlex [selected]="true" [color]="statusColors[contract.state].color">{{
         enumToString(statusColors[contract.state].state)
                   }}</mat-chip>
 
-      <span fxFlex="20" fxFlexOffset="30">
+      <span fxFlex="20" fxFlexOffset="23">
         <button mat-icon-button color="warn" matTooltip="Abort contract by seller" matTooltipPosition="above"
           (click)="abortMe.emit()" [disabled]="!canAbort">
           <mat-icon>flash_on</mat-icon>
@@ -64,8 +65,8 @@
           <span>{{ contract.buyerAddress }}</span>
         </mat-list-item>
 
-        <mat-list-item>
-          <h3 class="mat-h3" *ngIf="showCommission">Commission</h3>
+        <mat-list-item *ngIf="showCommission">
+          <h3 class="mat-h3">Commission</h3>
           <span>{{ contract.commission/10000 | percent: '1.0-2' }}</span>
         </mat-list-item>
 
