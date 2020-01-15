@@ -6,7 +6,7 @@
   <mat-card-content>
     <section fxLayout="row" fxLayoutAlign="start center">
      
-      <h3 class="mat-h3" fxFlex="36" fxFlexOffset="4">Contract Status:</h3>
+      <h3 class="mat-h3" fxFlex="38" fxFlexOffset="2">Contract Status:</h3>
       <mat-chip fxFlex [selected]="true" [color]="statusColors[contract.state].color">{{
         enumToString(statusColors[contract.state].state)
                   }}</mat-chip>
@@ -85,7 +85,7 @@
 
     <mat-divider></mat-divider>
 
-    <section fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: 10px">
+    <section fxLayout="row wrap" fxLayoutAlign="space-between center" style="margin-top: 10px">
 
       <mat-form-field appearance="outline">
         <mat-label>Value in ETH. (2X price)</mat-label>
