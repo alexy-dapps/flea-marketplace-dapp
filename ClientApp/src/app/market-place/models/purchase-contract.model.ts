@@ -1,10 +1,13 @@
 
 
 export enum ContractState {
-  'Created' = 0,
-  'Locked',
-  'Inactive',
-  'Canceled'
+  Created = 0,
+  Locked,
+  Canceled,
+  BuyerPaid,
+  SellerPaid,
+  OwnerPaid,
+  Completed
 }
 
 export interface PurchaseContractModel {

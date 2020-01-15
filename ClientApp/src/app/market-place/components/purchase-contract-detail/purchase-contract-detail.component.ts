@@ -3,6 +3,13 @@ import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, Injec
 import { FormControl, Validators } from '@angular/forms';
 import { windowRefToken } from '../../../core/services/tokens';
 import { PurchaseContractModel, ContractState } from '../../models';
+import {ThemePalette} from '@angular/material/core';
+
+
+interface StatusColor {
+  state: ContractState;
+  color: ThemePalette;
+}
 
 @Component({
   selector: 'app-purchase-contract-detail',
@@ -14,7 +21,6 @@ import { PurchaseContractModel, ContractState } from '../../models';
       }
 
     `
-
   ]
 })
 export class PurchaseContractDetailComponent implements OnChanges {
@@ -27,6 +33,16 @@ export class PurchaseContractDetailComponent implements OnChanges {
   @Output() abortMe = new EventEmitter();
   @Output() buy = new EventEmitter<string>();
   @Output() delivery = new EventEmitter();
+
+  statusColors: StatusColor[] = [
+    {state: ContractState.Created, color: 'accent'},
+    {state: ContractState.Locked, color: 'primary'},
+    {state: ContractState.Canceled, color: undefined},
+    {state: ContractState.BuyerPaid, color: 'primary'},
+    {state: ContractState.SellerPaid, color: 'primary'},
+    {state: ContractState.OwnerPaid, color: 'primary'},
+    {state: ContractState.Completed, color: 'warn'},
+  ];
 
   buyerConfirmPrice = new FormControl('', [Validators.required, , Validators.pattern(/^\d+(\.\d{1,4})?$/)]);
 
@@ -44,43 +60,16 @@ export class PurchaseContractDetailComponent implements OnChanges {
     this.buyerConfirmPrice.reset();
   }
 
+  // based on http://geekswithblogs.net/PhubarBaz/archive/2013/11/25/typescript-enums-to-string.aspx
+  enumToString = (state: ContractState): string => ContractState[state];
+
   get validatorError() {
     return this.buyerConfirmPrice.hasError('required') ? 'You must enter a value' :
       this.buyerConfirmPrice.hasError('pattern') ? 'Not a valid format' :
         '';
   }
 
-  status = (state: ContractState) => {
 
-    switch (state) {
-      case ContractState.Created: {
-        return {
-          color: 'accent',
-          state: 'Created'
-        };
-      }
-      case ContractState.Locked: {
-        return {
-          color: 'primary',
-          state: 'Locked'
-        };
-      }
-      case ContractState.Inactive: {
-        return {
-          color: 'warn',
-          state: 'Inactive'
-        };
-      }
-      case ContractState.Canceled: {
-        return {
-          color: '',
-          state: 'Canceled'
-        };
-      }
-
-    }
-
-  }
 
   // only the seller can remove contract and the state is Created
   get canRemove() {

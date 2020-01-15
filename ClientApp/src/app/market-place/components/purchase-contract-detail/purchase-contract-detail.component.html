@@ -6,8 +6,8 @@
   <mat-card-content>
     <section fxLayout="row" fxLayoutAlign="start center">
       <h3 class="mat-h3" fxFlex="36" fxFlexOffset="2">Contract Status:</h3>
-      <mat-chip fxFlex [selected]="true" [color]="status(contract.state).color">{{
-                    status(contract.state).state
+      <mat-chip fxFlex [selected]="true" [color]="statusColors[contract.state].color">{{
+        enumToString(statusColors[contract.state].state)
                   }}</mat-chip>
 
       <span fxFlex="20" fxFlexOffset="30">
@@ -68,7 +68,7 @@
           <h3 class="mat-h3" *ngIf="showCommission">Commission</h3>
           <span>{{ contract.commission/10000 | percent: '1.0-2' }}</span>
         </mat-list-item>
-        
+
 
       </mat-list>
     </section>
