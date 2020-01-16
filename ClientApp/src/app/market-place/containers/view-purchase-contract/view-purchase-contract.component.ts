@@ -23,7 +23,10 @@ import { PurchaseContractModel } from '../../models';
         (remove)="removePurchaseContract($event)"
         (abortMe)="abortPurchaseContract()"
         (buy)="confirmBuy($event)"
-        (delivery)="confirmDelivery()">
+        (delivery)="confirmDelivery()"
+        (releaseEscrow)="withdrawBySeller()"
+        (receiveCommission)="withdrawByOwner()"
+        >
       </app-purchase-contract-detail>
     `,
 })
@@ -84,6 +87,14 @@ export class ViewPurchaseContractComponent implements OnInit, OnDestroy {
 
   confirmDelivery() {
     this.store$.dispatch(PurchaseContractActions.confirmDelivery());
+  }
+
+  withdrawBySeller() {
+    this.store$.dispatch(PurchaseContractActions.releaseEscrow());
+  }
+
+  withdrawByOwner() {
+    this.store$.dispatch(PurchaseContractActions.withdrawByOwner());
   }
 
   ngOnDestroy() {

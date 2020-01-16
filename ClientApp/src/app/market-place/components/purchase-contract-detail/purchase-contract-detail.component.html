@@ -95,10 +95,16 @@
         <mat-hint>Buyer Confirm Purchase</mat-hint>
       </mat-form-field>
 
-      <button mat-raised-button color="warn" *ngIf="canBuy" [disabled]="!(buyerConfirmPrice.valid && buyerConfirmPrice.dirty)" (click)="buy.emit(buyerConfirmPrice.value)">Buyer
-        Execute Purchase</button>
-      <button mat-raised-button color="accent" *ngIf="canDelivery" (click)="delivery.emit()">Buyer Confirm
-        Delivery</button>
+      <button mat-raised-button color="warn" *ngIf="canBuy" [disabled]="!(buyerConfirmPrice.valid && buyerConfirmPrice.dirty)" (click)="buy.emit(buyerConfirmPrice.value)">
+        Buyer Execute Purchase</button>
+      <button mat-raised-button color="accent" *ngIf="canDelivery" (click)="delivery.emit()">
+        Buyer Confirm Delivery</button> 
+      <button mat-raised-button color="primary" matTooltip="Seller click to receive escrow" matTooltipPosition="above" *ngIf="canReleaseEscrow" (click)="releaseEscrow.emit()">
+        Seller Receive Escrow <mat-icon>local_bar</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" matTooltip="Owner click to receive commission" matTooltipPosition="above" *ngIf="canReceiveCommission" (click)="receiveCommission.emit()">
+        Owner Receive Commission <mat-icon>monetization_on</mat-icon>
+      </button>
 
     </section>
     <mat-card-footer>

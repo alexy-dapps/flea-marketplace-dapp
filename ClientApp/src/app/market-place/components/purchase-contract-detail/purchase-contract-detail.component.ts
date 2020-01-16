@@ -33,12 +33,14 @@ export class PurchaseContractDetailComponent implements OnChanges {
   @Output() abortMe = new EventEmitter();
   @Output() buy = new EventEmitter<string>();
   @Output() delivery = new EventEmitter();
+  @Output() releaseEscrow = new EventEmitter();
+  @Output() receiveCommission = new EventEmitter();
 
   statusColors: StatusColor[] = [
     {state: ContractState.Created, color: 'accent'},
     {state: ContractState.Locked, color: 'primary'},
     {state: ContractState.Canceled, color: undefined},
-    {state: ContractState.ItemReceived, color: 'primary'},
+    {state: ContractState.ItemReceived, color: 'accent'},
     {state: ContractState.SellerPaid, color: 'primary'},
     {state: ContractState.OwnerPaid, color: 'primary'},
     {state: ContractState.Completed, color: 'warn'},
@@ -106,6 +108,15 @@ export class PurchaseContractDetailComponent implements OnChanges {
     (this.contract.sellerAddress === this.account);
   }
 
+  get canReleaseEscrow() {
+    return (this.contract.state === ContractState.ItemReceived || this.contract.state === ContractState.OwnerPaid ) &&
+    (this.contract.sellerAddress === this.account);
+  }
+
+  get canReceiveCommission() {
+    return (this.contract.state === ContractState.ItemReceived || this.contract.state === ContractState.SellerPaid ) &&
+    (this.contract.ownerAddress === this.account);
+  }
 
 }
 
