@@ -89,8 +89,7 @@ export class PurchaseContractDetailComponent implements OnChanges {
 
   */
   get canBuy() {
-    return this.buyerConfirmPrice.valid && this.buyerConfirmPrice.touched
-    && (this.contract.state === ContractState.Created)
+    return (this.contract.state === ContractState.Created)
     && (!this.contract.buyerAddress)
     && (this.contract.sellerAddress !== this.account);
 

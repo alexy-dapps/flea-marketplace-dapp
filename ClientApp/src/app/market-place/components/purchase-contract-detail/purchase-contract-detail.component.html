@@ -87,7 +87,7 @@
 
     <section fxLayout="row wrap" fxLayoutAlign="space-between center" style="margin-top: 10px">
 
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" *ngIf="canBuy">
         <mat-label>Value in ETH. (2X price)</mat-label>
         <input matInput [formControl]="buyerConfirmPrice" required>
         <mat-error *ngIf="buyerConfirmPrice.invalid && buyerConfirmPrice.touched">{{validatorError}}</mat-error>
@@ -95,9 +95,9 @@
         <mat-hint>Buyer Confirm Purchase</mat-hint>
       </mat-form-field>
 
-      <button mat-raised-button color="warn" [disabled]="!canBuy" (click)="buy.emit(buyerConfirmPrice.value)">Buyer
+      <button mat-raised-button color="warn" *ngIf="canBuy" [disabled]="!(buyerConfirmPrice.valid && buyerConfirmPrice.dirty)" (click)="buy.emit(buyerConfirmPrice.value)">Buyer
         Execute Purchase</button>
-      <button mat-raised-button color="primary" [disabled]="!canDelivery" (click)="delivery.emit()">Buyer Confirm
+      <button mat-raised-button color="accent" *ngIf="canDelivery" (click)="delivery.emit()">Buyer Confirm
         Delivery</button>
 
     </section>
