@@ -69,10 +69,10 @@ export class PurchaseContractDetailComponent implements OnChanges {
   }
 
 
-  // only the seller can remove contract and the state is Canceled
-  get canRemove() {
+  // only the deployer can remove contract and the state is Canceled
+  get removeFromListing() {
     return (this.contract.state === ContractState.Canceled) &&
-    (this.contract.sellerAddress === this.account);
+    (this.contract.ownerAddress === this.account);
   }
 
 

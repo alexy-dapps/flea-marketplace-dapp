@@ -18,7 +18,7 @@
         </button>
 
         <button mat-icon-button color="warn" matTooltip="Remove contract by seller" matTooltipPosition="above"
-          (click)="remove.emit(contract.productKey)" [disabled]="!canRemove">
+          (click)="remove.emit(contract.productKey)" [disabled]="!removeFromListing">
           <mat-icon>delete_forever</mat-icon>
         </button>
       </span>
