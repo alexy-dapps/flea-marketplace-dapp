@@ -90,9 +90,8 @@ export class PurchaseContractEffects {
         PurchaseContractActions.confirmBuy,
         PurchaseContractActions.confirmDelivery
       ),
-      /*
-       Related to the operators mapTo and concatMapTo. These operators map to static values.
-     */
+
+     // Related to the operators mapTo and concatMapTo. These operators map to static values.
       mapTo(SpinnerActions.show())
     )
   );

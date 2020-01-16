@@ -48,7 +48,7 @@ export class PurchaseContractService {
     // have read-only access to the Contract
     const contract: Contract = new ethers.Contract(contractAddress, this.abi, this.provider.getSigner());
 
-    const crObservable: Observable<number | null > =  from(contract.commissionRate()).pipe(
+    const crObservable: Observable<number | null> = from(contract.commissionRate()).pipe(
       map((commission: ethers.utils.BigNumber) => commission.toNumber()),
 
       // only account with deployer or seller can retrieve this value,
@@ -155,7 +155,7 @@ export class PurchaseContractService {
             tap((txReceipt: any) => console.log('txReceipt: ', txReceipt)),
 
             // The receipt will have an "events" Array, which will have
-            // the emitted event from the Contract. The "PurchaseConfirmed"
+            // the emitted event from the Contract. The "LogPurchaseConfirmed"
             // call is the last event.
             map(txReceipt => txReceipt.events.pop()),
             tap(txEvent => console.log('event: ', txEvent.event)),
@@ -197,6 +197,35 @@ export class PurchaseContractService {
 
   }
 
+  public withdrawBySeller(contractAddress: string): Observable<boolean> {
+
+    const contract: Contract = new ethers.Contract(contractAddress, this.abi, this.provider.getSigner());
+
+    // based on https://docs.ethers.io/ethers.js/html/cookbook-contracts.html
+    // Call the contract method, getting back the transaction tx
+    const token = contract.withdrawBySeller();
+    return from(token)
+      .pipe(
+        switchMap((tx: any) => {
+
+          console.log('withdrawBySeller Tx:', tx);
+          // Wait for transaction to be mined
+          // Returned a Promise which would resolve to the TransactionReceipt once it is mined.
+          return from(tx.wait()).pipe(
+            tap((txReceipt: any) => console.log('txReceipt: ', txReceipt)),
+
+            // The receipt will have an "events" Array, which will have
+            // the emitted event from the Contract. The "LogWithdrawBySeller"
+            //  is the last event.
+            map(txReceipt => txReceipt.events.pop()),
+            // tslint:disable-next-line:max-line-length
+            tap(txEvent => console.log(`event: ${txEvent.event}, sent by: ${txEvent.args.sender}, withdrawal amount: ${txEvent.args.amount}`)),
+            mapTo(true),
+
+          );
+        }));
+
+  }
 
 
 }
