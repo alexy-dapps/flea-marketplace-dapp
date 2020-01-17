@@ -206,7 +206,6 @@ export class PurchaseContractEffects {
             */
             concatMap(productKey =>
               [PurchaseContractActions.removePurchaseContractSuccess({ key: productKey }),
-              // update ballance
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
@@ -261,7 +260,6 @@ export class PurchaseContractEffects {
             tap(address => console.log(`Successfully canceled contract: ${address} `)),
             concatMapTo(
               [PurchaseContractActions.abortSelectedPurchaseContractSuccess(),
-              // update ballance
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
@@ -317,7 +315,7 @@ export class PurchaseContractEffects {
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
 
-          //  * Gets an observable that is notified when the dialog is finished closing.
+          // Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
 
         }),
@@ -331,7 +329,6 @@ export class PurchaseContractEffects {
             tap(address => console.log(`Purchase confirmed successfully for the contract: ${address} `)),
             concatMapTo(
               [PurchaseContractActions.confirmBuySuccess(),
-              // update ballance
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
@@ -361,7 +358,7 @@ export class PurchaseContractEffects {
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
 
-          //  * Gets an observable that is notified when the dialog is finished closing.
+          // Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
 
         }),
@@ -375,7 +372,6 @@ export class PurchaseContractEffects {
             tap(address => console.log(`Delivery confirmed successfully for the contract: ${address} `)),
             concatMapTo(
               [PurchaseContractActions.confirmDeliverySuccess(),
-              // update ballance
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
