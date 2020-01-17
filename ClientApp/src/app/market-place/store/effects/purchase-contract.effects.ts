@@ -72,7 +72,7 @@ export class PurchaseContractEffects {
           map(contract =>
             PurchaseContractActions.loadPurchaseContractSuccess({ contract })),
           catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide()))
-          );
+        );
       })
 
     ));
@@ -85,7 +85,8 @@ export class PurchaseContractEffects {
         PurchaseContractActions.removePurchaseContract,
         PurchaseContractActions.abortSelectedPurchaseContract,
         PurchaseContractActions.confirmBuy,
-        PurchaseContractActions.confirmDelivery
+        PurchaseContractActions.confirmDelivery,
+        PurchaseContractActions.releaseEscrow
       ),
 
       // Related to the operators mapTo and concatMapTo. These operators map to static values.
@@ -101,7 +102,8 @@ export class PurchaseContractEffects {
         PurchaseContractActions.removePurchaseContractSuccess,
         PurchaseContractActions.abortSelectedPurchaseContractSuccess,
         PurchaseContractActions.confirmBuySuccess,
-        PurchaseContractActions.confirmDeliverySuccess
+        PurchaseContractActions.confirmDeliverySuccess,
+        PurchaseContractActions.releaseEscrowSuccess
       ),
       mapTo(SpinnerActions.hide())
     )
@@ -276,7 +278,8 @@ export class PurchaseContractEffects {
         ofType(
           PurchaseContractActions.abortSelectedPurchaseContractSuccess,
           PurchaseContractActions.confirmBuySuccess,
-          PurchaseContractActions.confirmDeliverySuccess),
+          PurchaseContractActions.confirmDeliverySuccess,
+          PurchaseContractActions.releaseEscrowSuccess),
         withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
         tap(async ([action, contract]) => {
 
@@ -381,6 +384,27 @@ export class PurchaseContractEffects {
         })
 
       ));
+
+  withdrawBySeller$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.releaseEscrow),
+      withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
+      map(([payload, contract]) => contract.contractAddress),
+      exhaustMap((address) => {
+
+        return this.purchaseSrv.withdrawBySeller(address).pipe(
+          concatMapTo(
+            [PurchaseContractActions.releaseEscrowSuccess(),
+            Web3ProviderActions.getBalance()]
+          ),
+          catchError((err: Error) =>
+            of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+          )
+        );
+      })
+
+    ));
+
 
   private handleError(error: Error) {
     const friendlyErrorMessage = serializeError(error).message;
