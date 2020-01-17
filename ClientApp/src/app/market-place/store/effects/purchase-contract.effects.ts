@@ -31,8 +31,7 @@ export class PurchaseContractEffects {
 
 
   createProduct$ = createEffect(
-    () =>
-      this.actions$.pipe(
+    () => this.actions$.pipe(
         ofType(PurchaseContractActions.createPurchaseContract),
         map(action => action.payload),
         exhaustMap((payload) => {
@@ -63,8 +62,7 @@ export class PurchaseContractEffects {
       ));
 
   loadPurchaseContract$ = createEffect(
-    () =>
-      this.actions$.pipe(
+    () => this.actions$.pipe(
         ofType(PurchaseContractActions.loadPurchaseContract),
         map(action => action.address),
         switchMap(address => {
@@ -72,7 +70,6 @@ export class PurchaseContractEffects {
           return this.purchaseSrv.loadPurchaseContract(address).pipe(
             map(contract =>
               PurchaseContractActions.loadPurchaseContractSuccess({ contract })),
-
             catchError((err: Error) =>
               of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide())
             ));
@@ -91,7 +88,7 @@ export class PurchaseContractEffects {
         PurchaseContractActions.confirmDelivery
       ),
 
-     // Related to the operators mapTo and concatMapTo. These operators map to static values.
+      // Related to the operators mapTo and concatMapTo. These operators map to static values.
       mapTo(SpinnerActions.show())
     )
   );
