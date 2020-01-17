@@ -1,6 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { MatDialogConfig, MatDialog } from '@angular/material';
+import { serializeError } from 'serialize-error';
 import { exhaustMap, map, mapTo, tap, switchMap, withLatestFrom, catchError, concatMap, concatMapTo } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
@@ -24,7 +25,7 @@ export class PurchaseContractEffects {
     private store$: Store<fromStore.AppState>,
     private fleaSrv: FleaMarketContractService,
     private purchaseSrv: PurchaseContractService,
-    private readonly actions$: Actions,
+    private actions$: Actions,
     private router: Router,
     private dialog: MatDialog
   ) { }
@@ -32,50 +33,49 @@ export class PurchaseContractEffects {
 
   createProduct$ = createEffect(
     () => this.actions$.pipe(
-        ofType(PurchaseContractActions.createPurchaseContract),
-        map(action => action.payload),
-        exhaustMap((payload) => {
+      ofType(PurchaseContractActions.createPurchaseContract),
+      map(action => action.payload),
+      exhaustMap((payload) => {
 
-          return this.fleaSrv.createPurchaseContract(payload).pipe(
-            tap(address => console.log('Contract address: ', address)),
-            switchMap((address: string) => {
+        return this.fleaSrv.createPurchaseContract(payload).pipe(
+          tap(address => console.log('Contract address: ', address)),
+          switchMap((address: string) => {
 
-              return [
-                PurchaseContractActions.createPurchaseContractSuccess({
-                  product: {
-                    productKey: payload.productKey,
-                    contractAddress: address
-                  }
-                }),
-                // update ballance
-                Web3ProviderActions.getBalance()];
-            }),
+            return [
+              PurchaseContractActions.createPurchaseContractSuccess({
+                product: {
+                  productKey: payload.productKey,
+                  contractAddress: address
+                }
+              }),
+              // update ballance
+              Web3ProviderActions.getBalance()];
+          }),
 
-            catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide(),
-                // update ballance
-                Web3ProviderActions.getBalance())
-            )
-          );
-        })
+          catchError((err: Error) =>
+            of(this.handleError(err), SpinnerActions.hide(),
+              // update ballance
+              Web3ProviderActions.getBalance())
+          )
+        );
+      })
 
-      ));
+    ));
 
   loadPurchaseContract$ = createEffect(
     () => this.actions$.pipe(
-        ofType(PurchaseContractActions.loadPurchaseContract),
-        map(action => action.address),
-        switchMap(address => {
+      ofType(PurchaseContractActions.loadPurchaseContract),
+      map(action => action.address),
+      switchMap(address => {
 
-          return this.purchaseSrv.loadPurchaseContract(address).pipe(
-            map(contract =>
-              PurchaseContractActions.loadPurchaseContractSuccess({ contract })),
-            catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide())
-            ));
-        })
+        return this.purchaseSrv.loadPurchaseContract(address).pipe(
+          map(contract =>
+            PurchaseContractActions.loadPurchaseContractSuccess({ contract })),
+          catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide()))
+          );
+      })
 
-      ));
+    ));
 
   showSpinner$ = createEffect(() =>
     this.actions$.pipe(
@@ -161,11 +161,7 @@ export class PurchaseContractEffects {
         this.fleaSrv.getPurchaseContractList().pipe(
           tap(products => console.log('purchase contracts:', products)),
           map(products => PurchaseContractActions.loadProductsSuccess({ products })),
-          catchError((err: Error) =>
-            of(ErrorActions.errorMessage({ errorMsg: err.message }),
-              SpinnerActions.hide())
-          )
-
+          catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide()))
         )
       )
     ));
@@ -214,9 +210,7 @@ export class PurchaseContractEffects {
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide(),
-                // update ballance
-                Web3ProviderActions.getBalance())
+              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
             )
           );
         })
@@ -271,9 +265,7 @@ export class PurchaseContractEffects {
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide(),
-                // update ballance
-                Web3ProviderActions.getBalance())
+              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
             )
           );
         })
@@ -343,9 +335,7 @@ export class PurchaseContractEffects {
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide(),
-                // update ballance
-                Web3ProviderActions.getBalance())
+              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
             )
           );
         })
@@ -389,14 +379,15 @@ export class PurchaseContractEffects {
               Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide(),
-                // update ballance
-                Web3ProviderActions.getBalance())
+              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
             )
           );
         })
 
       ));
 
-
+  private handleError(error: Error) {
+    const friendlyErrorMessage = serializeError(error).message;
+    return ErrorActions.errorMessage({ errorMsg: friendlyErrorMessage });
+  }
 }

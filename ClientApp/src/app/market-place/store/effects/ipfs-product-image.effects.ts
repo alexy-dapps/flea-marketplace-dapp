@@ -1,13 +1,13 @@
 
 import { Injectable } from '@angular/core';
+import { serializeError } from 'serialize-error';
+import { HttpClient } from '@angular/common/http';
 import { exhaustMap, map, tap, switchMap, catchError } from 'rxjs/operators';
 import { of, empty } from 'rxjs';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 
 import { IpfsDaemonService } from '../../../core/services/ipfs-daemon.services';
-import { HttpClient } from '@angular/common/http';
-
 import * as fromPurchaseContract from '../reducers';
 import { IpfsImageActions } from '../actions';
 import { ErrorActions } from '../../../core/store/actions';
@@ -19,7 +19,7 @@ export class IpfsUploadEffects {
   constructor(
     private store$: Store<fromPurchaseContract.AppState>,
     private ipfsSrv: IpfsDaemonService,
-    private readonly actions$: Actions,
+    private actions$: Actions,
     private httpClient: HttpClient,
   ) { }
 
@@ -37,7 +37,7 @@ export class IpfsUploadEffects {
             map(ipfsHash => IpfsImageActions.uploadImageSuccess({ ipfsHash })),
 
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), IpfsImageActions.uploadImageFail())
+              of(this.handleError(err), IpfsImageActions.uploadImageFail())
             )
           );
         })
@@ -53,7 +53,7 @@ export class IpfsUploadEffects {
           this.ipfsSrv.getFile(ipfsHash).pipe(
             map((image: Blob) => IpfsImageActions.downloadImageSuccess({ image })),
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), IpfsImageActions.downloadImageError())
+              of(this.handleError(err), IpfsImageActions.downloadImageError())
             )
           )
         )
@@ -71,14 +71,16 @@ export class IpfsUploadEffects {
           responseType: 'blob'
         }).pipe(
           map((image: Blob) => IpfsImageActions.downloadImageSuccess({ image })),
-          catchError((err: Error) =>
-            of(ErrorActions.errorMessage({ errorMsg: err.message }))
-          )
+          catchError((err: Error) => of(this.handleError(err)))
         )
         )
 
       )
   );
 
+  private handleError(error: Error) {
+    const friendlyErrorMessage = serializeError(error).message;
+    return ErrorActions.errorMessage({ errorMsg: friendlyErrorMessage });
+  }
 
 }

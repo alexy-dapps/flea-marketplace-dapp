@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-
+import { serializeError } from 'serialize-error';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of, from, EMPTY as empty } from 'rxjs';
 import { exhaustMap, switchMap, map, tap, catchError } from 'rxjs/operators';
@@ -43,7 +43,7 @@ export class Web3ProviderEffects {
 
             // User denied account access
             catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }), SpinnerActions.hide())
+              of(this.handleError(err), SpinnerActions.hide())
             )
           );
         }
@@ -83,9 +83,7 @@ export class Web3ProviderEffects {
       switchMap(() =>
         this.providerSrv.getSelectedAddress().pipe(
           map((address: string) => Web3ProviderActions.addressSuccess({ address })),
-          catchError((err: Error) =>
-            of(ErrorActions.errorMessage({ errorMsg: err.message }))
-          )
+          catchError((err: Error) => of(this.handleError(err)))
         )
       )
     )
@@ -99,9 +97,7 @@ export class Web3ProviderEffects {
           map((balance: string) =>
             Web3ProviderActions.balanceSuccess({ balance })
           ),
-          catchError((err: Error) =>
-            of(ErrorActions.errorMessage({ errorMsg: err.message }))
-          )
+          catchError((err: Error) => of(this.handleError(err)))
         )
       )
     )
@@ -115,14 +111,16 @@ export class Web3ProviderEffects {
           map((network: string) =>
             Web3ProviderActions.networkSuccess({ network })
           ),
-          catchError((err: Error) =>
-            of(ErrorActions.errorMessage({ errorMsg: err.message }))
-          )
+          catchError((err: Error) => of(this.handleError(err)))
         )
       )
     )
   );
 
+  private handleError(error: Error) {
+    const friendlyErrorMessage = serializeError(error).message;
+    return ErrorActions.errorMessage({ errorMsg: friendlyErrorMessage });
+  }
 
 
 }

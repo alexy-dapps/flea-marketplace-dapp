@@ -1,8 +1,7 @@
-import { Injectable, Inject } from '@angular/core';
-
+import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
-
-import { of} from 'rxjs';
+import { serializeError } from 'serialize-error';
+import { of } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 
 import { IpfsDaemonService } from '../../services/ipfs-daemon.services';
@@ -13,7 +12,7 @@ export class IpfsDaemonEffects {
   constructor(
     private ipfsSrv: IpfsDaemonService,
     private readonly actions$: Actions
-  ) {}
+  ) { }
 
   onConnect$ = createEffect(
     () =>
@@ -23,14 +22,16 @@ export class IpfsDaemonEffects {
           this.ipfsSrv.getVersion().pipe(
             tap(version => console.log(`IPFS node version: ${version}`)),
             map(_ => IpfsDaemonActions.connectSuccess()),
-
-            catchError((err: Error) =>
-              of(ErrorActions.errorMessage({ errorMsg: err.message }))
-            )
+            catchError((err: Error) => of(this.handleError(err)))
           )
         )
       )
   );
+
+  private handleError(error: Error) {
+    const friendlyErrorMessage = serializeError(error).message;
+    return ErrorActions.errorMessage({ errorMsg: friendlyErrorMessage });
+  }
 
 
 }
