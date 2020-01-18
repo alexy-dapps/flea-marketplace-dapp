@@ -227,6 +227,36 @@ export class PurchaseContractService {
 
   }
 
+  public withdrawByOwner(contractAddress: string): Observable<string> {
+
+    const contract: Contract = new ethers.Contract(contractAddress, this.abi, this.provider.getSigner());
+
+    // based on https://docs.ethers.io/ethers.js/html/cookbook-contracts.html
+    // Call the contract method, getting back the transaction tx
+    const token = contract.withdrawByOwner();
+    return from(token)
+      .pipe(
+        switchMap((tx: any) => {
+
+          console.log('withdrawByOwner Tx:', tx);
+          // Wait for transaction to be mined
+          // Returned a Promise which would resolve to the TransactionReceipt once it is mined.
+          return from(tx.wait()).pipe(
+            tap((txReceipt: any) => console.log('txReceipt: ', txReceipt)),
+
+            // The receipt will have an "events" Array, which will have
+            // the emitted event from the Contract. The "LogWithdrawBySeller"
+            //  is the last event.
+            map(txReceipt => txReceipt.events.pop()),
+            // tslint:disable-next-line:max-line-length
+            tap(txEvent => console.log(`event: ${txEvent.event}, sent by: ${txEvent.args.sender}, withdrawal amount: ${txEvent.args.amount}`)),
+            map(txEvent => ethers.utils.formatEther(txEvent.args.amount))
+
+          );
+        }));
+
+  }
+
 
 }
 

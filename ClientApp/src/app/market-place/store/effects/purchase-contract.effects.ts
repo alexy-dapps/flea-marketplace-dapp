@@ -294,6 +294,26 @@ export class PurchaseContractEffects {
 
     ));
 
+  withdrawByOwner$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.withdrawByOwner),
+      withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
+      map(([payload, contract]) => contract.contractAddress),
+      exhaustMap((address) => {
+
+        return this.purchaseSrv.withdrawByOwner(address).pipe(
+          concatMap(eth =>
+            [PurchaseContractActions.withdrawByOwnerSuccess({ amount: eth }),
+            Web3ProviderActions.getBalance()]
+          ),
+          catchError((err: Error) =>
+            of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+          )
+        );
+      })
+
+    ));
+
   removeProductRedirect$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -312,7 +332,8 @@ export class PurchaseContractEffects {
           PurchaseContractActions.abortSelectedPurchaseContractSuccess,
           PurchaseContractActions.confirmBuySuccess,
           PurchaseContractActions.confirmDeliverySuccess,
-          PurchaseContractActions.releaseEscrowSuccess),
+          PurchaseContractActions.releaseEscrowSuccess,
+          PurchaseContractActions.withdrawByOwnerSuccess),
         withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
         tap(async ([action, contract]) => {
 
@@ -337,7 +358,8 @@ export class PurchaseContractEffects {
         PurchaseContractActions.abortSelectedPurchaseContract,
         PurchaseContractActions.confirmBuy,
         PurchaseContractActions.confirmDelivery,
-        PurchaseContractActions.releaseEscrow
+        PurchaseContractActions.releaseEscrow,
+        PurchaseContractActions.withdrawByOwner
       ),
 
       // Related to the operators mapTo and concatMapTo. These operators map to static values.
@@ -354,7 +376,8 @@ export class PurchaseContractEffects {
         PurchaseContractActions.abortSelectedPurchaseContractSuccess,
         PurchaseContractActions.confirmBuySuccess,
         PurchaseContractActions.confirmDeliverySuccess,
-        PurchaseContractActions.releaseEscrowSuccess
+        PurchaseContractActions.releaseEscrowSuccess,
+        PurchaseContractActions.withdrawByOwnerSuccess
       ),
       mapTo(SpinnerActions.hide())
     )
@@ -390,6 +413,20 @@ export class PurchaseContractEffects {
     )
   );
 
+  showSnackbarOnReceiveCommission$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.withdrawByOwnerSuccess),
+      map((payload) => {
+
+        const msg: SnackBarInterface = {
+          message: `Commission in amount: ${payload.amount} ETH has been successfully transferred to Owner`,
+          color: AppearanceColor.Success
+        };
+
+        return SnackBarActions.open({ payload: msg });
+      })
+    )
+  );
 
   showSnackbarOnSuccess$ = createEffect(() =>
     this.actions$.pipe(

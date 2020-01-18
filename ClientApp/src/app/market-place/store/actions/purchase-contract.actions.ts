@@ -33,5 +33,5 @@ export const releaseEscrow = createAction('[PurchaseContract/API] Withdraw Escro
 export const releaseEscrowSuccess = createAction('[PurchaseContract/Command] Withdraw Escrow By Seller Success', props<{ amount: string }>());
 
 export const withdrawByOwner = createAction('[PurchaseContract/API] Withdraw By Owner');
-export const withdrawByOwnerSuccess = createAction('[PurchaseContract/Command] Withdraw By Owner');
+export const withdrawByOwnerSuccess = createAction('[PurchaseContract/Command] Withdraw By Owner Success', props<{ amount: string }>());
 
