@@ -30,7 +30,6 @@ export class IpfsUploadEffects {
         ofType(IpfsImageActions.uploadImage),
         map(action => action.file),
         exhaustMap((file) => {
-          // const fileStream =  (window as any).IpfsHttpClient.Buffer as Buffer;
 
           return this.ipfsSrv.addFile(file).pipe(
             tap(ipfsHash => console.log(`IPFS file hash: ${ipfsHash}`)),

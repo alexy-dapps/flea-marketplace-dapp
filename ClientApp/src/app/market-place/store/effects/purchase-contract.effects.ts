@@ -53,9 +53,7 @@ export class PurchaseContractEffects {
           }),
 
           catchError((err: Error) =>
-            of(this.handleError(err), SpinnerActions.hide(),
-              // update ballance
-              Web3ProviderActions.getBalance())
+            of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
           )
         );
       })

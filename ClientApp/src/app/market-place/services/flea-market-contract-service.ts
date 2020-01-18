@@ -88,7 +88,6 @@ export class FleaMarketContractService {
     );
   }
 
-
   public getName(): Observable<string> {
 
     return from(this.contractToken.contractName()).pipe(
@@ -96,7 +95,6 @@ export class FleaMarketContractService {
     );
 
   }
-
 
   public removePurchaseContract(productKey: string): Observable<string> {
 
@@ -130,9 +128,6 @@ export class FleaMarketContractService {
         }));
 
   }
-
-
-
 
 
 }
