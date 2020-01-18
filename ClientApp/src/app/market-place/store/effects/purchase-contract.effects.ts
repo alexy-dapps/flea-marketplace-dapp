@@ -77,83 +77,6 @@ export class PurchaseContractEffects {
 
     ));
 
-  showSpinner$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(PurchaseContractActions.createPurchaseContract,
-        PurchaseContractActions.loadProducts,
-        PurchaseContractActions.loadPurchaseContract,
-        PurchaseContractActions.removePurchaseContract,
-        PurchaseContractActions.abortSelectedPurchaseContract,
-        PurchaseContractActions.confirmBuy,
-        PurchaseContractActions.confirmDelivery,
-        PurchaseContractActions.releaseEscrow
-      ),
-
-      // Related to the operators mapTo and concatMapTo. These operators map to static values.
-      mapTo(SpinnerActions.show())
-    )
-  );
-
-  hideSpinner$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(PurchaseContractActions.createPurchaseContractSuccess,
-        PurchaseContractActions.loadProductsSuccess,
-        PurchaseContractActions.loadPurchaseContractSuccess,
-        PurchaseContractActions.removePurchaseContractSuccess,
-        PurchaseContractActions.abortSelectedPurchaseContractSuccess,
-        PurchaseContractActions.confirmBuySuccess,
-        PurchaseContractActions.confirmDeliverySuccess,
-        PurchaseContractActions.releaseEscrowSuccess
-      ),
-      mapTo(SpinnerActions.hide())
-    )
-  );
-
-  showSnackbarOnCreateContract$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(PurchaseContractActions.createPurchaseContractSuccess),
-      map((payload) => {
-
-        const msg: SnackBarInterface = {
-          message: `New smart product contract has been created successfully: Address: ${payload.product.contractAddress}`,
-          color: AppearanceColor.Success
-        };
-
-        return SnackBarActions.open({ payload: msg });
-      })
-    )
-  );
-
-  showSnackbarOnConfirm$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(PurchaseContractActions.abortSelectedPurchaseContractSuccess,
-        PurchaseContractActions.confirmBuySuccess,
-        PurchaseContractActions.confirmDeliverySuccess
-      ),
-      withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
-      map(([action, contract]) => {
-
-        let msg = '';
-
-        if (action.type === '[PurchaseContract/Command] Abort Purchase Contract Success') {
-          msg = `The request made by the seller to abort the contract '${contract.description}' has been confirmed!`;
-        } else if (action.type === '[PurchaseContract/Command] Confirm Buy Success') {
-          msg = `Deposit fund made by the buyer for item '${contract.description}' has been confirmed!`;
-        } else if (action.type === '[PurchaseContract/Command] Confirm Product Delivery Success') {
-          msg = `Receiving item '${contract.description}' by the buyer has been confirmed!`;
-        }
-
-
-        return SnackBarActions.open({
-          payload: {
-            message: msg,
-            color: AppearanceColor.Success
-          }
-        });
-      })
-    )
-  );
-
 
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
@@ -218,17 +141,6 @@ export class PurchaseContractEffects {
 
       ));
 
-  removeProductRedirect$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(PurchaseContractActions.removePurchaseContractSuccess),
-        tap(_ => {
-          this.router.navigate(['/market-place']);
-        })
-      ),
-    { dispatch: false }
-  );
-
   abortContract$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -271,29 +183,6 @@ export class PurchaseContractEffects {
         })
 
       ));
-
-  reload$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(
-          PurchaseContractActions.abortSelectedPurchaseContractSuccess,
-          PurchaseContractActions.confirmBuySuccess,
-          PurchaseContractActions.confirmDeliverySuccess,
-          PurchaseContractActions.releaseEscrowSuccess),
-        withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
-        tap(async ([action, contract]) => {
-
-          // here is the trick to make  this.selectedPurchaseContract$ emit
-          // on the same route
-          // generate a random product key
-          const randomKey = Math.random().toString(36).replace('0.', '');
-          await this.router.navigate(['/market-place/products', randomKey]);
-          await this.router.navigate(['/market-place/products', contract.productKey]);
-
-        })
-      ),
-    { dispatch: false }
-  );
 
   confirmBuy$ = createEffect(
     () =>
@@ -393,8 +282,8 @@ export class PurchaseContractEffects {
       exhaustMap((address) => {
 
         return this.purchaseSrv.withdrawBySeller(address).pipe(
-          concatMapTo(
-            [PurchaseContractActions.releaseEscrowSuccess(),
+          concatMap(eth =>
+            [PurchaseContractActions.releaseEscrowSuccess({ amount: eth }),
             Web3ProviderActions.getBalance()]
           ),
           catchError((err: Error) =>
@@ -405,6 +294,131 @@ export class PurchaseContractEffects {
 
     ));
 
+  removeProductRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(PurchaseContractActions.removePurchaseContractSuccess),
+        tap(_ => {
+          this.router.navigate(['/market-place']);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  reload$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          PurchaseContractActions.abortSelectedPurchaseContractSuccess,
+          PurchaseContractActions.confirmBuySuccess,
+          PurchaseContractActions.confirmDeliverySuccess,
+          PurchaseContractActions.releaseEscrowSuccess),
+        withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
+        tap(async ([action, contract]) => {
+
+          // here is the trick to make  this.selectedPurchaseContract$ emit
+          // on the same route
+          // generate a random product key
+          const randomKey = Math.random().toString(36).replace('0.', '');
+          await this.router.navigate(['/market-place/products', randomKey]);
+          await this.router.navigate(['/market-place/products', contract.productKey]);
+
+        })
+      ),
+    { dispatch: false }
+  );
+
+  showSpinner$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.createPurchaseContract,
+        PurchaseContractActions.loadProducts,
+        PurchaseContractActions.loadPurchaseContract,
+        PurchaseContractActions.removePurchaseContract,
+        PurchaseContractActions.abortSelectedPurchaseContract,
+        PurchaseContractActions.confirmBuy,
+        PurchaseContractActions.confirmDelivery,
+        PurchaseContractActions.releaseEscrow
+      ),
+
+      // Related to the operators mapTo and concatMapTo. These operators map to static values.
+      mapTo(SpinnerActions.show())
+    )
+  );
+
+  hideSpinner$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.createPurchaseContractSuccess,
+        PurchaseContractActions.loadProductsSuccess,
+        PurchaseContractActions.loadPurchaseContractSuccess,
+        PurchaseContractActions.removePurchaseContractSuccess,
+        PurchaseContractActions.abortSelectedPurchaseContractSuccess,
+        PurchaseContractActions.confirmBuySuccess,
+        PurchaseContractActions.confirmDeliverySuccess,
+        PurchaseContractActions.releaseEscrowSuccess
+      ),
+      mapTo(SpinnerActions.hide())
+    )
+  );
+
+  showSnackbarOnCreateContract$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.createPurchaseContractSuccess),
+      map((payload) => {
+
+        const msg: SnackBarInterface = {
+          message: `New smart product contract has been created successfully: Address: ${payload.product.contractAddress}`,
+          color: AppearanceColor.Success
+        };
+
+        return SnackBarActions.open({ payload: msg });
+      })
+    )
+  );
+
+  showSnackbarOnReleaseEscrow$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.releaseEscrowSuccess),
+      map((payload) => {
+
+        const msg: SnackBarInterface = {
+          message: `Fund in amount: ${payload.amount} ETH has been successfully release back to Seller`,
+          color: AppearanceColor.Success
+        };
+
+        return SnackBarActions.open({ payload: msg });
+      })
+    )
+  );
+
+
+  showSnackbarOnSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PurchaseContractActions.abortSelectedPurchaseContractSuccess,
+        PurchaseContractActions.confirmBuySuccess,
+        PurchaseContractActions.confirmDeliverySuccess
+      ),
+      withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
+      map(([action, contract]) => {
+
+        let msg = '';
+
+        if (action.type === '[PurchaseContract/Command] Abort Purchase Contract Success') {
+          msg = `The request made by the seller to abort the contract '${contract.description}' has been confirmed!`;
+        } else if (action.type === '[PurchaseContract/Command] Confirm Buy Success') {
+          msg = `Deposit fund made by the buyer for item '${contract.description}' has been confirmed!`;
+        } else if (action.type === '[PurchaseContract/Command] Confirm Product Delivery Success') {
+          msg = `Receiving item '${contract.description}' by the buyer has been confirmed!`;
+        }
+
+        return SnackBarActions.open({
+          payload: {
+            message: msg,
+            color: AppearanceColor.Success
+          }
+        });
+      })
+    )
+  );
 
   private handleError(error: Error) {
     const friendlyErrorMessage = serializeError(error).message;

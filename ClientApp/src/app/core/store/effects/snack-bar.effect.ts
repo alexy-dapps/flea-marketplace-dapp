@@ -11,7 +11,7 @@ import { SnackBarComponent } from '../../components/snackbar/snack-bar.component
 @Injectable()
 export class SnackBarEffects {
 
-    static readonly SNACKBAR_DELAY: number = 6000;
+    static readonly SNACKBAR_DELAY: number = 7000;
 
     constructor(private readonly actions$: Actions, private matSnackBar: MatSnackBar) {}
 

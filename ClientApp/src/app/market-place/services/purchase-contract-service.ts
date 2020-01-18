@@ -197,7 +197,7 @@ export class PurchaseContractService {
 
   }
 
-  public withdrawBySeller(contractAddress: string): Observable<boolean> {
+  public withdrawBySeller(contractAddress: string): Observable<string> {
 
     const contract: Contract = new ethers.Contract(contractAddress, this.abi, this.provider.getSigner());
 
@@ -220,7 +220,7 @@ export class PurchaseContractService {
             map(txReceipt => txReceipt.events.pop()),
             // tslint:disable-next-line:max-line-length
             tap(txEvent => console.log(`event: ${txEvent.event}, sent by: ${txEvent.args.sender}, withdrawal amount: ${txEvent.args.amount}`)),
-            mapTo(true),
+            map(txEvent => ethers.utils.formatEther(txEvent.args.amount))
 
           );
         }));

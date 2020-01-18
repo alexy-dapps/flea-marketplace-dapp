@@ -29,7 +29,8 @@ export const confirmDelivery = createAction('[PurchaseContract/API] Confirm Prod
 export const confirmDeliverySuccess = createAction('[PurchaseContract/Command] Confirm Product Delivery Success');
 
 export const releaseEscrow = createAction('[PurchaseContract/API] Withdraw Escrow By Seller');
-export const releaseEscrowSuccess = createAction('[PurchaseContract/Command] Withdraw Escrow By Seller Success');
+// tslint:disable-next-line:max-line-length
+export const releaseEscrowSuccess = createAction('[PurchaseContract/Command] Withdraw Escrow By Seller Success', props<{ amount: string }>());
 
 export const withdrawByOwner = createAction('[PurchaseContract/API] Withdraw By Owner');
 export const withdrawByOwnerSuccess = createAction('[PurchaseContract/Command] Withdraw By Owner');
