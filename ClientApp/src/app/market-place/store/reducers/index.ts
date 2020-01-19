@@ -63,8 +63,8 @@ export const isProductsLoaded = createSelector(getProductEntitiesState, state =>
 export const getSelectedPurchaseContract = createSelector(getProductEntitiesState, state => state.selectedPurchaseContract);
 
 
-// check if the purchase contract selected has been loaded already based on the route param id
-export const getSelectedProduct = createSelector(
+// select product widget entity based on the route param id
+export const getSelectedProductWidget = createSelector(
   getProductEntities,
   fromRoot.selectRouteParams,
   (entities, params) => params && entities[params.id]

@@ -45,7 +45,7 @@ export class ViewPurchaseContractComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.selectedPurchaseContract$ = this.store$.pipe(
-      select(fromStore.getSelectedProduct),
+      select(fromStore.getSelectedProductWidget),
       filter(product => !!product),
       tap(product => this.store$.dispatch(PurchaseContractActions.loadPurchaseContract({ address: product.contractAddress }))),
       // nice moment here  - we switch from one observable to another

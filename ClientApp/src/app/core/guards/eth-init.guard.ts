@@ -32,7 +32,9 @@ export class EthInitGuard implements CanActivate {
 
           }
         }),
-        // Notice that the filter() returns the observable sequence that contains elements
+        
+        // filter() emit values that pass the provided condition.
+        // Another words, the filter() returns the observable sequence that contains elements
         // from the input sequence that satisfy the condition.
         // so in this case, if the loaded is false, the steam will not continue, but
         // when the loaded is true, we grab this bool value. Which means we are waiting for the
