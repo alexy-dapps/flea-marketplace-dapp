@@ -152,7 +152,7 @@ export class PurchaseContractEffects {
           dialogConfig.autoFocus = true;
           dialogConfig.data = {
             title: 'Confirm Abort',
-            content: `Are you sure to deactivate contract: ${contract.productKey}?`,
+            content: `Are you sure you want to deactivate contract: ${contract.productKey}?`,
             output: contract.contractAddress
           };
 
