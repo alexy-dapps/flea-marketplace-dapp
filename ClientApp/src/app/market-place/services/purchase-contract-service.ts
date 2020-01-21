@@ -186,7 +186,7 @@ export class PurchaseContractService {
             tap((txReceipt: any) => console.log('txReceipt: ', txReceipt)),
 
             // The receipt will have an "events" Array, which will have
-            // the emitted event from the Contract. The "ItemReceived"
+            // the emitted event from the Contract. The "LogReceivedByBuyer"
             // call is the last event.
             map(txReceipt => txReceipt.events.pop()),
             tap(txEvent => console.log('event: ', txEvent.event)),
