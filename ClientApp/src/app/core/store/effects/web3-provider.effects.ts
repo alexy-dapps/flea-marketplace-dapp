@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { serializeError } from 'serialize-error';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { of, from, EMPTY as empty } from 'rxjs';
+import { of, from, fromEvent, EMPTY as empty } from 'rxjs';
 import { exhaustMap, switchMap, map, tap, catchError } from 'rxjs/operators';
 
 import { MetamaskEthereumToken } from '../../services/tokens';
@@ -116,6 +116,32 @@ export class Web3ProviderEffects {
       )
     )
   );
+
+
+  // example of using native events
+  /*
+  resize$ = createEffect(
+    () =>
+    fromEvent(window, 'resize').pipe(
+      tap(event => console.log( 'event', event) )
+      ),
+      { dispatch: false }
+  );
+  */
+  // output
+  // event, Event {isTrusted: true, type: "resize", target: Window, currentTarget: Window, eventPhase: 2, …}
+
+ // based on https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#chainchanged
+  // The provider emits chainChanged on connect to a new chain
+  chainChanged$ = createEffect(
+    () =>
+    fromEvent(this.web3Token, 'accountsChanged').pipe(
+      tap(e => console.log( 'chainId', e) )
+      ),
+      { dispatch: false }
+  );
+
+
 
   private handleError(error: Error) {
     const friendlyErrorMessage = serializeError(error).message;
