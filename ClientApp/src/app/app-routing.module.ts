@@ -21,8 +21,10 @@ export const routes: Routes = [
 
 ];
 
+// to be able to reload on the same route
+// based on https://github.com/angular/angular/issues/13831
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, { useHash: true,  onSameUrlNavigation: 'reload' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

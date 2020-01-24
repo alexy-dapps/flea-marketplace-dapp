@@ -1,8 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
 import { serializeError } from 'serialize-error';
-import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { of, from, fromEvent, EMPTY as empty } from 'rxjs';
-import { exhaustMap, switchMap, map, tap, catchError } from 'rxjs/operators';
+import { exhaustMap, switchMap, map, tap, catchError, withLatestFrom } from 'rxjs/operators';
+
+import { Actions, ofType, createEffect } from '@ngrx/effects';
+import { Store, select } from '@ngrx/store';
+import * as fromStore from '../reducers';
 
 import { MetamaskEthereumToken } from '../../services/tokens';
 import { EthersProviderService } from '../../services/ethers-provider-service';
@@ -12,6 +15,7 @@ import { Web3ProviderActions, SpinnerActions, ErrorActions } from '../actions';
 export class Web3ProviderEffects {
   constructor(
     @Inject(MetamaskEthereumToken) private web3Token,
+    private store$: Store<fromStore.AppState>,
     private providerSrv: EthersProviderService,
     private readonly actions$: Actions
   ) { }
@@ -127,16 +131,25 @@ export class Web3ProviderEffects {
       ),
       { dispatch: false }
   );
-  */
+
   // output
   // event, Event {isTrusted: true, type: "resize", target: Window, currentTarget: Window, eventPhase: 2, …}
+  */
 
  // based on https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#chainchanged
-  // The provider emits chainChanged on connect to a new chain
-  chainChanged$ = createEffect(
+ // and https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
+  accountChanged$ = createEffect(
     () =>
     fromEvent(this.web3Token, 'accountsChanged').pipe(
-      tap(e => console.log( 'chainId', e) )
+      withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
+      tap(([accounts, currentAccount])  => {
+
+         if (currentAccount !== accounts[0]) {
+            console.log( 'new account', accounts[0]);
+            // !!! fare action Account change
+            // fire action to reload current path
+         }
+      })
       ),
       { dispatch: false }
   );

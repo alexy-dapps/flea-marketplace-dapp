@@ -337,10 +337,10 @@ export class PurchaseContractEffects {
 
           // here is the trick to make  this.selectedPurchaseContract$ emit
           // on the same route
-          // generate a random product key
-          const randomKey = Math.random().toString(36).replace('0.', '');
-          await this.router.navigate(['/market-place/products', randomKey]);
-          await this.router.navigate(['/market-place/products', contract.productKey]);
+          // we need to reload on the same route
+          // based on https://github.com/angular/angular/issues/13831
+          this.router.routeReuseStrategy.shouldReuseRoute = ( ) => false;
+          this.router.navigate(['/market-place/products', contract.productKey]);
 
         })
       ),

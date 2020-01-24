@@ -32,7 +32,7 @@ export class EthInitGuard implements CanActivate {
 
           }
         }),
-        
+
         // filter() emit values that pass the provided condition.
         // Another words, the filter() returns the observable sequence that contains elements
         // from the input sequence that satisfy the condition.
