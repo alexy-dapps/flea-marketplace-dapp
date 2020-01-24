@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { serializeError } from 'serialize-error';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { of, from, fromEvent, EMPTY as empty } from 'rxjs';
 import { exhaustMap, switchMap, map, tap, catchError, withLatestFrom } from 'rxjs/operators';
 
@@ -15,9 +16,10 @@ import { Web3ProviderActions, SpinnerActions, ErrorActions } from '../actions';
 export class Web3ProviderEffects {
   constructor(
     @Inject(MetamaskEthereumToken) private web3Token,
+    private readonly actions$: Actions,
     private store$: Store<fromStore.AppState>,
+    private router: Router,
     private providerSrv: EthersProviderService,
-    private readonly actions$: Actions
   ) { }
 
   metaMaskEnable$ = createEffect(() =>
@@ -146,8 +148,12 @@ export class Web3ProviderEffects {
 
          if (currentAccount !== accounts[0]) {
             console.log( 'new account', accounts[0]);
-            // !!! fare action Account change
-            // fire action to reload current path
+            // we need to reload on the same route
+            // based on https://github.com/angular/angular/issues/13831
+            // this.router.routeReuseStrategy.shouldReuseRoute = ( ) => false;
+            // this.router.navigate([this.router.url]);
+            document.location.reload();
+
          }
       })
       ),

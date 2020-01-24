@@ -335,12 +335,12 @@ export class PurchaseContractEffects {
         withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
         tap(async ([action, contract]) => {
 
-          // here is the trick to make  this.selectedPurchaseContract$ emit
-          // on the same route
-          // we need to reload on the same route
-          // based on https://github.com/angular/angular/issues/13831
-          this.router.routeReuseStrategy.shouldReuseRoute = ( ) => false;
-          this.router.navigate(['/market-place/products', contract.productKey]);
+           // here is the trick to make  this.selectedPurchaseContract$ emit
+           // on the same route
+           // we need to reload on the same route
+           // based on https://github.com/angular/angular/issues/13831
+           this.router.routeReuseStrategy.shouldReuseRoute = ( ) => false;
+           this.router.navigate(['/market-place/products', contract.productKey]);
 
         })
       ),
