@@ -148,10 +148,9 @@ export class Web3ProviderEffects {
 
          if (currentAccount !== accounts[0]) {
             console.log( 'new account', accounts[0]);
-            // we need to reload on the same route
-            // based on https://github.com/angular/angular/issues/13831
-            // this.router.routeReuseStrategy.shouldReuseRoute = ( ) => false;
-            // this.router.navigate([this.router.url]);
+
+            // we need to reload browser
+            // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
             document.location.reload();
 
          }
