@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import * as fromRoot from '../../store';
 import { transition, style, animate, trigger } from '@angular/animations';
 
 export const DROP_BUDDY_ANIMATION = trigger('dropPoke', [
@@ -38,5 +42,20 @@ export const SHAKE_HANDS_ANIMATION = trigger('shakeHands', [
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit{
+
+  metamaskEnable$: Observable<boolean>;
+
+  constructor(
+    private store$: Store<fromRoot.AppState>
+  ) { }
+
+  ngOnInit() {
+    this.metamaskEnable$ = this.store$.pipe(select(fromRoot.getMetaMaskEnable));
+  }
+
+  onConnect() {
+    this.store$.dispatch(fromRoot.Web3ProviderActions.init());
+  }
+
 }

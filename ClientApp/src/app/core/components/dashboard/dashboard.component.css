@@ -9,3 +9,7 @@ img{
 .margin-top-58 {
   margin-top: 58px !important
 }
+
+.margin-top-bottom--12 {
+  margin: 12px 0px !important;
+}
