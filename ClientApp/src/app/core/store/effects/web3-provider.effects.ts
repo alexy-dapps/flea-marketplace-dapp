@@ -148,17 +148,14 @@ export class Web3ProviderEffects {
 
          if (currentAccount !== accounts[0]) {
             console.log( 'new account', accounts[0]);
-
             // we need to reload browser
             // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
             document.location.reload();
-
          }
       })
       ),
       { dispatch: false }
   );
-
 
 
   private handleError(error: Error) {
