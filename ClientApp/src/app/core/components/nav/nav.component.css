@@ -9,6 +9,9 @@
   right: 0;
 }
 
+.context-container {
+  margin: 16px;
+}
 
 .sidenav-container {
   height: 100%;

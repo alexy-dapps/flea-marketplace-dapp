@@ -1,12 +1,4 @@
 
-.dashboard-card {
-  position: absolute;
-  top: 12px;
-  left: 140px;
-  right: 140px;
-  bottom: 12px;
-}
-
 img{
   max-height:200px;
   max-width:200px;

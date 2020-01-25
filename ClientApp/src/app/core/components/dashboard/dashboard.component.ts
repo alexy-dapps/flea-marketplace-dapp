@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-
 import { transition, style, animate, trigger } from '@angular/animations';
 
 export const DROP_BUDDY_ANIMATION = trigger('dropPoke', [
@@ -42,22 +39,4 @@ export const SHAKE_HANDS_ANIMATION = trigger('shakeHands', [
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: 'Welcome to FleaMarket Escrow DApp on Ethereum Blockchain', cols: 1, rows: 1 },
-
-        ];
-      }
-
-      return [
-        { title: 'Welcome to FleaMarket Escrow DApp on Ethereum Blockchain', cols: 1, rows: 1 },
-
-      ];
-    })
-  );
-
-  constructor(private breakpointObserver: BreakpointObserver) {}
 }

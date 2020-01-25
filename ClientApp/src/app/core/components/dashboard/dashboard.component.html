@@ -1,40 +1,31 @@
-<div class="context-container">
+<mat-card>
 
-  <mat-grid-list cols="1" rowHeight="350px">
-    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
-      <mat-card class="dashboard-card">
-    
-        <mat-card-title class="text-center">
-          {{card.title}}
-        </mat-card-title>
-   
+  <mat-card-title class="text-center">
+    Welcome to FleaMarket Escrow DApp on Ethereum Blockchain
+  </mat-card-title>
 
-        <mat-card-content class="text-center">
-          <div>Front-end user interface to FleaMarket Escrow Smart Contract</div>
-        </mat-card-content>
-        <mat-card-content fxLayout="row" fxLayoutAlign="space-around start">
-          
-            <img src="./assets/img/seller-256.png" @dropPoke>
+  <mat-card-content class="text-center">
+    Front-end user interface to FleaMarket Escrow Smart Contract
+  </mat-card-content>
 
-            <img src="./assets/img/premium-128.png" class='margin-top-58' @shakeHands>
-        
-            <img src="./assets/img/buyer-256.png" @dropPoke>
-        
-        </mat-card-content>
+  <mat-card-content fxLayout="row" fxLayoutAlign="space-around start">
 
-        <mat-card-footer fxLayout="row" fxLayoutAlign="space-around start">
+    <img src="./assets/img/seller-256.png" @dropPoke>
 
-            <div class="mat-body-1">Seller</div>
-            
-            <div></div>
-      
-            <div class="mat-body-1">Buyer</div>   
+    <img src="./assets/img/premium-128.png" class='margin-top-58' @shakeHands>
 
-        </mat-card-footer>
+    <img src="./assets/img/buyer-256.png" @dropPoke>
 
-      </mat-card>
+  </mat-card-content>
 
-    </mat-grid-tile>
-  </mat-grid-list>
+  <mat-card-footer fxLayout="row" fxLayoutAlign="space-around start">
 
-</div>
+    <div class="mat-body-1">Seller</div>
+
+    <div></div>
+
+    <div class="mat-body-1">Buyer</div>
+
+  </mat-card-footer>
+
+</mat-card>

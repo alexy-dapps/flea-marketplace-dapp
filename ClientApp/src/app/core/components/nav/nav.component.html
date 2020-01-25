@@ -81,15 +81,14 @@
         <ng-template #unauthorized>
         </ng-template>
 
-
-
-
       </mat-toolbar>
 
       <!-- Add Content Here -->
-      <app-loader></app-loader>
+      <div class="context-container">
+        <app-loader></app-loader>
+        <router-outlet></router-outlet>
+      </div>
 
-      <router-outlet></router-outlet>
 
     </mat-sidenav-content>
   </mat-sidenav-container>

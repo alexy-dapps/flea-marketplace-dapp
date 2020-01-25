@@ -7,10 +7,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     text-align: center !important;
   }
 
-.context-container {
-  margin: 16px;
-}
-
 .primary-color {
   color: #7b1fa2!important;
 }
