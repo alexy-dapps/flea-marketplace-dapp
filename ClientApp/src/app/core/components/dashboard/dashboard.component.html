@@ -1,31 +1,35 @@
-<mat-card>
+<div fxLayout="row" fxLayoutAlign="center start">
 
-  <mat-card-title class="text-center">
-    Welcome to FleaMarket Escrow DApp on Ethereum Blockchain
-  </mat-card-title>
+  <mat-card fxFlex="80">
 
-  <mat-card-content class="text-center">
-    Front-end user interface to FleaMarket Escrow Smart Contract
-  </mat-card-content>
+    <mat-card-title class="text-center">
+      Welcome to FleaMarket Escrow DApp on Ethereum Blockchain
+    </mat-card-title>
 
-  <mat-card-content fxLayout="row" fxLayoutAlign="space-around start">
+    <mat-card-content class="text-center">
+      Front-end user interface to FleaMarket Escrow Smart Contract
+    </mat-card-content>
 
-    <img src="./assets/img/seller-256.png" @dropPoke>
+    <mat-card-content fxLayout="row" fxLayoutAlign="space-around start">
 
-    <img src="./assets/img/premium-128.png" class='margin-top-58' @shakeHands>
+      <img src="./assets/img/seller-256.png" @dropPoke>
 
-    <img src="./assets/img/buyer-256.png" @dropPoke>
+      <img src="./assets/img/premium-128.png" class='margin-top-58' @shakeHands>
 
-  </mat-card-content>
+      <img src="./assets/img/buyer-256.png" @dropPoke>
 
-  <mat-card-footer fxLayout="row" fxLayoutAlign="space-around start">
+    </mat-card-content>
 
-    <div class="mat-body-1">Seller</div>
+    <mat-card-footer fxLayout="row" fxLayoutAlign="space-around start">
 
-    <div></div>
+      <div class="mat-body-1">Seller</div>
 
-    <div class="mat-body-1">Buyer</div>
+      <div></div>
 
-  </mat-card-footer>
+      <div class="mat-body-1">Buyer</div>
 
-</mat-card>
+    </mat-card-footer>
+
+  </mat-card>
+
+</div>
