@@ -2,7 +2,7 @@ import { InjectionToken} from '@angular/core';
 
 
 export const MetamaskEthereumToken = new InjectionToken(
-    'Metamask Web3 provider',
+    'MetaMask Web3 provider',
     {
         providedIn: 'root',
         factory: () => {
