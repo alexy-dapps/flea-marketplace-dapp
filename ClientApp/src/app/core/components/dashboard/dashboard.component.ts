@@ -42,20 +42,20 @@ export const SHAKE_HANDS_ANIMATION = trigger('shakeHands', [
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit {
 
-  metamaskEnable$: Observable<boolean>;
+  metamaskConnected$: Observable<boolean>;
 
   constructor(
     private store$: Store<fromRoot.AppState>
   ) { }
 
   ngOnInit() {
-    this.metamaskEnable$ = this.store$.pipe(select(fromRoot.getMetaMaskEnable));
+    this.metamaskConnected$ = this.store$.pipe(select(fromRoot.getMetaMaskConnected));
   }
 
   onConnect() {
-    this.store$.dispatch(fromRoot.Web3ProviderActions.init());
+    this.store$.dispatch(fromRoot.Web3ProviderActions.metamaskConnect());
   }
 
 }

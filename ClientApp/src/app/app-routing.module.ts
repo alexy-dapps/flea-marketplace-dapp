@@ -15,7 +15,7 @@ export const routes: Routes = [
     path: 'market-place',
     // here we use the TypeScript Dynamic Imports in Angular 8
     loadChildren: () => import('./market-place/market-place.module').then(mod => mod.MarketPlaceModule),
-    canActivate: [guards.EthInitGuard],
+    canActivate: [guards.MetaMaskConnectGuard],
   },
   { path: '**', component: NotFoundPageComponent }, // !!!has to be the last one
 

@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
 import { serializeError } from 'serialize-error';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
-import { of, from, fromEvent, EMPTY as empty } from 'rxjs';
+import { of, from, fromEvent, EMPTY as empty, Observable } from 'rxjs';
 import { exhaustMap, switchMap, map, tap, catchError, withLatestFrom, filter } from 'rxjs/operators';
 
-import { Actions, ofType, createEffect } from '@ngrx/effects';
+import { Actions, ofType, createEffect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 import * as fromStore from '../reducers';
 
@@ -63,24 +63,39 @@ export class Web3ProviderEffects {
   );
   */
 
-  metaMaskEnable$ = createEffect(() =>
+  metaMaskEnabled$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.init),
+      ofType(ROOT_EFFECTS_INIT),
+      map(() => {
+
+        // https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
+        const ethereum = (window as any).ethereum;
+        // Returns true or false, representing whether the user has MetaMask installed.
+        if (!ethereum || !ethereum.isMetaMask) {
+          return ErrorActions.errorMessage({ errorMsg: `Please install MetaMask.` });
+        }
+
+        return Web3ProviderActions.emptyAction();
+      })
+    )
+  );
+
+
+  metaMaskConnect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(Web3ProviderActions.metamaskConnect),
       exhaustMap(() => {
 
-        // Requests the user provides an ethereum address to be identified by.
-        // Returns a promise of an array of hex-prefixed ethereum address strings.
-        // Currently only ever one: accounts[0], for example,
-        // ['0xFDEa65C8e26263F6d9A1B5de9555D2931A33b825']
+        // This is equivalent to ethereum.enable()
+        // return list of user account
+        // currently only ever one: accounts[0]
         return from(this.web3Token.send('eth_requestAccounts')).pipe(
-          tap((ethAccounts: string[]) =>
-            console.log(`Ethereum provider has been granted access to the following accounts: ${ethAccounts}`)
-          ),
-          map((ethAccounts: string[]) => {
+          map((ethAccounts: any[]) => {
             if (ethAccounts.length === 0) {
               return ErrorActions.errorMessage({ errorMsg: `Can't get any user accounts` });
             }
-            return Web3ProviderActions.initSuccess();
+            console.log(`Ethereum provider has been granted access to the following account:`, ethAccounts[0]);
+            return Web3ProviderActions.metamaskConnectSuccess();
           }),
           // User denied account access
           catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide())
@@ -91,23 +106,34 @@ export class Web3ProviderEffects {
     )
   );
 
+  connectRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(Web3ProviderActions.connectRedirect),
+        tap(_ => {
+          this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
+  );
+
   showSpinner$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.init),
+      ofType(Web3ProviderActions.metamaskConnect),
       map(() => SpinnerActions.show())
     )
   );
 
   hideSpinner$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.initSuccess),
+      ofType(Web3ProviderActions.metamaskConnectSuccess),
       map(() => SpinnerActions.hide())
     )
   );
 
-  showAccountInfo$ = createEffect(() =>
+  getAccountInfo$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.initSuccess),
+      ofType(Web3ProviderActions.metamaskConnectSuccess),
       switchMap(() => {
         return [Web3ProviderActions.getNetwork(), Web3ProviderActions.getAddress(), Web3ProviderActions.getBalance()];
 
@@ -173,23 +199,25 @@ export class Web3ProviderEffects {
   // based on https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#chainchanged
   // and https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
   // Note that this event is emitted on page load also
- // If the array of accounts is non-empty, you're already connected.
+  // If the array of accounts is non-empty, you're already connected.
   accountChanged$ = createEffect(
     () =>
       fromEvent(this.web3Token, 'accountsChanged').pipe(
         withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
         // filter(([accounts, currentAccount]) => ((accounts as Array<string>).length > 0 && !!currentAccount)),
-        tap(([accounts, currentAccount]) => {
+        map(([accounts, currentAccount]) => {
 
           if (currentAccount !== accounts[0]) {
             console.log('new account', accounts[0]);
             // we need to reload browser
             // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
             document.location.reload();
+            // this.router.navigate(['/']);
           }
+
         })
       ),
-    { dispatch: false }
+      { dispatch: false }
   );
 
 

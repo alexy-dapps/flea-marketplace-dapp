@@ -1,6 +1,6 @@
 
-import { EthInitGuard} from './eth-init.guard';
+import { MetaMaskConnectGuard} from './metamask-connect.guard';
 
-export const guards: any[] = [EthInitGuard];
+export const guards: any[] = [MetaMaskConnectGuard];
 
-export * from './eth-init.guard';
+export * from './metamask-connect.guard';

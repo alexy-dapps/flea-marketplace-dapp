@@ -2,14 +2,14 @@ import { createReducer, on } from '@ngrx/store';
 import { Web3ProviderActions } from '../actions';
 
 export interface Web3ProviderState {
-  metamaskEnable: boolean;
-  ethNetwork: string;
+  metamaskConnected: boolean;
   account: string;
+  ethNetwork: string;
   balance: string;
 }
 
 const initialState: Web3ProviderState = {
-  metamaskEnable: false,
+  metamaskConnected: false,
   ethNetwork: null,
   account: null,
   balance: null
@@ -17,9 +17,9 @@ const initialState: Web3ProviderState = {
 
 export const reducer = createReducer(
   initialState,
-  on(Web3ProviderActions.initSuccess, state => ({
+  on(Web3ProviderActions.metamaskConnectSuccess, state => ({
     ...state,
-    metamaskEnable: true
+    metamaskConnected: true
   })),
   on(Web3ProviderActions.networkSuccess, (state, { network }) => ({
     ...state,
@@ -35,8 +35,8 @@ export const reducer = createReducer(
   }))
 );
 
-export const getMetaMaskEnable = (state: Web3ProviderState) =>
-  state.metamaskEnable;
+export const getMetaMaskConnected = (state: Web3ProviderState) =>
+  state.metamaskConnected;
 export const getNetwork = (state: Web3ProviderState) => state.ethNetwork;
 export const getAccount = (state: Web3ProviderState) => state.account;
 export const getBalance = (state: Web3ProviderState) => state.balance;

@@ -14,7 +14,6 @@ export const ipfsToken = new InjectionToken('The IPFS Token', {
       console.log('Error', err);
       throw new Error('Unable to access IPFS node daemon on Infura network');
     }
-
   }
 });
 

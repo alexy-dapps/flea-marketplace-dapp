@@ -6,8 +6,9 @@ export const MetamaskEthereumToken = new InjectionToken(
     {
         providedIn: 'root',
         factory: () => {
-            const ethereum = (window as any).ethereum;
 
+            // https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
+            const ethereum = (window as any).ethereum;
             // Returns true or false, representing whether the user has MetaMask installed.
             if (!ethereum || !ethereum.isMetaMask) {
                 throw new Error('Please install MetaMask.');

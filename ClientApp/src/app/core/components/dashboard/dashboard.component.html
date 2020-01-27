@@ -34,7 +34,7 @@
 
 </div>
 <div fxLayout="row" fxLayoutAlign="center center">
-  <button mat-flat-button  class='margin-top-bottom--12' color="warn" *ngIf="!(metamaskEnable$ | async)" (click)="onConnect()">
+  <button mat-flat-button  class='margin-top-bottom--12' color="warn" *ngIf="(metamaskConnected$ | async) === false" (click)="onConnect()">
     Connect to Blockchain
   </button>
 </div>

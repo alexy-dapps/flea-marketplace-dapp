@@ -100,9 +100,9 @@ export const getError = createSelector(
 export const selectWeb3ProviderState = createFeatureSelector<AppState, fromWeb3Provider.Web3ProviderState>(
   'web3Provider'
 );
-export const getMetaMaskEnable = createSelector(
+export const getMetaMaskConnected = createSelector(
   selectWeb3ProviderState,
-  fromWeb3Provider.getMetaMaskEnable
+  fromWeb3Provider.getMetaMaskConnected
 );
 
 export const getAccount = createSelector(
