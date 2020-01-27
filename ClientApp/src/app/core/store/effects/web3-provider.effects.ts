@@ -3,6 +3,7 @@ import { serializeError } from 'serialize-error';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { of, from, fromEvent, EMPTY as empty, Observable } from 'rxjs';
 import { exhaustMap, switchMap, map, tap, catchError, withLatestFrom, filter } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 import { Actions, ofType, createEffect, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
@@ -20,6 +21,7 @@ export class Web3ProviderEffects {
     private store$: Store<fromStore.AppState>,
     private router: Router,
     private providerSrv: EthersProviderService,
+    @Inject(DOCUMENT) private document: Document
   ) { }
 
 
@@ -211,7 +213,7 @@ export class Web3ProviderEffects {
             console.log('new account', accounts[0]);
             // we need to reload browser
             // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
-            document.location.reload();
+            this.document.location.reload();
             // this.router.navigate(['/']);
           }
 
