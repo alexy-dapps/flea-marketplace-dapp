@@ -206,17 +206,13 @@ export class Web3ProviderEffects {
     () =>
       fromEvent(this.web3Token, 'accountsChanged').pipe(
         withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
-        // filter(([accounts, currentAccount]) => ((accounts as Array<string>).length > 0 && !!currentAccount)),
+        filter(([accounts, currentAccount]) => !!currentAccount && (currentAccount !== accounts[0])),
         map(([accounts, currentAccount]) => {
-
-          if (!!currentAccount && currentAccount !== accounts[0]) {
             console.log('new account', accounts[0]);
             // we need to reload browser
             // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
             this.document.location.reload();
             // this.router.navigate(['/']);
-          }
-
         })
       ),
       { dispatch: false }
