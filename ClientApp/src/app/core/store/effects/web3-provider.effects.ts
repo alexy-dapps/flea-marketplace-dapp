@@ -219,6 +219,8 @@ export class Web3ProviderEffects {
   );
 
 
+
+  
   private handleError(error: Error) {
     const friendlyErrorMessage = serializeError(error).message;
     return ErrorActions.errorMessage({ errorMsg: friendlyErrorMessage });
