@@ -12,22 +12,11 @@ import { tap } from 'rxjs/operators';
     template: `<div fxLayout="row" fxLayoutAlign="center stretch">
 
                   <div class= "loader-overlay" >
-
-                  <!--
-                  In the template we simply use the NgIf directive to toggle the display of
-                  the <ng-content> for the application.
-                  When we are not loading anything, we'll display the transcluded content here.
-                  When we are loading, we will display the <ng-template>
-                  that includes the <mat-spinner> loading indicator.
-                  -->
-                    <ng-content *ngIf="(showLoading$ | async) === false; else spinner"> </ng-content>
-
+                    <div *ngIf="(showLoading$ | async) === false; else spinner"> </div>
                     <ng-template #spinner>
-
                             <div fxLayout="row" fxLayoutAlign = "center center">
                                 <mat-spinner color='warn'> </mat-spinner>
                              </div>
-
                      </ng-template>
                    </div>
 
@@ -43,7 +32,7 @@ export class LoaderComponent implements OnInit {
 
         this.showLoading$ = this.store.pipe(
             select(fromRoot.getSpinnerShow),
-            tap(show => console.log('Spinner show', show)),
+            // tap(show => console.log('Spinner show', show)),
 
         );
     }
