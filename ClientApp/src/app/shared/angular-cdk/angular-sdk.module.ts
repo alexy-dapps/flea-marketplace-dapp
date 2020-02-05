@@ -1,11 +1,10 @@
 ﻿
-
 import { NgModule } from '@angular/core';
-
 import { LayoutModule } from '@angular/cdk/layout';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 const CDK_MODULES = [
-    LayoutModule
+    LayoutModule, OverlayModule
 ];
 
 @NgModule({
