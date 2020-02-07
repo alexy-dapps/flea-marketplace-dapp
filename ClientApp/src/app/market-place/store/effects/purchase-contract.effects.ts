@@ -2,8 +2,12 @@
 import { Injectable } from '@angular/core';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { serializeError } from 'serialize-error';
-import { exhaustMap, map, mapTo, tap, switchMap, withLatestFrom, catchError, concatMap, concatMapTo } from 'rxjs/operators';
-import { of } from 'rxjs';
+import {
+  map, mapTo, tap, filter, withLatestFrom,
+  switchMap, exhaustMap, catchError, concatMap, concatMapTo
+} from 'rxjs/operators';
+
+import { of, concat } from 'rxjs';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 
@@ -108,18 +112,14 @@ export class PurchaseContractEffects {
           };
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
-
           //  * Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
-
         }),
-        exhaustMap(result => {
+        filter(result => !!result),
+        exhaustMap(result => concat(
 
-          if (result === undefined) {
-            return of(SpinnerActions.hide());
-          }
-
-          return this.fleaSrv.removePurchaseContract(result).pipe(
+          of(SpinnerActions.show()),
+          this.fleaSrv.removePurchaseContract(result).pipe(
             tap(productKey => console.log(`Contract has been removed: ${productKey}`)),
             /*
             Related to the operators mapTo and concatMapTo. These operators map to static values.
@@ -134,8 +134,9 @@ export class PurchaseContractEffects {
             catchError((err: Error) =>
               of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
             )
-          );
-        })
+          ),
+          of(SpinnerActions.hide()),
+        ))
 
       ));
 
@@ -157,18 +158,14 @@ export class PurchaseContractEffects {
           };
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
-
           //  * Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
-
         }),
-        exhaustMap(result => {
+        filter(result => !!result),
+        exhaustMap(result => concat(
 
-          if (result === undefined) {
-            return of(SpinnerActions.hide());
-          }
-
-          return this.purchaseSrv.abortPurchaseContract(result).pipe(
+          of(SpinnerActions.show()),
+          this.purchaseSrv.abortPurchaseContract(result).pipe(
             tap(address => console.log(`Successfully canceled contract: ${address} `)),
             concatMapTo(
               [PurchaseContractActions.abortSelectedPurchaseContractSuccess(),
@@ -177,8 +174,9 @@ export class PurchaseContractEffects {
             catchError((err: Error) =>
               of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
             )
-          );
-        })
+          ),
+          of(SpinnerActions.hide()),
+        ))
 
       ));
 
@@ -199,33 +197,26 @@ export class PurchaseContractEffects {
             output: {
               address: contract.contractAddress,
               eth: payload.eth
-
             }
           };
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
-
           // Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
-
         }),
-        exhaustMap(result => {
+        filter(result => !!result),
+        exhaustMap(result => concat(
 
-          if (result === undefined) {
-            return of(SpinnerActions.hide());
-          }
-
-          return this.purchaseSrv.confirmPurchase(result.address, result.eth).pipe(
+          of(SpinnerActions.show()),
+          this.purchaseSrv.confirmPurchase(result.address, result.eth).pipe(
             tap(address => console.log(`Purchase confirmed successfully for the contract: ${address} `)),
             concatMapTo(
-              [PurchaseContractActions.confirmBuySuccess(),
-              Web3ProviderActions.getBalance()]
+              [PurchaseContractActions.confirmBuySuccess(), Web3ProviderActions.getBalance()]
             ),
-            catchError((err: Error) =>
-              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
-            )
-          );
-        })
+            catchError((err: Error) => of(this.handleError(err), Web3ProviderActions.getBalance()))
+          ),
+          of(SpinnerActions.hide())
+        ))
 
       ));
 
@@ -247,28 +238,24 @@ export class PurchaseContractEffects {
           };
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
-
           // Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
-
         }),
-        exhaustMap(result => {
+        filter(result => !!result),
+        exhaustMap(result => concat(
 
-          if (result === undefined) {
-            return of(SpinnerActions.hide());
-          }
-
-          return this.purchaseSrv.confirmDelivery(result).pipe(
+          of(SpinnerActions.show()),
+          this.purchaseSrv.confirmDelivery(result).pipe(
             tap(address => console.log(`Delivery confirmed successfully for the contract: ${address} `)),
             concatMapTo(
-              [PurchaseContractActions.confirmDeliverySuccess(),
-              Web3ProviderActions.getBalance()]
+              [PurchaseContractActions.confirmDeliverySuccess(), Web3ProviderActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+              of(this.handleError(err), Web3ProviderActions.getBalance())
             )
-          );
-        })
+          ),
+          of(SpinnerActions.hide()),
+        ))
 
       ));
 
@@ -335,12 +322,12 @@ export class PurchaseContractEffects {
         withLatestFrom(this.store$.pipe(select(fromStore.getSelectedPurchaseContract))),
         tap(async ([action, contract]) => {
 
-           // here is the trick to make  this.selectedPurchaseContract$ emit
-           // on the same route
-           // we need to reload on the same route
-           // based on https://github.com/angular/angular/issues/13831
-           this.router.routeReuseStrategy.shouldReuseRoute = ( ) => false;
-           this.router.navigate(['/market-place/products', contract.productKey]);
+          // here is the trick to make  this.selectedPurchaseContract$ emit
+          // on the same route
+          // we need to reload on the same route
+          // based on https://github.com/angular/angular/issues/13831
+          this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+          this.router.navigate(['/market-place/products', contract.productKey]);
 
         })
       ),
@@ -352,14 +339,9 @@ export class PurchaseContractEffects {
       ofType(PurchaseContractActions.createPurchaseContract,
         PurchaseContractActions.loadProducts,
         PurchaseContractActions.loadPurchaseContract,
-        PurchaseContractActions.removePurchaseContract,
-        PurchaseContractActions.abortSelectedPurchaseContract,
-        PurchaseContractActions.confirmBuy,
-        PurchaseContractActions.confirmDelivery,
         PurchaseContractActions.releaseEscrow,
         PurchaseContractActions.withdrawByOwner
       ),
-
       // Related to the operators mapTo and concatMapTo. These operators map to static values.
       mapTo(SpinnerActions.show())
     )
@@ -370,10 +352,6 @@ export class PurchaseContractEffects {
       ofType(PurchaseContractActions.createPurchaseContractSuccess,
         PurchaseContractActions.loadProductsSuccess,
         PurchaseContractActions.loadPurchaseContractSuccess,
-        PurchaseContractActions.removePurchaseContractSuccess,
-        PurchaseContractActions.abortSelectedPurchaseContractSuccess,
-        PurchaseContractActions.confirmBuySuccess,
-        PurchaseContractActions.confirmDeliverySuccess,
         PurchaseContractActions.releaseEscrowSuccess,
         PurchaseContractActions.withdrawByOwnerSuccess
       ),

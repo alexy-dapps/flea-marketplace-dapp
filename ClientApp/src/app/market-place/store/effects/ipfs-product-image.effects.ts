@@ -8,7 +8,6 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
 
 import { IpfsDaemonService } from '../../../core/services/ipfs-daemon.services';
-import * as fromPurchaseContract from '../reducers';
 import { IpfsImageActions } from '../actions';
 import { ErrorActions } from '../../../core/store/actions';
 
@@ -17,7 +16,6 @@ import { ErrorActions } from '../../../core/store/actions';
 @Injectable()
 export class IpfsUploadEffects {
   constructor(
-    private store$: Store<fromPurchaseContract.AppState>,
     private ipfsSrv: IpfsDaemonService,
     private actions$: Actions,
     private httpClient: HttpClient,

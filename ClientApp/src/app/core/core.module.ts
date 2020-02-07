@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { MaterialModule, FlexLayoutModule, AngularCdkModule } from '../shared';
+import { MatSpinner } from '@angular/material';
 
 import { NavComponent } from './components/nav/nav.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -40,7 +41,8 @@ export const COMPONENTS = [
    */
   entryComponents: [
     SnackBarComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    MatSpinner
   ],
 })
 export class CoreModule { }

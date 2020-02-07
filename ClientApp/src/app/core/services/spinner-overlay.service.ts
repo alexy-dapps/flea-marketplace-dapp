@@ -7,7 +7,7 @@ import { MatSpinner } from '@angular/material';
 
 // rxjs
 import { Observable, Subject } from 'rxjs';
-import { mapTo, scan, map, distinctUntilChanged } from 'rxjs/operators';
+import { scan, map, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -17,9 +17,7 @@ export class SpinnerOverlayService {
 
     private spin$: Subject<number> = new Subject();
 
-    constructor(
-        private overlay: Overlay,
-    ) {
+    constructor( private overlay: Overlay ) {
 
         this.spinnerTopRef = this.overlay.create({
             hasBackdrop: true,
@@ -32,10 +30,20 @@ export class SpinnerOverlayService {
         this.spin$
             .asObservable()
             .pipe(
+                /*
+                Combines together all values emitted on the source,
+                using an accumulator function that knows how to join a new source value
+                into the accumulation from the past.
+                */
                 scan((acc, next) => {
-                    if (!next) { return 0; }
+                    // The (!) operator reverses the logical (true or false)
+                    // !0 - is true,  (!5) is false
+                    if (!next) {
+                        return 0;
+                    }
                     return (acc + next) >= 0 ? acc + next : 0;
                 }, 0),
+
                 map(val => val > 0),
                 distinctUntilChanged()
             )
@@ -51,17 +59,17 @@ export class SpinnerOverlayService {
     }
 
     show() {
-        console.log('show');
+        console.log('show spinner');
         this.spin$.next(1);
     }
 
     hide() {
-        console.log('hide');
+        console.log('hide spinner');
         this.spin$.next(-1);
     }
 
     reset() {
-        console.log('reset');
+        console.log('reset spinner');
         this.spin$.next(0);
     }
 }
