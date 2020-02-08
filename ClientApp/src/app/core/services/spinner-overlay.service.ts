@@ -5,7 +5,6 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { MatSpinner } from '@angular/material';
 
-// rxjs
 import { Observable, Subject } from 'rxjs';
 import { scan, map, distinctUntilChanged } from 'rxjs/operators';
 
@@ -13,11 +12,11 @@ import { scan, map, distinctUntilChanged } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class SpinnerOverlayService {
-    private spinnerTopRef: OverlayRef;
 
+    private spinnerTopRef: OverlayRef;
     private spin$: Subject<number> = new Subject();
 
-    constructor( private overlay: Overlay ) {
+    constructor(private overlay: Overlay) {
 
         this.spinnerTopRef = this.overlay.create({
             hasBackdrop: true,
@@ -58,18 +57,10 @@ export class SpinnerOverlayService {
             );
     }
 
-    show() {
-        console.log('show spinner');
-        this.spin$.next(1);
-    }
+    show = () => this.spin$.next(1);
 
-    hide() {
-        console.log('hide spinner');
-        this.spin$.next(-1);
-    }
+    hide = () => this.spin$.next(-1);
 
-    reset() {
-        console.log('reset spinner');
-        this.spin$.next(0);
-    }
+    reset = () => this.spin$.next(0);
+
 }
