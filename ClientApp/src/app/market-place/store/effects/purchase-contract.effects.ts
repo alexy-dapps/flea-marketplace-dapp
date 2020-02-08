@@ -112,7 +112,7 @@ export class PurchaseContractEffects {
           };
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
-          //  * Gets an observable that is notified when the dialog is finished closing.
+          // Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
         }),
         filter(result => !!result),
@@ -158,7 +158,7 @@ export class PurchaseContractEffects {
           };
 
           const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
-          //  * Gets an observable that is notified when the dialog is finished closing.
+          // Gets an observable that is notified when the dialog is finished closing.
           return dialogRef.afterClosed();
         }),
         filter(result => !!result),
