@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { MatDialogConfig, MatDialog } from '@angular/material';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { serializeError } from 'serialize-error';
 import {
   map, mapTo, tap, filter, withLatestFrom,

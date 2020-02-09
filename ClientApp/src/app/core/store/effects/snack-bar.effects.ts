@@ -3,7 +3,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { tap, map } from 'rxjs/operators';
 
 import { SnackBarActions } from '../actions';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from '../../components/snackbar/snack-bar.component';
 
 

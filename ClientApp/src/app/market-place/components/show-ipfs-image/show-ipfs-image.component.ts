@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild , ElementRef } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { windowRefToken } from '../../../core/services/tokens';
 import { Observable } from 'rxjs';
 import { withLatestFrom, map, tap, filter, take } from 'rxjs/operators';

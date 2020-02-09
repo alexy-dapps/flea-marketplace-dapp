@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 // cdk
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { MatSpinner } from '@angular/material';
+import { MatSpinner } from '@angular/material/progress-spinner';
 
 import { Observable, Subject } from 'rxjs';
 import { scan, map, distinctUntilChanged } from 'rxjs/operators';
