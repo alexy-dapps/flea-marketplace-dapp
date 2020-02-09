@@ -55,7 +55,7 @@ export class PurchaseContractDetailComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
 
     if (this.imageRef) {
-      this.imageRef.nativeElement.src = this.windowRef.URL.createObjectURL(this.image);
+      this.imageRef.nativeElement.src = this.windowRef.window.URL.createObjectURL(this.image);
     }
 
     this.buyerConfirmPrice.reset();
