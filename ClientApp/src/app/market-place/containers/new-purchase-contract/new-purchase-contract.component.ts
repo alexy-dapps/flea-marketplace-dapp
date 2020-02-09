@@ -47,7 +47,7 @@ function bites32StringValidator(control: AbstractControl): { [key: string]: any 
 })
 export class NewPurchaseContractComponent implements OnInit, OnDestroy {
 
-  @ViewChild('file', { static: false }) fileControl: ElementRef;
+  @ViewChild('file') fileControl: ElementRef;
   fileBlob: File;
   fileContent: ArrayBuffer;
 

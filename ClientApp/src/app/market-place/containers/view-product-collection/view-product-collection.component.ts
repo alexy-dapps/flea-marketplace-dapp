@@ -16,7 +16,7 @@ import { PurchaseWidgetModel } from '../../models';
 export class ViewProductCollectionComponent implements OnInit, AfterViewInit {
 
 
-  @ViewChild('contractKey', { static: false }) contractKey: ElementRef;
+  @ViewChild('contractKey') contractKey: ElementRef;
 
   filteredProducts$: Observable<PurchaseWidgetModel[]>;
 

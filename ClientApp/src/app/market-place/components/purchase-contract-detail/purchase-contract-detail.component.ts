@@ -25,7 +25,7 @@ interface StatusColor {
 })
 export class PurchaseContractDetailComponent implements OnChanges {
 
-  @ViewChild('ipfsImage', { static: false }) imageRef: ElementRef;
+  @ViewChild('ipfsImage') imageRef: ElementRef;
   @Input() contract: PurchaseContractModel;
   @Input() image: Blob;
   @Input() account: string;
