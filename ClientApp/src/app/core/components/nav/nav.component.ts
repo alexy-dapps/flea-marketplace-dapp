@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-
 import { Store, select } from '@ngrx/store';
+import { create } from 'ethereum-blockies';
+
 import * as fromRoot from '../../../core/store/reducers';
 import { INavInterface } from '../../models';
 
@@ -12,7 +13,9 @@ import { INavInterface } from '../../models';
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
 })
-export class NavComponent implements OnInit {
+export class NavComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('blocky') blockyRef: ElementRef;
 
   nav: { [index: string]: INavInterface } = {
     home:
@@ -61,20 +64,27 @@ export class NavComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.account$ = this.store.pipe(select(fromRoot.getAccount));
     this.network$ = this.store.pipe(select(fromRoot.getNetwork));
-
     this.balance$ = this.store.pipe(
       select(fromRoot.getBalance),
       tap(balance => console.log(`Debug: got balance: ${balance}`))
     );
-
 
     this.ipfsConnect$ = this.store.pipe(
       select(fromRoot.getIpfsConnectStatus),
       tap(ipfs => console.log(`Debug: IPFS connection status: ${ipfs}`))
     );
 
-
   }
+
+  ngAfterViewInit() {
+
+    this.account$ = this.store.pipe(select(fromRoot.getAccount)).pipe(
+      tap(account => {
+        console.log(`Debug: account: ${account}`);
+        this.blockyRef.nativeElement.src = create({ seed: account, size: 8, scale: 4 }).toDataURL();
+      })
+    );
+  }
+
 }

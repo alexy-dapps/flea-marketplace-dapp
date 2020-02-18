@@ -1,13 +1,11 @@
-<div class="app-container" *ngIf="{account: account$ | async, network: network$ | async, 
-  balance: balance$ | async, ipfsConnect: ipfsConnect$ | async} as values;">
-
+<div class="app-container" >
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="(isHandset$ | async) === false">
       <mat-toolbar>Menu</mat-toolbar>
       <mat-nav-list>
-
+  
         <h3 matSubheader class='margin-top-bottom--12'>
           <a [routerLink]="nav['home'].link" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: nav['home'].exact }">
@@ -15,7 +13,7 @@
           </a>
         </h3>
         <mat-divider></mat-divider>
-
+  
         <h3 matSubheader class='margin-top-bottom--12'>
           <img src="{{nav['marketplace'].img_src}}">{{nav['marketplace'].name}}
         </h3>
@@ -31,99 +29,78 @@
             <img src="{{nav['marketplace_new_product'].img_src}}">{{nav['marketplace_new_product'].name}}
           </a>
         </mat-list-item>
-
+  
         <mat-divider></mat-divider>
-
+  
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-
+  
       <mat-toolbar color="primary" fxLayout="row">
-
+  
         <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
           *ngIf="(isHandset$ | async)">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-
+  
         <span fxFlex>
           <span fxLayout="row" fxLayoutAlign="start center">
             <img src="./assets/img/ether-32.png">
             FleaMarket Escrow DApp
           </span>
-
+  
         </span>
-
-
-        <ng-container *ngIf="values.account; then authorized; else unauthorized">
-        </ng-container>
-
-        <ng-template #authorized>
-
-          <div fxFlex="15">
-            <span fxLayout="row" fxLayoutAlign="end center">
-              Balance:
-              <mat-chip-list fxFlexOffset="10px">
-                <mat-chip color="accent" selected>{{values.balance}}</mat-chip>
-              </mat-chip-list>
-            </span>
-          </div>
-
-          <div fxFlex="15">
-            <span fxLayout="row" fxLayoutAlign="end center">
-              IPFS Connect:
-              <div fxFlexOffset="10px" *ngIf="values.ipfsConnect">🔵</div>
-              <div fxFlexOffset="10px" *ngIf="!values.ipfsConnect">🔴</div>
-            </span>
-          </div>
-
-        </ng-template>
-
-        <ng-template #unauthorized>
-        </ng-template>
-
+  
+        <div fxFlex="15" *ngIf="balance$ | async as balance">
+          <span fxLayout="row" fxLayoutAlign="end center">
+            Balance:
+            <mat-chip-list fxFlexOffset="10px">
+              <mat-chip color="accent" selected>{{balance}}</mat-chip>
+            </mat-chip-list>
+          </span>
+        </div>
+  
+        <div fxFlex="15" *ngIf="ipfsConnect$ | async as ipfsConnect">
+          <span fxLayout="row" fxLayoutAlign="end center">
+            IPFS Connect:
+            <div fxFlexOffset="10px" *ngIf="ipfsConnect">🔵</div>
+            <div fxFlexOffset="10px" *ngIf="!ipfsConnect">🔴</div>
+          </span>
+        </div>
+  
       </mat-toolbar>
-
+  
       <!-- Add Content Here -->
       <div class="context-container">
         <router-outlet></router-outlet>
       </div>
-
-
+  
+  
     </mat-sidenav-content>
   </mat-sidenav-container>
-
+  
   <mat-toolbar fxLayout="row" fxLayoutAlign="end center">
-
-    <ng-container *ngIf="values.account; then authorized2; else unauthorized2">
-    </ng-container>
-
-    <ng-template #authorized2>
-      <div fxFlex="15">
-        <span fxLayout="row" fxLayoutAlign="end center">
-          Network:
-          <mat-chip-list fxFlexOffset="10px">
-            <mat-chip color="primary" selected>{{values.network}}</mat-chip>
-          </mat-chip-list>
-        </span>
-      </div>
-
-
-      <div fxFlex="30">
-        <span fxLayout="row" fxLayoutAlign="end center">
-          Account:
-          <mat-chip-list fxFlexOffset="10px">
-            <mat-chip color="primary" selected>{{values.account}}</mat-chip>
-          </mat-chip-list>
-        </span>
-      </div>
-
-    </ng-template>
-
-
-    <ng-template #unauthorized2>
-    </ng-template>
-
-
+  
+    <div fxFlex="15" *ngIf="network$ | async as network">
+      <span fxLayout="row" fxLayoutAlign="end center">
+        Network:
+        <mat-chip-list fxFlexOffset="10px">
+          <mat-chip color="primary" selected>{{network}}</mat-chip>
+        </mat-chip-list>
+      </span>
+    </div>
+  
+    <div fxFlex="30">
+      <span fxLayout="row" fxLayoutAlign="end center">
+        <img #blocky> 
+        <mat-chip-list fxFlexOffset="10px" *ngIf="account$ | async as account">
+          <mat-chip color="primary" selected>{{account}}</mat-chip>
+        </mat-chip-list>
+      </span>
+  
+    </div>
+  
   </mat-toolbar>
 
 </div>
+

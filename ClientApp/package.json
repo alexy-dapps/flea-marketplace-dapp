@@ -29,6 +29,7 @@
     "@ngrx/store-devtools": "^8.6.0",
     "buffer": "^5.4.3",
     "core-js": "^3.6.4",
+    "ethereum-blockies": "^0.1.1",
     "ethers": "^4.0.43",
     "ipfs-http-client": "^38.0.0",
     "rxjs": "^6.5.4",
