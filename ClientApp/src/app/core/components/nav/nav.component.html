@@ -52,7 +52,7 @@
         </span>
   
         <div fxFlex="15" *ngIf="balance$ | async as balance">
-          <span fxLayout="row" fxLayoutAlign="end center">
+          <span fxLayout="row" fxLayoutAlign="center center">
             Balance:
             <mat-chip-list fxFlexOffset="10px">
               <mat-chip color="accent" selected>{{balance}}</mat-chip>
@@ -61,7 +61,7 @@
         </div>
   
         <div fxFlex="15" *ngIf="ipfsConnect$ | async as ipfsConnect">
-          <span fxLayout="row" fxLayoutAlign="end center">
+          <span fxLayout="row" fxLayoutAlign="center center">
             IPFS Connect:
             <div fxFlexOffset="10px" *ngIf="ipfsConnect">🔵</div>
             <div fxFlexOffset="10px" *ngIf="!ipfsConnect">🔴</div>
@@ -82,7 +82,7 @@
   <mat-toolbar fxLayout="row" fxLayoutAlign="end center">
   
     <div fxFlex="15" *ngIf="network$ | async as network">
-      <span fxLayout="row" fxLayoutAlign="end center">
+      <span fxLayout="row" fxLayoutAlign="center center">
         Network:
         <mat-chip-list fxFlexOffset="10px">
           <mat-chip color="primary" selected>{{network}}</mat-chip>
@@ -91,7 +91,7 @@
     </div>
   
     <div fxFlex="30">
-      <span fxLayout="row" fxLayoutAlign="end center">
+      <span fxLayout="row" fxLayoutAlign="center center">
         <img #blocky> 
         <mat-chip-list fxFlexOffset="10px" *ngIf="account$ | async as account">
           <mat-chip color="primary" selected>{{account}}</mat-chip>
