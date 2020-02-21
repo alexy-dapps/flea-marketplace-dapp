@@ -11,6 +11,40 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
+    /**
+    noImplicitAny prevent the compiler from implying that the type of an argument, variable,
+    or assignment is of type any, which is the default when the compiler either cannot infer
+    a type or the code not does explicitly declare the type.
+    */
+    //"noImplicitAny": true,
+    /**
+    strictNullChecks ensures that we are not allowing both undefined and null values
+    from being globally available or assignable unless explicitly declared in our TypeScript.
+    This flag is highly recommended as it prevents bugs that can result from nullish coalescing
+    and other truthy/falsey coercions.
+    */
+    // "strictNullChecks": true,
+    /** v9 recommendation
+    noImplicitReturns prevents you from falling through a function to the end unnoticed,
+    meaning, without your knowledge the function can return any implicitly.
+    This ensure that you are correctly returning the proper type,
+    no matter the branch of the code you are within where you do return a value.
+    */
+    "noImplicitReturns": true,
+    /** v9 recommendation
+    noImplicitThis ensure that we don't assume the value of this.
+    As JavaScript developers we know that the this value is dependent
+    upon the execution context of a function.
+    This compiler flag protects us from assuming,
+    or allowing the compiler to imply the context of this.
+    */
+    "noImplicitThis": true,
+    /** v9 recommendation
+    noFallthroughCasesInSwitch ensures that each case statement is guarded
+    by an appropriate break statement to prevent the case
+    from falling through to the case statement.
+    */
+    "noFallthroughCasesInSwitch": true,
     "typeRoots": [
       "node_modules/@types"
     ],
