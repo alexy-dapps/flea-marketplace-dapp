@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { CoreModule } from './core/core.module';
+
+import { GlobalErrorHandler } from './core/services/global-error-handler.service';
 
 // NgRx
 import * as fromRootStore from './core/store';
@@ -78,7 +80,10 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
     EffectsModule.forRoot(fromRootStore.effects),
     CoreModule,
   ],
-  providers: [],
+  providers: [
+    // register the GlobalErrorHandler provider
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
