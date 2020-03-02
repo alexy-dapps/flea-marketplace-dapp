@@ -3,27 +3,24 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { tap, map } from 'rxjs/operators';
 
 import { SnackBarActions } from '../actions';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SnackBarComponent } from '../../components/snackbar/snack-bar.component';
+import { SnackBarService } from '../../services/snack-bar.service';
 
 
 @Injectable()
 export class SnackBarEffects {
 
-    static readonly SNACKBAR_DELAY: number = 7000;
+  static readonly SNACKBAR_DELAY: number = 7000;
 
-    constructor(private readonly actions$: Actions, private matSnackBar: MatSnackBar) {}
+  constructor(private readonly actions$: Actions, private notifier: SnackBarService) { }
 
-    openSnackbar$ = createEffect(
-      () =>
-        this.actions$.pipe(
-          ofType(SnackBarActions.open),
-          map(action => action.payload),
-          tap(payload => this.matSnackBar.openFromComponent(SnackBarComponent, {
-             data: payload,
-             duration: SnackBarEffects.SNACKBAR_DELAY }))
-        ),
-        { dispatch: false }
+  openSnackbar$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(SnackBarActions.open),
+        map(action => action.payload),
+        tap(payload => this.notifier.show(payload))
+      ),
+    { dispatch: false }
 
-    );
+  );
 }

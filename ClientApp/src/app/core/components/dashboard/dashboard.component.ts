@@ -55,6 +55,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onConnect() {
+    // throw new Error('My Bad Test Error');
     this.store$.dispatch(fromRoot.Web3ProviderActions.metamaskConnect());
   }
 

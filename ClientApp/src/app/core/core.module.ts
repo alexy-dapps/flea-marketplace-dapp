@@ -13,7 +13,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
 
-import { GlobalErrorHandler } from './services/global-error-handler.service';
+import { AppErrorHandler } from './services/app-error-handler.service';
 import { MaterialModule, FlexLayoutModule, AngularCdkModule } from '../shared';
 
 import { MatSpinner } from '@angular/material/progress-spinner';
@@ -109,7 +109,7 @@ export const COMPONENTS = [
   ],
   providers: [
     // register the GlobalErrorHandler provider
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    { provide: ErrorHandler, useClass: AppErrorHandler },
   ],
 })
 export class CoreModule {
