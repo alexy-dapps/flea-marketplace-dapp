@@ -28,7 +28,7 @@ export const COMPONENTS = [
   NavComponent,
   NotFoundPageComponent,
   DashboardComponent,
-  LoaderComponent,
+  // LoaderComponent, - we don't use it
   SnackBarComponent,
   ConfirmDialogComponent
 
