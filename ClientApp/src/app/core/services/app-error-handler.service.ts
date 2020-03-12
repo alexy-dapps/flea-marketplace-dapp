@@ -12,7 +12,6 @@ import { AppearanceColor } from '../models';
 @Injectable({ providedIn: 'root' })
 export class AppErrorHandler extends ErrorHandler {
 
-  static readonly SNACKBAR_DELAY: number = 7000;
   // Error handling is important and needs to be loaded first.
   // Because of this we should manually inject the services with Injector.
   constructor(private injector: Injector) {
