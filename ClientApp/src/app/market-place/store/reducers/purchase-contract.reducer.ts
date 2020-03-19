@@ -37,7 +37,7 @@ export const reducer = createReducer(
    */
   on(
     PurchaseContractActions.loadProductsSuccess,
-    (state, { products }) => adapter.addAll(products, {
+    (state, { products }) => adapter.setAll(products, {
 
       ...state,
       loaded: true,

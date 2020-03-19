@@ -50,15 +50,12 @@ export const COMPONENTS = [
      * StoreModule.forRoot is imported once in the root module, accepting a reducer
      * function or object map of reducer functions. If passed an object of
      * reducers
+     * In the V9, two of these runtime checks, strictStateImmutability, and strictActionImmutability
+     *  are now enabled by default in development,
+     * so developers can be assured that their state following immutable practices out of the box.
      */
     StoreModule.forRoot(ROOT_REDUCERS, {
       metaReducers,
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true,
-        strictStateSerializability: false,
-        strictActionSerializability: false,
-      },
     }),
 
     // @ngrx/router-store keeps router state up-to-date in the store.
