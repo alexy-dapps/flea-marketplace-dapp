@@ -3,7 +3,7 @@ import { NgModule, Optional, SkipSelf, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // NgRx
 import * as fromRootStore from './store';
@@ -19,10 +19,11 @@ import { MaterialModule, FlexLayoutModule, AngularCdkModule } from '../shared';
 import { MatSpinner } from '@angular/material/progress-spinner';
 import { NavComponent } from './components/nav/nav.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { LoaderComponent } from './components/loader/loader.component';
+// import { LoaderComponent } from './components/loader/loader.component';
 import { SnackBarComponent } from './components/snackbar/snack-bar.component';
 import { NotFoundPageComponent } from './containers/not-found-page.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { HttpErrorInterceptor } from './services/http-error.interceptor';
 
 export const COMPONENTS = [
   NavComponent,
@@ -110,6 +111,7 @@ export const COMPONENTS = [
   providers: [
     // register the GlobalErrorHandler provider
     { provide: ErrorHandler, useClass: AppErrorHandler },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
   ],
 })
 export class CoreModule {

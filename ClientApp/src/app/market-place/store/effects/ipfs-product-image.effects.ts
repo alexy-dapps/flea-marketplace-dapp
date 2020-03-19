@@ -15,10 +15,8 @@ import { ErrorActions } from '../../../core/store/actions';
 
 @Injectable()
 export class IpfsUploadEffects {
-  constructor(
-    private ipfsSrv: IpfsDaemonService,
-    private actions$: Actions,
-    private httpClient: HttpClient,
+  constructor( private ipfsSrv: IpfsDaemonService, private actions$: Actions,
+               private httpClient: HttpClient
   ) { }
 
 

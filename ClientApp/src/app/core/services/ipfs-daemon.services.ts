@@ -9,8 +9,7 @@ import { Buffer } from 'buffer';
   providedIn: 'root'
 })
 export class IpfsDaemonService {
-  constructor(@Inject(ipfsToken) private ipfs,
-              private httpClient: HttpClient) {}
+  constructor(@Inject(ipfsToken) private ipfs, private httpClient: HttpClient) {}
 
   public getId(): Observable<string> {
     return from(this.ipfs.id()).pipe(

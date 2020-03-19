@@ -1,5 +1,5 @@
+// best-https://github.com/tomastrajan/angular-ngrx-material-starter
 //  https://medium.com/angular-in-depth/expecting-the-unexpected-best-practices-for-error-handling-in-angular-21c3662ef9e4
-
 // https://www.tektutorialshub.com/angular/error-handling-in-angular-applications/
 // https://www.freecodecamp.org/news/global-error-handling-in-angular-with-the-help-of-the-cdk/
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
@@ -21,7 +21,7 @@ export class AppErrorHandler extends ErrorHandler {
   handleError(error: Error | HttpErrorResponse) {
 
     const notifier = this.injector.get(SnackBarService);
-    let message;
+    let message: string;
 
     if (error instanceof HttpErrorResponse) {
       // Server Error
