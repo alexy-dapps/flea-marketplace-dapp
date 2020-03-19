@@ -28,5 +28,6 @@
 
   "prettier.printWidth": 120,
   "prettier.bracketSpacing": true,
-  "prettier.singleQuote": true
+  "prettier.singleQuote": true,
+  "editor.fontSize": 15
 }
