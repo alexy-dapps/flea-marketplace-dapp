@@ -1,8 +1,8 @@
 
-pragma solidity >=0.4.22 <0.7.0;
+pragma solidity >=0.4.22 <0.7.0; // solhint-disable-line
 
 /**
- copied and a little modified from 
+ copied and a little modified from
  https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/ownership/Ownable.sol
  *
  * This module is used through inheritance. It will make available the modifier
@@ -10,7 +10,7 @@ pragma solidity >=0.4.22 <0.7.0;
  * the owner.
  */
 contract Ownable {
-    
+
     address payable private _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -21,16 +21,16 @@ contract Ownable {
     constructor () internal {
         address payable msgSender = _msgSender();
         _owner = msgSender;
-        
+
         // 'previous' owner had the zero address (was no any owner at all)
         emit OwnershipTransferred(address(0), msgSender);
     }
 
-    
+
     function _msgSender() internal view returns (address payable) {
         return msg.sender;
     }
-    
+
     /**
      * Returns the address of the current owner.
      */
@@ -53,7 +53,7 @@ contract Ownable {
         return _msgSender() == _owner;
     }
 
-    
+
     /**
      * Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.

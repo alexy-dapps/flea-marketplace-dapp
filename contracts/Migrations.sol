@@ -1,4 +1,4 @@
-pragma solidity >=0.4.22 <0.7.0;
+pragma solidity >=0.4.22 <0.7.0; // solhint-disable-line
 
 contract Migrations {
   address public owner;
