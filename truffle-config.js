@@ -136,15 +136,18 @@ module.exports = {
   compilers: {
     solc: {
       // version: "0.5.12",    // Fetch exact version from solc-bin (default: truffle's version)
-      version: "0.6.0",
+      version: '0.6.0',
       // still using older version
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
-          enabled: true,
-          runs: 200
-        }
-        //  evmVersion: "byzantium"
+          enabled: true
+        },
+        /*
+        !!! based on the current Ethereum fork, we now need to set  the EVM version
+        https://ethereum.stackexchange.com/questions/78597/solidity-0-6-0-addressthis-balance-throws-error-invalid-opcode
+        */
+        evmVersion: 'petersburg' //'byzantium'
       }
     }
   }
