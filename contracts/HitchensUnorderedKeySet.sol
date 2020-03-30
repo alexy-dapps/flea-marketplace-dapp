@@ -41,7 +41,8 @@ library HitchensUnorderedKeySetLib {
     function insert(Set storage self, bytes32 key) internal {
         require(key != 0x0, "UnorderedKeySet(100) - Key cannot be 0x0");
         require(!exists(self, key), "UnorderedKeySet(101) - Key already exists in the set.");
-        self.keyPointers[key] = self.keyList.push(key)-1;
+        self.keyList.push(key);
+        self.keyPointers[key] = self.keyList.length-1;
     }
 
     function remove(Set storage self, bytes32 key) internal {
@@ -51,7 +52,9 @@ library HitchensUnorderedKeySetLib {
         self.keyPointers[keyToMove] = rowToReplace;
         self.keyList[rowToReplace] = keyToMove;
         delete self.keyPointers[key];
-        self.keyList.length--;
+        //self.keyList.length--; // older version < 0.6.0:  calling .length-- on an array will delete the last element
+        self.keyList.pop(); // new version >= 0.6.0: you can use to remove an element from the end of the array.
+        //This also implicitly calls delete on the removed element.
     }
 
     function count(Set storage self) internal view returns(uint) {
