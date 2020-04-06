@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from, empty } from 'rxjs';
+import { Observable, from, empty, defer, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { ipfsToken } from './tokens';
 import { Buffer } from 'buffer';
@@ -9,7 +9,7 @@ import { Buffer } from 'buffer';
   providedIn: 'root'
 })
 export class IpfsDaemonService {
-  constructor(@Inject(ipfsToken) private ipfs, private httpClient: HttpClient) {}
+  constructor(@Inject(ipfsToken) private ipfs, private httpClient: HttpClient) { }
 
   public getId(): Observable<string> {
     return from(this.ipfs.id()).pipe(
@@ -41,28 +41,45 @@ export class IpfsDaemonService {
     };
 
     return from(this.ipfs.add(data, options)).pipe(
-        tap((res: any) =>
-          console.log(`IPFS node response json: ${JSON.stringify(res)}`)
-        ),
-        map((res: any) => res[res.length - 1].hash )
-      );
+      tap((res: any) =>
+        console.log(`IPFS node response json: ${JSON.stringify(res)}`)
+      ),
+      map((res: any) => res[res.length - 1].hash)
+    );
   }
 
-  public getFile = (hash: string): Observable<Blob> => from(this.ipfs.cat(hash)).pipe(
-    switchMap((buffer: Buffer) => {
+  public getFile(hash: string): Observable<Blob> {
 
-      // based on https://mraddon.blog/2018/07/15/how-to-push-load-image-file-from-to-ipfs-using-javascript-examples-part-iv/
-      const byteString = buffer.toString('base64');
+    // const sz = defer(async () => await toBuffer(this.ipfs.cat(hash)));
 
-      // idea based on https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-      const url = `data:application/octet-stream;base64,${byteString}`;
+    return of(1).pipe(
+      switchMap(async () => {
 
-      // idea based on https://brianflove.com/2017/11/02/angular-http-client-blob/
-      return this.httpClient.get(url, {
-        responseType: 'blob'
-      });
-    }
-  ))
+        // const buff = await toBuffer(this.ipfs.cat(hash));
+        const chunks = []
+        for await (const chunk of this.ipfs.cat(hash)) {
+          chunks.push(chunk)
+        }
 
+        const buff = Buffer.concat(chunks);
+        return buff;
+      }),
+      switchMap((buffer: Buffer) => {
+        // based on https://mraddon.blog/2018/07/15/how-to-push-load-image-file-from-to-ipfs-using-javascript-examples-part-iv/
+        const byteString = buffer.toString('base64');
+
+        // idea based on https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+        const url = `data:application/octet-stream;base64,${byteString}`;
+
+        // idea based on https://brianflove.com/2017/11/02/angular-http-client-blob/
+        return this.httpClient.get(url, {
+          responseType: 'blob'
+        });
+      }
+
+
+      ))
+
+  }
 
 }
