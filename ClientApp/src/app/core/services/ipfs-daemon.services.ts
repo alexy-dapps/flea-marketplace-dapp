@@ -31,6 +31,7 @@ export class IpfsDaemonService {
 
   public addFile(file: File): Observable<string> {
 
+    // based on https://github.com/multiformats/js-cid
     const data = {
       path: file.name,
       content: file
