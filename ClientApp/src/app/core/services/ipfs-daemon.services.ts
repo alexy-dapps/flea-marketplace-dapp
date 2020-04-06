@@ -40,30 +40,39 @@ export class IpfsDaemonService {
       progress: (prog) => console.log(`progress report: ${prog}`)
     };
 
-    return from(this.ipfs.add(data, options)).pipe(
+    const sz = defer(async () => {
+
+      let res;
+      for await (const result of this.ipfs.add(data, options)) {
+        res = result;
+      }
+
+      return res;
+    });
+
+    return sz.pipe(
       tap((res: any) =>
         console.log(`IPFS node response json: ${JSON.stringify(res)}`)
       ),
-      map((res: any) => res[res.length - 1].hash)
+      map((res: any) => res.cid.toString())
     );
   }
 
   public getFile(hash: string): Observable<Blob> {
 
-    // const sz = defer(async () => await toBuffer(this.ipfs.cat(hash)));
+    // based on https://medium.com/@benlesh/rxjs-observable-interop-with-promises-and-async-await-bebb05306875
+    const sz = defer(async () => {
 
-    return of(1).pipe(
-      switchMap(async () => {
+      const chunks = []
+      for await (const chunk of this.ipfs.cat(hash)) {
+        chunks.push(chunk)
+      }
 
-        // const buff = await toBuffer(this.ipfs.cat(hash));
-        const chunks = []
-        for await (const chunk of this.ipfs.cat(hash)) {
-          chunks.push(chunk)
-        }
+      const buff = Buffer.concat(chunks);
+      return buff;
+    });
 
-        const buff = Buffer.concat(chunks);
-        return buff;
-      }),
+    return sz.pipe(
       switchMap((buffer: Buffer) => {
         // based on https://mraddon.blog/2018/07/15/how-to-push-load-image-file-from-to-ipfs-using-javascript-examples-part-iv/
         const byteString = buffer.toString('base64');
