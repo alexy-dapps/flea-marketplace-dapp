@@ -7,7 +7,8 @@
     "build": "ng build",
     "lint": "ng lint",
     "clean:dist": "rimraf ./dist/",
-    "clean:node_modules": "rimraf ./node_modules/"
+    "clean:node_modules": "rimraf ./node_modules/",
+    "ngrx-vis": "ngrx-vis -p ./tsconfig.app.json"
   },
   "private": true,
   "dependencies": {
@@ -45,6 +46,7 @@
     "@angular/language-service": "~9.1.0",
     "@types/node": "^13.9.0",
     "codelyzer": "^5.2.2",
+    "ngrx-vis": "^0.1.23",
     "rimraf": "^3.0.0",
     "ts-node": "~8.8.0",
     "tslint": "^6.1.0",

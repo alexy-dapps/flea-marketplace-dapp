@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NgRx - Viz</title>
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="vue-app">
+      <action-network-graphs
+        :actions-plain="actionsPlain"
+        :nodes="networkNodes"
+        :edges="networkEdges"
+        :options="networkOptions"
+      ></action-network-graphs>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://visjs.github.io/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="./src/network-graph.js"></script>
+  </body>
+</html>

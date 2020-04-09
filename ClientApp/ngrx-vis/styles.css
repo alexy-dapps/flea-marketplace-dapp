@@ -1,0 +1,106 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto:400, 100,  500, 300italic, 500italic, 700italic, 900, 300';
+
+html,
+body,
+#vue-app {
+  height: 100vh;
+  margin: 0;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica Neue, Helvetica, Arial';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.ngrx-vis {
+  display: grid;
+  grid-template-areas: 'nav canvas';
+  grid-template-columns: auto 1fr;
+
+  height: 100%;
+
+  font-size: 14px;
+}
+
+.navigation {
+  grid-area: nav;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  overflow: hidden;
+
+  --navigation-row-height: 50px;
+}
+
+.top-menu {
+  height: var(--navigation-row-height);
+  background-color: #dedede;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ngrx-vis-logo {
+  width: 32px;
+}
+
+.filter {
+  height: var(--navigation-row-height);
+  padding: 8px;
+  background-color: #eeeeee;
+}
+
+.filter-input {
+  display: block;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  font-weight: 400;
+  width: 100%;
+  flex-grow: 1;
+
+  outline: none;
+}
+
+.filter-results {
+  cursor: pointer;
+  background: #f7f7f7;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+.filter-results li {
+  padding: 16px 12px;
+}
+.filter-results li:hover {
+  background-color: #dddddd;
+}
+
+.filter-results li .filter-result-title {
+  display: block;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-results li .filter-result-subtitle {
+  display: inline-block;
+  color: #333333;
+  padding-top: 4px;
+  word-break: break-word;
+  width: 200px;
+}
+
+.canvas {
+  grid-area: canvas;
+}
+
+.vis-network {
+  outline: none;
+}
