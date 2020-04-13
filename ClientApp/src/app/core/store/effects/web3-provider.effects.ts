@@ -65,6 +65,12 @@ export class Web3ProviderEffects {
   );
   */
 
+  // only allow MetaMask
+  /*
+  After all the root effects have been added, the root effect dispatches a ROOT_EFFECTS_INIT action.
+  You can see this action as a lifecycle hook, which you can use in order to execute some code after
+   all your root effects have been added.
+  */
   metaMaskEnabled$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
@@ -76,7 +82,7 @@ export class Web3ProviderEffects {
         if (!ethereum || !ethereum.isMetaMask) {
           return ErrorActions.errorMessage({ errorMsg: `Please install MetaMask.` });
         }
-
+        // do-nothing action
         return Web3ProviderActions.emptyAction();
       })
     )
