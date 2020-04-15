@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { MarketPlaceAnchorModule } from '../market-place-anchor.module';
-import { EthersWeb3Provider } from '../../core/services/ethers-web3-provider';
+import { EthersWeb3Token } from './tokens/ethers-web3-token';
 import { Observable, from, of, zip } from 'rxjs';
 import { map, mapTo, tap, switchMap, catchError } from 'rxjs/operators';
 import { ethers, Contract, utils } from 'ethers';
@@ -39,7 +39,7 @@ export class PurchaseContractService {
 
   ];
 
-  constructor(private provider: EthersWeb3Provider) {
+  constructor(private provider: EthersWeb3Token) {
   }
 
   public loadPurchaseContract(contractAddress: string): Observable<PurchaseContractModel> {

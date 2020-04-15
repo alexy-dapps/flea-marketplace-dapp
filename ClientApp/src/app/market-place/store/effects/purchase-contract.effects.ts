@@ -17,7 +17,7 @@ import { PurchaseContractService } from '../../services/purchase-contract-servic
 import * as fromStore from '../reducers';
 import { Store, select } from '@ngrx/store';
 import { PurchaseContractActions } from '../actions';
-import { ErrorActions, SpinnerActions, SnackBarActions, Web3ProviderActions } from '../../../core/store/actions';
+import { ErrorActions, SpinnerActions, SnackBarActions, Web3GatewayActions } from '../../../core/store/actions';
 import { AppearanceColor, SnackBarInterface } from '../../../core/models';
 import { ConfirmDialogComponent } from '../../../core/components/confirm-dialog/confirm-dialog.component';
 
@@ -53,11 +53,11 @@ export class PurchaseContractEffects {
                 }
               }),
               // update ballance
-              Web3ProviderActions.getBalance()];
+              Web3GatewayActions.getBalance()];
           }),
 
           catchError((err: Error) =>
-            of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+            of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
           )
         );
       })
@@ -129,10 +129,10 @@ export class PurchaseContractEffects {
             */
             concatMap(productKey =>
               [PurchaseContractActions.removePurchaseContractSuccess({ key: productKey }),
-              Web3ProviderActions.getBalance()]
+                Web3GatewayActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+              of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
             )
           ),
           of(SpinnerActions.hide()),
@@ -169,10 +169,10 @@ export class PurchaseContractEffects {
             tap(address => console.log(`Successfully canceled contract: ${address} `)),
             concatMapTo(
               [PurchaseContractActions.abortSelectedPurchaseContractSuccess(),
-              Web3ProviderActions.getBalance()]
+                Web3GatewayActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+              of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
             )
           ),
           of(SpinnerActions.hide()),
@@ -211,9 +211,9 @@ export class PurchaseContractEffects {
           this.purchaseSrv.confirmPurchase(result.address, result.eth).pipe(
             tap(address => console.log(`Purchase confirmed successfully for the contract: ${address} `)),
             concatMapTo(
-              [PurchaseContractActions.confirmBuySuccess(), Web3ProviderActions.getBalance()]
+              [PurchaseContractActions.confirmBuySuccess(), Web3GatewayActions.getBalance()]
             ),
-            catchError((err: Error) => of(this.handleError(err), Web3ProviderActions.getBalance()))
+            catchError((err: Error) => of(this.handleError(err), Web3GatewayActions.getBalance()))
           ),
           of(SpinnerActions.hide())
         ))
@@ -248,10 +248,10 @@ export class PurchaseContractEffects {
           this.purchaseSrv.confirmDelivery(result).pipe(
             tap(address => console.log(`Delivery confirmed successfully for the contract: ${address} `)),
             concatMapTo(
-              [PurchaseContractActions.confirmDeliverySuccess(), Web3ProviderActions.getBalance()]
+              [PurchaseContractActions.confirmDeliverySuccess(), Web3GatewayActions.getBalance()]
             ),
             catchError((err: Error) =>
-              of(this.handleError(err), Web3ProviderActions.getBalance())
+              of(this.handleError(err), Web3GatewayActions.getBalance())
             )
           ),
           of(SpinnerActions.hide()),
@@ -269,10 +269,10 @@ export class PurchaseContractEffects {
         return this.purchaseSrv.withdrawBySeller(address).pipe(
           concatMap(eth =>
             [PurchaseContractActions.releaseEscrowSuccess({ amount: eth }),
-            Web3ProviderActions.getBalance()]
+              Web3GatewayActions.getBalance()]
           ),
           catchError((err: Error) =>
-            of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+            of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
           )
         );
       })
@@ -289,10 +289,10 @@ export class PurchaseContractEffects {
         return this.purchaseSrv.withdrawByOwner(address).pipe(
           concatMap(eth =>
             [PurchaseContractActions.withdrawByOwnerSuccess({ amount: eth }),
-            Web3ProviderActions.getBalance()]
+              Web3GatewayActions.getBalance()]
           ),
           catchError((err: Error) =>
-            of(this.handleError(err), SpinnerActions.hide(), Web3ProviderActions.getBalance())
+            of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
           )
         );
       })

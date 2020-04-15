@@ -9,18 +9,18 @@ import { Actions, ofType, createEffect, ROOT_EFFECTS_INIT } from '@ngrx/effects'
 import { Store, select } from '@ngrx/store';
 import * as fromStore from '../reducers';
 
-import { MetamaskEthereumToken } from '../../services/tokens';
-import { EthersProviderService } from '../../services/ethers-provider-service';
-import { Web3ProviderActions, SpinnerActions, ErrorActions } from '../actions';
+import { EthereumProviderToken } from '../../services/tokens';
+import { EthersWeb3ProviderService } from '../../services/ethers-web3-provider-service';
+import { Web3GatewayActions, SpinnerActions, ErrorActions } from '../actions';
 
 @Injectable()
-export class Web3ProviderEffects {
+export class Web3GatewayEffects {
   constructor(
-    @Inject(MetamaskEthereumToken) private web3Token,
+    @Inject(EthereumProviderToken) private ethProvider,
     private readonly actions$: Actions,
     private store$: Store<fromStore.AppState>,
     private router: Router,
-    private providerSrv: EthersProviderService,
+    private web3ProviderSrv: EthersWeb3ProviderService,
     @Inject(DOCUMENT) private document: Document
   ) { }
 
@@ -71,39 +71,41 @@ export class Web3ProviderEffects {
   You can see this action as a lifecycle hook, which you can use in order to execute some code after
    all your root effects have been added.
   */
-  metaMaskEnabled$ = createEffect(() =>
+  ethereumInjected$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
       map(() => {
 
         // https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
-        const ethereum = (window as any).ethereum;
         // Returns true or false, representing whether the user has MetaMask installed.
-        if (!ethereum || !ethereum.isMetaMask) {
+        if (!this.ethProvider || !this.ethProvider.isMetaMask) {
           return ErrorActions.errorMessage({ errorMsg: `Please install MetaMask.` });
         }
         // do-nothing action
-        return Web3ProviderActions.emptyAction();
+        return Web3GatewayActions.ethereumInjectSuccess();
       })
     )
   );
 
 
-  metaMaskConnect$ = createEffect(() =>
+  ethereumConnected$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.metamaskConnect),
+      ofType(Web3GatewayActions.ethereumConnect),
       exhaustMap(() => {
 
         // This is equivalent to ethereum.enable()
         // return list of user account
         // currently only ever one: accounts[0]
-        return from(this.web3Token.send('eth_requestAccounts')).pipe(
+        return from(this.ethProvider.send('eth_requestAccounts')).pipe(
+          // You now have an array of accounts!
+          // Currently only ever one:
+          // { id: 1, jsonrpc: "2.0", result: ['0xFDEa65C8e26263F6d9A1B5de9555D2931A33b825']}
           map((ethAccounts: any[]) => {
             if (ethAccounts.length === 0) {
               return ErrorActions.errorMessage({ errorMsg: `Can't get any user accounts` });
             }
             console.log(`Ethereum provider has been granted access to the following account:`, ethAccounts[0]);
-            return Web3ProviderActions.metamaskConnectSuccess();
+            return Web3GatewayActions.ethereumConnectSuccess();
           }),
           // User denied account access
           catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide())
@@ -117,7 +119,7 @@ export class Web3ProviderEffects {
   connectRedirect$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(Web3ProviderActions.connectRedirect),
+        ofType(Web3GatewayActions.ethereumConnectRedirect),
         tap(_ => {
           this.router.navigate(['/']);
         })
@@ -127,23 +129,23 @@ export class Web3ProviderEffects {
 
   showSpinner$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.metamaskConnect),
+      ofType(Web3GatewayActions.ethereumConnect),
       map(() => SpinnerActions.show())
     )
   );
 
   hideSpinner$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.metamaskConnectSuccess),
+      ofType(Web3GatewayActions.ethereumConnectSuccess),
       map(() => SpinnerActions.hide())
     )
   );
 
   getAccountInfo$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.metamaskConnectSuccess),
+      ofType(Web3GatewayActions.ethereumConnectSuccess),
       switchMap(() => {
-        return [Web3ProviderActions.getNetwork(), Web3ProviderActions.getAddress(), Web3ProviderActions.getBalance()];
+        return [Web3GatewayActions.getNetwork(), Web3GatewayActions.getAccount(), Web3GatewayActions.getBalance()];
 
       })
     )
@@ -151,10 +153,10 @@ export class Web3ProviderEffects {
 
   getAddress$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.getAddress),
+      ofType(Web3GatewayActions.getAccount),
       switchMap(() =>
-        this.providerSrv.getSelectedAddress().pipe(
-          map((address: string) => Web3ProviderActions.addressSuccess({ address })),
+        this.web3ProviderSrv.getSelectedAddress().pipe(
+          map((address: string) => Web3GatewayActions.accountSuccess({ address })),
           catchError((err: Error) => of(this.handleError(err)))
         )
       )
@@ -163,11 +165,11 @@ export class Web3ProviderEffects {
 
   getBalance$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.getBalance),
+      ofType(Web3GatewayActions.getBalance),
       switchMap(() =>
-        this.providerSrv.getBalance().pipe(
+        this.web3ProviderSrv.getBalance().pipe(
           map((balance: string) =>
-            Web3ProviderActions.balanceSuccess({ balance })
+            Web3GatewayActions.balanceSuccess({ balance })
           ),
           catchError((err: Error) => of(this.handleError(err)))
         )
@@ -177,11 +179,11 @@ export class Web3ProviderEffects {
 
   getNetwork$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Web3ProviderActions.getNetwork),
+      ofType(Web3GatewayActions.getNetwork),
       switchMap(() =>
-        this.providerSrv.getNetwork().pipe(
+        this.web3ProviderSrv.getNetwork().pipe(
           map((network: string) =>
-            Web3ProviderActions.networkSuccess({ network })
+            Web3GatewayActions.networkSuccess({ network })
           ),
           catchError((err: Error) => of(this.handleError(err)))
         )
@@ -208,21 +210,23 @@ export class Web3ProviderEffects {
   // and https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
   // Note that this event is emitted on page load also
   // If the array of accounts is non-empty, you're already connected.
+
+  accountWatcher$ = !!this.ethProvider ? fromEvent(this.ethProvider, 'accountsChanged').pipe(
+    withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
+    filter(([accounts, currentAccount]) => !!currentAccount && (currentAccount !== accounts[0])),
+    map(([accounts, currentAccount]) => {
+      console.log('new account', accounts[0]);
+      // we need to reload browser
+      // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
+      this.document.location.reload();
+    })
+  ) : of(1);
+
   accountChanged$ = createEffect(
-    () =>
-      fromEvent(this.web3Token, 'accountsChanged').pipe(
-        withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
-        filter(([accounts, currentAccount]) => !!currentAccount && (currentAccount !== accounts[0])),
-        map(([accounts, currentAccount]) => {
-            console.log('new account', accounts[0]);
-            // we need to reload browser
-            // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
-            this.document.location.reload();
-            // this.router.navigate(['/']);
-        })
-      ),
-      { dispatch: false }
+    () => this.accountWatcher$,
+    { dispatch: false }
   );
+
 
   private handleError(error: Error) {
     const friendlyErrorMessage = serializeError(error).message;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Contract } from 'ethers';
-import { EthersWeb3Provider } from '../../../core/services/ethers-web3-provider';
+import { EthersWeb3Token } from './ethers-web3-token';
 import { MarketPlaceAnchorModule } from '../../market-place-anchor.module';
 import { environment } from 'src/environments/environment';
 
@@ -19,7 +19,7 @@ const abi = [
 
 @Injectable({ providedIn: MarketPlaceAnchorModule })
 export class FleaMarketContractToken extends Contract {
-  constructor(provider: EthersWeb3Provider) {
+  constructor(provider: EthersWeb3Token) {
     super(FLEA_MARKET_CONTRACT_ADDRESS, abi, provider.getSigner());
   }
 

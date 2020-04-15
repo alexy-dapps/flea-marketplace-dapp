@@ -13,7 +13,7 @@ import * as fromRouter from '@ngrx/router-store';
 import { environment } from '../../../../environments/environment';
 import * as fromSpinner from './spinner.reducer';
 import * as fromError from './error.reducer';
-import * as fromWeb3Provider from './web3-provider.reducer';
+import * as fromWeb3Gateway from './web3-gateway.reducer';
 import * as fromIpfsDaemon from './ipfs-daemon.reducer';
 
 
@@ -23,7 +23,7 @@ export interface AppState {
   router: fromRouter.RouterReducerState<any>;
   spinner: fromSpinner.SpinnerState;
   error: fromError.ErrorState;
-  web3Provider: fromWeb3Provider.Web3ProviderState;
+  web3Provider: fromWeb3Gateway.Web3GatewayState;
   ipfsDaemon: fromIpfsDaemon.IpfsDaemonState;
 
 }
@@ -39,7 +39,7 @@ export const ROOT_REDUCERS =
     router: fromRouter.routerReducer,
     spinner: fromSpinner.reducer,
     error: fromError.reducer,
-    web3Provider: fromWeb3Provider.reducer,
+    web3Provider: fromWeb3Gateway.reducer,
     ipfsDaemon: fromIpfsDaemon.reducer
 
   }),
@@ -97,27 +97,33 @@ export const getError = createSelector(
   fromError.getError
 );
 
-export const selectWeb3ProviderState = createFeatureSelector<AppState, fromWeb3Provider.Web3ProviderState>(
+export const selectWeb3GatewayState = createFeatureSelector<AppState, fromWeb3Gateway.Web3GatewayState>(
   'web3Provider'
 );
-export const getMetaMaskConnected = createSelector(
-  selectWeb3ProviderState,
-  fromWeb3Provider.getMetaMaskConnected
+
+export const getEthereumInjected = createSelector(
+  selectWeb3GatewayState,
+  fromWeb3Gateway.getEthereumInjected
+);
+
+export const getEthereumConnected = createSelector(
+  selectWeb3GatewayState,
+  fromWeb3Gateway.getEthereumConnected
 );
 
 export const getAccount = createSelector(
-  selectWeb3ProviderState,
-  fromWeb3Provider.getAccount
+  selectWeb3GatewayState,
+  fromWeb3Gateway.getAccount
 );
 
 export const getNetwork = createSelector(
-  selectWeb3ProviderState,
-  fromWeb3Provider.getNetwork
+  selectWeb3GatewayState,
+  fromWeb3Gateway.getNetwork
 );
 
 export const getBalance = createSelector(
-  selectWeb3ProviderState,
-  fromWeb3Provider.getBalance
+  selectWeb3GatewayState,
+  fromWeb3Gateway.getBalance
 );
 
 export const selectIpfsDaemonState = createFeatureSelector<AppState, fromIpfsDaemon.IpfsDaemonState>(

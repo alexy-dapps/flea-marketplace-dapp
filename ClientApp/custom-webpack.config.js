@@ -1,6 +1,6 @@
 const path = require('path');
 
-// looks like in the latest import version of ipfs-http-client, 
+// looks like in the latest import version of ipfs-http-client,
 // we don't need to explicitly specify those node modules bellow
 module.exports = {
   node: {
@@ -18,5 +18,6 @@ module.exports = {
         require.resolve('multicodec/src/base-table.json')
       )
     }
-  }
+  },
+
 };

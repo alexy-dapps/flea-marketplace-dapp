@@ -16,10 +16,10 @@ export class MetaMaskConnectGuard implements CanActivate {
 
   canActivate(): Observable<boolean> {
     return this.store.pipe(
-      select(fromRoot.getMetaMaskConnected),
+      select(fromRoot.getEthereumConnected),
        tap(connected => {
         if (!connected) {
-          this.store.dispatch(fromRoot.Web3ProviderActions.connectRedirect());
+          this.store.dispatch(fromRoot.Web3GatewayActions.ethereumConnectRedirect());
           return false;
         }
         return true;

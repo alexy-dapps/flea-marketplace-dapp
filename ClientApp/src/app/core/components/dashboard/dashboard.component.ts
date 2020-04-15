@@ -44,19 +44,19 @@ export const SHAKE_HANDS_ANIMATION = trigger('shakeHands', [
 })
 export class DashboardComponent implements OnInit {
 
-  metamaskConnected$: Observable<boolean>;
+  ethereumConnected$: Observable<boolean>;
 
   constructor(
     private store$: Store<fromRoot.AppState>
   ) { }
 
   ngOnInit() {
-    this.metamaskConnected$ = this.store$.pipe(select(fromRoot.getMetaMaskConnected));
+    this.ethereumConnected$ = this.store$.pipe(select(fromRoot.getEthereumConnected));
   }
 
   onConnect() {
     // throw new Error('My Bad Test Error');
-    this.store$.dispatch(fromRoot.Web3ProviderActions.metamaskConnect());
+    this.store$.dispatch(fromRoot.Web3GatewayActions.ethereumConnect());
   }
 
 }
