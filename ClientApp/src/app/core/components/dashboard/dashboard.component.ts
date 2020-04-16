@@ -44,6 +44,7 @@ export const SHAKE_HANDS_ANIMATION = trigger('shakeHands', [
 })
 export class DashboardComponent implements OnInit {
 
+  ethereumInjected$: Observable<boolean>;
   ethereumConnected$: Observable<boolean>;
 
   constructor(
@@ -51,6 +52,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.ethereumInjected$ = this.store$.pipe(select(fromRoot.getEthereumInjected));
     this.ethereumConnected$ = this.store$.pipe(select(fromRoot.getEthereumConnected));
   }
 

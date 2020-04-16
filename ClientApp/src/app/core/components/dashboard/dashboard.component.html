@@ -33,8 +33,9 @@
   </mat-card>
 
 </div>
-<div fxLayout="row" fxLayoutAlign="center center">
-  <button mat-flat-button  class='margin-top-bottom--12' color="warn" *ngIf="(ethereumConnected$ | async) === false" (click)="onConnect()">
+<div fxLayout="row" fxLayoutAlign="center center"
+  *ngIf="{co: ethereumConnected$ | async, in: ethereumInjected$ | async} as o">
+  <button mat-flat-button class='margin-top-bottom--12' color="warn" *ngIf="!o.co && o.in" (click)="onConnect()">
     Connect to Blockchain
   </button>
 </div>
