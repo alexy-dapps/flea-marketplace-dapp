@@ -116,6 +116,24 @@ export class Web3GatewayEffects {
     )
   );
 
+  ethereumDisconnect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(Web3GatewayActions.ethereumDisconnect),
+      map( () => {
+
+        /*
+         window.ethereum.disable() for logging out of provider
+         This future is not implemented yet. See discussion here:
+         https://ethereum-magicians.org/t/window-ethereum-disable-for-logging-out-of-provider/3630
+         https://ethereum-magicians.org/t/eip-1102-opt-in-provider-access/414/59
+        */
+        return ErrorActions.errorMessage({ errorMsg: `This feature is in a suggested proposal yet.` });
+
+      })
+    )
+  );
+
+
   connectRedirect$ = createEffect(
     () =>
       this.actions$.pipe(

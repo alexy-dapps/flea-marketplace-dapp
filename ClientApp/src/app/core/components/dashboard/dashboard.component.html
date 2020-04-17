@@ -35,7 +35,10 @@
 </div>
 <div fxLayout="row" fxLayoutAlign="center center"
   *ngIf="{co: ethereumConnected$ | async, in: ethereumInjected$ | async} as o">
-  <button mat-flat-button class='margin-top-bottom--12' color="warn" *ngIf="!o.co && o.in" (click)="onConnect()">
+  <button mat-raised-button class='margin-top-bottom--12' color="accent" *ngIf="!o.co && o.in" (click)="onConnect()">
     Connect to Blockchain
+  </button>
+  <button mat-raised-button class='margin-top-bottom--12' color="warn" *ngIf="o.co && o.in" (click)="onDisconnect()">
+    Disconnect from Blockchain
   </button>
 </div>

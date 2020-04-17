@@ -56,9 +56,7 @@ export class DashboardComponent implements OnInit {
     this.ethereumConnected$ = this.store$.pipe(select(fromRoot.getEthereumConnected));
   }
 
-  onConnect() {
-    // throw new Error('My Bad Test Error');
-    this.store$.dispatch(fromRoot.Web3GatewayActions.ethereumConnect());
-  }
+  onConnect = () => this.store$.dispatch(fromRoot.Web3GatewayActions.ethereumConnect());
+  onDisconnect = () => this.store$.dispatch(fromRoot.Web3GatewayActions.ethereumDisconnect());
 
 }
