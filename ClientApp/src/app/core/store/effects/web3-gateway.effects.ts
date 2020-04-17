@@ -226,12 +226,16 @@ export class Web3GatewayEffects {
 
   // based on https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#chainchanged
   // and https://gist.github.com/rekmarks/d318677c8fc89e5f7a2f526e00a0768a
-  // Note that this event is emitted on page load also
-  // If the array of accounts is non-empty, you're already connected.
+  // Note that this event is emitted on:
+  // - page load
+  // - when log out from MetaMask
+  // - when we switch account or network in MetaMask
+
+  // ** If the array of accounts is non-empty, you're already connected.
 
   accountWatcher$ = !!this.ethProvider ? fromEvent(this.ethProvider, 'accountsChanged').pipe(
     withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
-    filter(([accounts, currentAccount]) => !!currentAccount && (currentAccount !== accounts[0])),
+    filter(([accounts, currentAccount]) => ((accounts as any).length === 0) || (accounts[0] !== currentAccount)),
     map(([accounts, currentAccount]) => {
       console.log('new account', accounts[0]);
       // we need to reload browser
