@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import { create } from 'ethereum-blockies';
 
@@ -80,8 +80,9 @@ export class NavComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
 
     this.account$ = this.store.pipe(select(fromRoot.getAccount)).pipe(
+      // filter(account => !!account),
       tap(account => {
-        console.log(`Debug: account: ${account}`);
+        console.log(`Debug: got account: ${account}`);
         this.blockyRef.nativeElement.src = create({ seed: account, size: 8, scale: 4 }).toDataURL();
       })
     );

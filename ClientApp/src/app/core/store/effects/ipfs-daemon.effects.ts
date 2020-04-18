@@ -17,6 +17,11 @@ export class IpfsDaemonEffects {
   onConnect$ = createEffect(
     () =>
       this.actions$.pipe(
+        /*
+  After all the root effects have been added, the root effect dispatches a ROOT_EFFECTS_INIT action.
+  You can see this action as a lifecycle hook, which you can use in order to execute some code after
+  all your root effects have been added.
+  */
         ofType(ROOT_EFFECTS_INIT),
         switchMap(() =>
           this.ipfsSrv.getVersion().pipe(

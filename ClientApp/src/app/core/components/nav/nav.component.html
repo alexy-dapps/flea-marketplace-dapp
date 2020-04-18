@@ -5,7 +5,7 @@
       [opened]="(isHandset$ | async) === false">
       <mat-toolbar>Menu</mat-toolbar>
       <mat-nav-list>
-  
+
         <h3 matSubheader class='margin-top-bottom--12'>
           <a [routerLink]="nav['home'].link" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: nav['home'].exact }">
@@ -13,7 +13,7 @@
           </a>
         </h3>
         <mat-divider></mat-divider>
-  
+
         <h3 matSubheader class='margin-top-bottom--12'>
           <img src="{{nav['marketplace'].img_src}}">{{nav['marketplace'].name}}
         </h3>
@@ -29,28 +29,28 @@
             <img src="{{nav['marketplace_new_product'].img_src}}">{{nav['marketplace_new_product'].name}}
           </a>
         </mat-list-item>
-  
+
         <mat-divider></mat-divider>
-  
+
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-  
+
       <mat-toolbar color="primary" fxLayout="row">
-  
+
         <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
           *ngIf="(isHandset$ | async)">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-  
+
         <span fxFlex>
           <span fxLayout="row" fxLayoutAlign="start center">
             <img src="./assets/img/ether-32.png">
             FleaMarket Escrow DApp
           </span>
-  
+
         </span>
-  
+
         <div fxFlex="15" *ngIf="balance$ | async as balance">
           <span fxLayout="row" fxLayoutAlign="center center">
             Balance:
@@ -59,7 +59,7 @@
             </mat-chip-list>
           </span>
         </div>
-  
+
         <div fxFlex="15" *ngIf="ipfsConnect$ | async as ipfsConnect">
           <span fxLayout="row" fxLayoutAlign="center center">
             IPFS Connect:
@@ -67,20 +67,20 @@
             <div fxFlexOffset="10px" *ngIf="!ipfsConnect">🔴</div>
           </span>
         </div>
-  
+
       </mat-toolbar>
-  
+
       <!-- Add Content Here -->
       <div class="context-container">
         <router-outlet></router-outlet>
       </div>
-  
-  
+
+
     </mat-sidenav-content>
   </mat-sidenav-container>
-  
+
   <mat-toolbar fxLayout="row" fxLayoutAlign="end center">
-  
+
     <div fxFlex="15" *ngIf="network$ | async as network">
       <span fxLayout="row" fxLayoutAlign="center center">
         Network:
@@ -89,17 +89,17 @@
         </mat-chip-list>
       </span>
     </div>
-  
+
     <div fxFlex="30">
       <span fxLayout="row" fxLayoutAlign="center center">
-        <img #blocky> 
+        <img #blocky>
         <mat-chip-list fxFlexOffset="10px" *ngIf="account$ | async as account">
           <mat-chip color="primary" selected>{{account}}</mat-chip>
         </mat-chip-list>
       </span>
-  
+
     </div>
-  
+
   </mat-toolbar>
 
 </div>
