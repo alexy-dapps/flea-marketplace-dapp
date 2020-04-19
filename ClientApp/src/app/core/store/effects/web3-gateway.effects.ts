@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { serializeError } from 'serialize-error';
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, from, fromEvent, EMPTY as empty, Observable } from 'rxjs';
 import { exhaustMap, switchMap, map, tap, catchError, withLatestFrom, filter } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
@@ -12,6 +12,7 @@ import * as fromStore from '../reducers';
 import { EthereumProviderToken } from '../../services/tokens';
 import { EthersWeb3ProviderService } from '../../services/ethers-web3-provider-service';
 import { Web3GatewayActions, SpinnerActions, ErrorActions } from '../actions';
+import { utils } from 'ethers';
 
 @Injectable()
 export class Web3GatewayEffects {
@@ -71,7 +72,7 @@ export class Web3GatewayEffects {
   You can see this action as a lifecycle hook, which you can use in order to execute some code after
    all your root effects have been added.
   */
-  ethereumInjected$ = createEffect(() =>
+  ethereumInject$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ROOT_EFFECTS_INIT),
       map(() => {
@@ -88,7 +89,7 @@ export class Web3GatewayEffects {
   );
 
 
-  ethereumConnected$ = createEffect(() =>
+  ethereumConnect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(Web3GatewayActions.ethereumConnect),
       exhaustMap(() => {
@@ -119,7 +120,7 @@ export class Web3GatewayEffects {
   ethereumDisconnect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(Web3GatewayActions.ethereumDisconnect),
-      map( () => {
+      map(() => {
 
         /*
          window.ethereum.disable() for logging out of provider
@@ -235,9 +236,33 @@ export class Web3GatewayEffects {
 
   accountWatcher$ = !!this.ethProvider ? fromEvent(this.ethProvider, 'accountsChanged').pipe(
     withLatestFrom(this.store$.pipe(select(fromStore.getAccount))),
-    filter(([accounts, currentAccount]) => ((accounts as any).length === 0) || (accounts[0] !== currentAccount)),
+
+    // we only want to refresh the browser when:
+    // - we logout from MetaMask (accounts.length == 0)
+    // - when we switch account to different account (!!currentAccount && currentAccount !== accounts[0])
+    filter(([accounts, currentAccount]) => {
+
+      if ((accounts as any).length === 0)
+        return true;
+
+      /*
+     I notice that using ethers.js it returns account in the hex string like this
+      0xd64d1cc32225bd5815cfa7a0b8a6aa46e0ef1285
+      but from the event 'accountsChanged' it return the same account hex string like this:
+      0xd64D1cc32225bD5815cFA7A0B8a6aa46e0eF1285
+      !Notice the capital letters. So we should take care of this situation
+    */
+
+      const curAdd = currentAccount ? utils.getAddress(currentAccount) : currentAccount;
+      const newAdd = accounts[0] ? utils.getAddress(accounts[0]) : accounts[0];
+
+      if (!!curAdd && (curAdd !== newAdd)) {
+        return true;
+      }
+
+      return false;
+    }),
     map(([accounts, currentAccount]) => {
-      console.log('new account', accounts[0]);
       // we need to reload browser
       // based onhttps://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
       this.document.location.reload();

@@ -11,16 +11,16 @@ import * as fromRoot from '../store';
 @Injectable({
   providedIn: 'root',
 })
-export class MetaMaskConnectGuard implements CanLoad {
+export class IpfsConnectGuard implements CanLoad {
   constructor(private store: Store<fromRoot.AppState>) {}
 
   canLoad(): Observable<boolean> {
     return this.store.pipe(
-      select(fromRoot.getEthereumConnected),
+      select(fromRoot.getIpfsConnectStatus),
        tap(connected => {
         if (!connected) {
-          this.store.dispatch(fromRoot.ErrorActions.errorMessage({ errorMsg: `Unable to detect Ethereum account.` }));
-          this.store.dispatch(fromRoot.Web3GatewayActions.ethereumConnectRedirect());
+          this.store.dispatch(fromRoot.ErrorActions.errorMessage({ errorMsg: `Unable to detect IPFS node.` }));
+          this.store.dispatch(fromRoot.IpfsDaemonActions.ipfsConnectRedirect());
           return false;
         }
         return true;

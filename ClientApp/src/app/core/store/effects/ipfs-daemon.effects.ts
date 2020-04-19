@@ -3,6 +3,7 @@ import { Actions, ofType, createEffect, ROOT_EFFECTS_INIT } from '@ngrx/effects'
 import { serializeError } from 'serialize-error';
 import { of } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { IpfsDaemonService } from '../../services/ipfs-daemon.services';
 import { IpfsDaemonActions, ErrorActions } from '../actions';
@@ -11,7 +12,8 @@ import { IpfsDaemonActions, ErrorActions } from '../actions';
 export class IpfsDaemonEffects {
   constructor(
     private ipfsSrv: IpfsDaemonService,
-    private readonly actions$: Actions
+    private readonly actions$: Actions,
+    private router: Router,
   ) { }
 
   onConnect$ = createEffect(
@@ -31,6 +33,17 @@ export class IpfsDaemonEffects {
           )
         )
       )
+  );
+
+  connectRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(IpfsDaemonActions.ipfsConnectRedirect),
+        tap(_ => {
+          this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
   );
 
   private handleError(error: Error) {
