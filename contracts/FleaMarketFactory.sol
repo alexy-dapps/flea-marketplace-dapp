@@ -1,5 +1,5 @@
 
-pragma solidity >=0.4.22 <0.7.0; // solhint-disable-line
+pragma solidity ^0.6.0;
 
 /*
 - Functions can be specified as being external, public, internal or private, where the default is public.

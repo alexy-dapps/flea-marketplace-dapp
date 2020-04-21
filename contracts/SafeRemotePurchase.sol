@@ -3,7 +3,7 @@ based on
 1. https://solidity.readthedocs.io/en/latest/solidity-by-example.html#safe-remote-purchase
 */
 
-pragma solidity >=0.4.22 <0.7.0; // solhint-disable-line
+pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 // import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol"; // for Remix

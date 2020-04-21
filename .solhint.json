@@ -7,6 +7,7 @@
     "avoid-tx-origin:": "warn",
     "avoid-throw": "off",
     "indent": "off",
-    "no-mix-tabs-and-spaces": "off"
+    "no-mix-tabs-and-spaces": "off",
+    "compiler-version": "warn"
   }
 }
