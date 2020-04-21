@@ -57,7 +57,7 @@ module.exports = {
     ganache: {
       host: '127.0.0.1',
       port: 7545,
-      network_id: '*' // matching any network id
+      network_id: '*', // matching any network id
     },
 
     // Another network with more advanced options...
@@ -112,12 +112,12 @@ module.exports = {
       //Default gas limit in Truffle is 4712388 (gas limit for Homestead release).
       // This exceeds Ropsten's limit. Make sure to set a gas limit to 4700000.
       //Otherwise, you will see the following //error. Error: exceeds block gas limit
-      gas: 4700000
+      gas: 4700000,
       //gas: 5500000,        // Ropsten has a lower block limit than mainnet
       // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
-    }
+    },
 
     // Useful for private networks
     // private: {
@@ -140,14 +140,14 @@ module.exports = {
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
-          enabled: true
+          enabled: true,
         },
         /*
         !!! based on the current Ethereum fork, we now need to set  the EVM version
         https://ethereum.stackexchange.com/questions/78597/solidity-0-6-0-addressthis-balance-throws-error-invalid-opcode
         */
-        evmVersion: 'petersburg' //'byzantium'
-      }
-    }
-  }
+        evmVersion: 'petersburg', //'byzantium'
+      },
+    },
+  },
 };
