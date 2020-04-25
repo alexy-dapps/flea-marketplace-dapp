@@ -2,7 +2,7 @@ import { Injectable, Injector, ErrorHandler } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, retry } from 'rxjs/operators';
 
 /** Passes HttpErrorResponse to application-wide error handler */
 @Injectable()
@@ -12,7 +12,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(request).pipe(
-
+      retry(1), // retry one more time
       tap({error: (err: any) => {
           if (err instanceof HttpErrorResponse) {
             // here we pass the global ErrorHandler which will use our custom global error handler AppErrorHandler
