@@ -27,7 +27,6 @@ export class AppErrorHandler extends ErrorHandler {
     if (error instanceof HttpErrorResponse) {
       // Server Error
       message = error.message;
-
     } else {
       // Client Error
       message = serializeError(error).message;
