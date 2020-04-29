@@ -12,12 +12,12 @@ import * as fromRoot from '../store';
   providedIn: 'root',
 })
 export class MetaMaskConnectGuard implements CanLoad {
-  constructor(private store: Store<fromRoot.AppState>) {}
+  constructor(private store: Store<fromRoot.AppState>) { }
 
   canLoad(): Observable<boolean> {
     return this.store.pipe(
       select(fromRoot.getEthereumConnected),
-       tap(connected => {
+      tap(connected => {
         if (!connected) {
           this.store.dispatch(fromRoot.ErrorActions.errorMessage({ errorMsg: `Unable to detect Ethereum account.` }));
           this.store.dispatch(fromRoot.Web3GatewayActions.ethereumConnectRedirect());

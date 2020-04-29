@@ -82,7 +82,6 @@ export class Web3GatewayEffects {
         if (!this.ethProvider || !this.ethProvider.isMetaMask) {
           return ErrorActions.errorMessage({ errorMsg: `Please install MetaMask.` });
         }
-        // do-nothing action
         return Web3GatewayActions.ethereumInjectSuccess();
       })
     )
@@ -109,8 +108,7 @@ export class Web3GatewayEffects {
             return Web3GatewayActions.ethereumConnectSuccess();
           }),
           // User denied account access
-          catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide())
-          )
+          catchError((err: Error) => of(this.handleError(err), SpinnerActions.hide()) )
         );
 
       })
