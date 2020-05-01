@@ -36,7 +36,7 @@
     "rxjs": "^6.5.5",
     "serialize-error": "^6.0.0",
     "tslib": "^1.11.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.3"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^9.1.0",
@@ -46,9 +46,9 @@
     "@angular/language-service": "~9.1.0",
     "@types/node": "^13.9.0",
     "codelyzer": "^5.2.2",
-    "ngrx-vis": "^0.1.23",
+    "ngrx-vis": "^0.1.24",
     "rimraf": "^3.0.0",
-    "ts-node": "~8.8.0",
+    "ts-node": "~8.9.0",
     "tslint": "^6.1.0",
     "typescript": "~3.8.0"
   }
