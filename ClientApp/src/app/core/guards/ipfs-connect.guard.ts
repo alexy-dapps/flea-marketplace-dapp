@@ -12,12 +12,12 @@ import * as fromRoot from '../store';
   providedIn: 'root',
 })
 export class IpfsConnectGuard implements CanLoad {
-  constructor(private store: Store<fromRoot.AppState>) {}
+  constructor(private store: Store<fromRoot.AppState>) { }
 
   canLoad(): Observable<boolean> {
     return this.store.pipe(
       select(fromRoot.getIpfsConnectStatus),
-       tap(connected => {
+      tap(connected => {
         if (!connected) {
           this.store.dispatch(fromRoot.ErrorActions.errorMessage({ errorMsg: `Unable to detect IPFS node.` }));
           this.store.dispatch(fromRoot.IpfsDaemonActions.ipfsConnectRedirect());

@@ -11,13 +11,4 @@ module.exports = {
     buffer: true,
   },
 
-  // fix for issue: https://github.com/multiformats/js-cid/issues/96
-  resolve: {
-    alias: {
-      'multicodec/src/base-table': path.dirname(
-        require.resolve('multicodec/src/base-table.json')
-      )
-    }
-  },
-
 };

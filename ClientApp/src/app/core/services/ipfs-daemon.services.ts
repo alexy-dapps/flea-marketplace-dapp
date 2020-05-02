@@ -85,10 +85,7 @@ export class IpfsDaemonService {
         return this.httpClient.get(url, {
           responseType: 'blob'
         });
-      }
-
-
-      ))
+      }))
 
   }
 
