@@ -1,14 +1,12 @@
-ngOnInit() {
-  this.network$ = this.store.pipe(select(fromRoot.getNetwork));
-  this.balance$ = this.store.pipe(select(fromRoot.getBalance));
-}
+const path = require('path');
 
-ngAfterViewInit() {
-
-  this.account$ = this.store.pipe(select(fromRoot.getAccount)).pipe(
-    tap(account => {
-      this.blockyRef.nativeElement.src =
-        create({ seed: account, size: 8, scale: 4 }).toDataURL();
-    })
-  );
-}
+module.exports = {
+  node: {
+    crypto: true,
+    path: true,
+    os: true,
+    stream: true,
+    buffer: true,
+  },
+  
+};
