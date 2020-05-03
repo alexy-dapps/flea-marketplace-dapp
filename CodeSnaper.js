@@ -1,12 +1,6 @@
-const path = require('path');
+{
+  path: 'market-place',
 
-module.exports = {
-  node: {
-    crypto: true,
-    path: true,
-    os: true,
-    stream: true,
-    buffer: true,
-  },
-  
-};
+    loadChildren: () => import('./market-place/market-place.module').then(mod => mod.MarketPlaceModule),
+      canLoad: [guards.MetaMaskConnectGuard, guards.IpfsConnectGuard],
+}
