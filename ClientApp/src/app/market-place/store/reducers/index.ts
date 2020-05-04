@@ -1,10 +1,10 @@
 
 import {
-    createSelector,
-    createFeatureSelector,
-    Action,
-    combineReducers,
-  } from '@ngrx/store';
+  createSelector,
+  createFeatureSelector,
+  Action,
+  combineReducers,
+} from '@ngrx/store';
 
 import * as fromRoot from '../../../core/store/reducers';
 import * as fromIpfs from './ipfs-product-image.reducer';
@@ -12,26 +12,26 @@ import * as fromProducts from './purchase-contract.reducer';
 
 
 export interface PurchaseContractState {
-    ipfs: fromIpfs.State;
-    products: fromProducts.State;
-  }
+  ipfs: fromIpfs.State;
+  products: fromProducts.State;
+}
 
 
 export interface AppState extends fromRoot.AppState {
-    purchaseContract: PurchaseContractState;
-  }
+  purchaseContract: PurchaseContractState;
+}
 
 export function reducers(state: PurchaseContractState | undefined, action: Action) {
-    return combineReducers({
-      ipfs: fromIpfs.reducer,
-      products: fromProducts.reducer
-    })(state, action);
-  }
+  return combineReducers({
+    ipfs: fromIpfs.reducer,
+    products: fromProducts.reducer
+  })(state, action);
+}
 
 
 export const selectPurchaseContractState = createFeatureSelector<AppState, PurchaseContractState>(
-    'purchaseContract'
-  );
+  'purchaseContract'
+);
 
 export const selectIpfsState = createSelector(selectPurchaseContractState, state => state.ipfs);
 
@@ -39,7 +39,7 @@ export const getIpfsUploadStatus = createSelector(selectIpfsState, fromIpfs.getI
 export const getIpfsHash = createSelector(selectIpfsState, fromIpfs.getIpfsHash);
 export const getImageBlob = createSelector(selectIpfsState, fromIpfs.getImageBlob);
 
-  // ********************************************************************************
+// ********************************************************************************
 export const getProductEntitiesState = createSelector(selectPurchaseContractState, state => state.products);
 
 
