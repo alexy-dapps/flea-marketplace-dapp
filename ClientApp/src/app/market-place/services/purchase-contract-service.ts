@@ -109,6 +109,7 @@ export class PurchaseContractService {
     // based on https://docs.ethers.io/ethers.js/html/cookbook-contracts.html
     // Call the contract method, getting back the transaction tx
     const token = contract.abortBySeller();
+    // 'from' operator can be used to convert a promise to an observable
     return from(token)
       .pipe(
         switchMap((tx: any) => {
