@@ -129,7 +129,7 @@ export class PurchaseContractEffects {
             */
             concatMap(productKey =>
               [PurchaseContractActions.removePurchaseContractSuccess({ key: productKey }),
-                Web3GatewayActions.getBalance()]
+              Web3GatewayActions.getBalance()]
             ),
             catchError((err: Error) =>
               of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
@@ -169,7 +169,7 @@ export class PurchaseContractEffects {
             tap(address => console.log(`Successfully canceled contract: ${address} `)),
             concatMapTo(
               [PurchaseContractActions.abortSelectedPurchaseContractSuccess(),
-                Web3GatewayActions.getBalance()]
+              Web3GatewayActions.getBalance()]
             ),
             catchError((err: Error) =>
               of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
@@ -269,7 +269,7 @@ export class PurchaseContractEffects {
         return this.purchaseSrv.withdrawBySeller(address).pipe(
           concatMap(eth =>
             [PurchaseContractActions.releaseEscrowSuccess({ amount: eth }),
-              Web3GatewayActions.getBalance()]
+            Web3GatewayActions.getBalance()]
           ),
           catchError((err: Error) =>
             of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
@@ -289,7 +289,7 @@ export class PurchaseContractEffects {
         return this.purchaseSrv.withdrawByOwner(address).pipe(
           concatMap(eth =>
             [PurchaseContractActions.withdrawByOwnerSuccess({ amount: eth }),
-              Web3GatewayActions.getBalance()]
+            Web3GatewayActions.getBalance()]
           ),
           catchError((err: Error) =>
             of(this.handleError(err), SpinnerActions.hide(), Web3GatewayActions.getBalance())
