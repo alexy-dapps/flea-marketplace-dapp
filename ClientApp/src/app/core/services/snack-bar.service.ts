@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { SnackBarComponent } from '../components/snackbar/snack-bar.component';
 import { SnackBarInterface } from '../models';
 
@@ -18,7 +18,9 @@ export class SnackBarService {
         message: messageInfo.message,
         color: messageInfo.color
       },
-      duration: SnackBarService.SNACKBAR_DELAY
+      duration: SnackBarService.SNACKBAR_DELAY,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom'
     });
   }
 
