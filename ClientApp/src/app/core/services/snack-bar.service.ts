@@ -18,7 +18,9 @@ export class SnackBarService {
         message: messageInfo.message,
         color: messageInfo.color
       },
-      duration: SnackBarService.SNACKBAR_DELAY
+      duration: SnackBarService.SNACKBAR_DELAY,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom'
     });
   }
 
