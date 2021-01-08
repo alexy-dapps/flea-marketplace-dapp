@@ -240,8 +240,9 @@ export class Web3GatewayEffects {
     // - when we switch account to different account (!!currentAccount && currentAccount !== accounts[0])
     filter(([accounts, currentAccount]) => {
 
-      if ((accounts as any).length === 0)
+      if ((accounts as any).length === 0) {
         return true;
+      }
 
       /*
      I notice that using ethers.js it returns account in the hex string like this

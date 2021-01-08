@@ -23,7 +23,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         appErrorHandler.handleError(err);
         return throwError(err);
       })
-    )
+    );
   }
 
 }

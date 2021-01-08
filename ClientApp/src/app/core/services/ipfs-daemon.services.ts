@@ -64,9 +64,9 @@ export class IpfsDaemonService {
     // based on https://medium.com/@benlesh/rxjs-observable-interop-with-promises-and-async-await-bebb05306875
     const sz = defer(async () => {
 
-      const chunks = []
+      const chunks = [];
       for await (const chunk of this.ipfs.cat(hash)) {
-        chunks.push(chunk)
+        chunks.push(chunk);
       }
 
       const buff = Buffer.concat(chunks);
@@ -85,7 +85,7 @@ export class IpfsDaemonService {
         return this.httpClient.get(url, {
           responseType: 'blob'
         });
-      }))
+      }));
 
   }
 

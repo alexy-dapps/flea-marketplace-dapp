@@ -18,8 +18,8 @@ export class EthersWeb3ProviderService {
   // There is only ever up to one account in MetaMask exposed
   public getSelectedAddress(): Observable<string> {
 
-    const web3Provider:ethers.providers.JsonRpcProvider = new ethers.providers.Web3Provider(this.ethProvider);
-    const signer:Signer = web3Provider.getSigner();
+    const web3Provider: ethers.providers.JsonRpcProvider = new ethers.providers.Web3Provider(this.ethProvider);
+    const signer: Signer = web3Provider.getSigner();
 
     return from(signer.getAddress()).pipe(
       tap(address => console.log('account address', address))
